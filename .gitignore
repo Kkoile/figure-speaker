@@ -1,0 +1,6 @@
+.eslintrc.yml
+.idea/
+.jshintignore
+.jshintrc
+node_modules/
+data/
