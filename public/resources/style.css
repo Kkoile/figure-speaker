@@ -1,0 +1,134 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    color: #333;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+a, label {
+    font-size: 16px;
+}
+
+p {
+    text-align: center;
+}
+
+h1, h2 {
+    margin: 0 0 15px 0;
+}
+
+.main {
+    padding: 20px 0;
+    box-sizing: border-box;
+    min-height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(#D9EBF1, #B0D7E1);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header > * {
+    padding: 10px;
+}
+
+.login {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.actionArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+}
+
+.action {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+}
+
+.btn {
+    border: solid;
+    border-width: 1px;
+    margin: 5px;
+    cursor: default;
+    padding: 5px 20px;
+}
+
+.btn:hover {
+    background: #333333;
+    color: white;
+}
+
+.btn-disabled {
+    pointer-events: none;
+}
+
+input {
+    height: 26px;
+    width: 100%;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scaleX(1)
+    }
+
+    50% {
+        transform: scale3d(1.1, 1.1, 1.1)
+    }
+}
+
+.pi-start-loader {
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+.pi-start-loader > .pulse {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin: -48px auto 0 auto;
+
+    animation-name: pulse;
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    -webkit-transition: all;
+    -moz-transition: all;
+    -o-transition: all;
+    -ms-transition: all;
+}
+
+.hidden {
+    display: none;
+}

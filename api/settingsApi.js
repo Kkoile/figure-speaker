@@ -1,0 +1,44 @@
+/*eslint no-console: 0*/
+"use strict";
+
+var winston = require('winston');
+var express = require('express');
+var ApplicationError = require('../lib/ApplicationError');
+var settingsController = require('../lib/settingsController.js');
+var constants = require('../lib/constants.js');
+
+var settingsApi = express.Router();
+
+settingsApi.route('/saveCredentials').post(function (req, res, next) {
+    if (!req.body.email || !req.body.password || !req.body.clientId || !req.body.clientSecret) {
+        res.status(400).send("Email, Password, ClientId or ClientSecret is missing in body!");
+        return;
+    }
+    settingsController.saveCredentials(req.body)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/saveFigure').post(function (req, res, next) {
+    if (!req.body.streamUri) {
+        res.status(400).send("StreamUri is missing in body!");
+        return;
+    }
+    settingsController.saveFigure(req.body.streamUri)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/getFigureWithInformation').get(function (req, res, next) {
+    settingsController.getFigureWithInformation()
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+module.exports = settingsApi;
