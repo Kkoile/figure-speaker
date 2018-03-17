@@ -4,29 +4,25 @@
     <div class="titleCover" v-else>
       {{ item.name }}
     </div>
-    <button v-if="item.type==='artist'" class="itemButton" v-on:click="openArtist">Open</button>
-    <button v-else class="itemButton" v-on:click="saveItem">Save</button>
+    <button v-if="item.type==='track'" class="itemButton" v-on:click="saveItem">Save</button>
+    <button v-else class="itemButton" v-on:click="openItem">Open</button>
   </div>
 </template>
 
 <script>
-  import axios from 'axios';
-
   export default {
     name: 'SearchItem',
     props: ['item'],
     methods: {
-      openArtist: function () {
-        this.$router.push('/artist/' + this.item.id);
+      openItem: function () {
+        if (this.item.type === 'artist') {
+          this.$router.push('/artist/' + this.item.id);
+        } else {
+          this.$router.push('/album/' + this.item.id);
+        }
       },
       saveItem: function () {
-        axios.post('http://localhost:3000/settings/saveFigure', {streamUri: this.item.uri})
-          .then(function () {
-            alert('success')
-          })
-          .catch(function (err) {
-            alert(JSON.stringify(err.response.data));
-          });
+        this.$store.dispatch('saveItem', this.item.uri)
       }
     }
   }

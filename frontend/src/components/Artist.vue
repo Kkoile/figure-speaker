@@ -1,44 +1,69 @@
 <template>
-  <div class="hello">
-    <h1>Artist</h1>
-    <h2>{{ id }}</h2>
-    <button v-on:click="navigateBack">Back</button>
+  <div>
+    <h1>Artist: {{ $store.state.artistName }}</h1>
+    <div class="searchResult">
+      <h2>Top Tracks</h2>
+      <li class="searchList">
+        <SearchItem
+          v-for="track in $store.state.artistTracks"
+          v-bind:item="track"
+          v-bind:key="track.uri">
+        </SearchItem>
+      </li>
+      <h2>Albums</h2>
+      <li class="searchList">
+        <SearchItem
+          v-for="album in $store.state.artistAlbums"
+          v-bind:item="album"
+          v-bind:key="album.uri">
+        </SearchItem>
+        <div class="loadMoreButton">
+          <button v-if="$store.state.moreArtistAlbums" @click="loadMoreArtistAlbums">More</button>
+        </div>
+      </li>
+    </div>
   </div>
 </template>
 
 <script>
+  import SearchItem from '@/components/SearchItem'
+  import {mapActions} from 'vuex'
+
   export default {
-    id: 'HelloWorld',
-    data () {
-      return {
-        id: this.$route.params.id
-      }
+    id: 'Artist',
+    components: {
+      SearchItem
     },
-    methods: {
-      navigateBack: function () {
-        this.$router.back();
-      }
+    methods: mapActions([
+      'loadMoreArtistAlbums'
+    ]),
+    beforeMount: function () {
+      this.$store.dispatch('loadArtist', this.$route.params.id)
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  h1, h2 {
-    font-weight: normal;
+  .searchResult {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  ul {
-    list-style-type: none;
-    padding: 0;
+  .searchList {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    width: 100%;
   }
 
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
+  .loadMoreButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 </style>

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Spotify from './lib/Spotify'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -15,38 +16,86 @@ const state = {
   tracks: [],
   tracksOffset: 0,
   moreTracks: false,
+  selectedArtistId: null,
+  artistName: null,
+  artistAlbums: [],
+  artistAlbumsOffset: 0,
+  moreArtistAlbums: false,
+  artistTracks: [],
+  selectedAlbumId: null,
+  albumUri: null,
+  albumName: null,
+  albumArtistName: null,
+  albumImage: null,
+  albumTracks: [],
+  albumTracksOffset: 0,
+  moreAlbumTracks: false,
 }
 
 const mutations = {
-  setArtists (state, artists) {
-    state.artists = artists.items
-    state.artistsOffset += artists.limit
-    state.moreArtists = artists.total > state.artistsOffset
+  resetData (state) {
+    state.artists = []
+    state.artistsOffset = 0
+    state.moreArtists = false
+    state.albums = []
+    state.albumsOffset = 0
+    state.moreAlbums = false
+    state.tracks = []
+    state.tracksOffset = 0
+    state.moreTracks = false
   },
   appendArtists (state, artists) {
     state.artists = state.artists.concat(artists.items)
     state.artistsOffset += artists.limit
     state.moreArtists = artists.total > state.artistsOffset
   },
-  setAlbums (state, albums) {
-    state.albums = albums.items
-    state.albumsOffset += albums.limit
-    state.moreAlbums = albums.total > state.albumsOffset
-  },
   appendAlbums (state, albums) {
     state.albums = state.albums.concat(albums.items)
     state.albumsOffset += albums.limit
     state.moreAlbums = albums.total > state.albumsOffset
   },
-  setTracks (state, tracks) {
-    state.tracks = tracks.items
-    state.tracksOffset += tracks.limit
-    state.moreTracks = tracks.total > state.tracksOffset
-  },
   appendTracks (state, tracks) {
     state.tracks = state.tracks.concat(tracks.items)
     state.tracksOffset += tracks.limit
     state.moreTracks = tracks.total > state.tracksOffset
+  },
+  resetArtistData (state) {
+    state.artistName = null
+    state.artistAlbums = []
+    state.artistAlbumsOffset = 0
+    state.moreArtistAlbums = false
+    state.artistTracks = []
+  },
+  setArtist (state, data) {
+    state.artistName = data.name
+  },
+  appendArtistAlbums (state, albums) {
+    state.artistAlbums = state.artistAlbums.concat(albums.items)
+    state.artistAlbumsOffset += albums.limit
+    state.moreArtistAlbums = albums.total > state.artistAlbumsOffset
+  },
+  appendArtistTracks (state, tracks) {
+    state.artistTracks = state.artistTracks.concat(tracks.tracks)
+  },
+  resetAlbumData (state) {
+    state.albumUri = null
+    state.albumName = null
+    state.albumArtistName = null
+    state.albumImage = null
+    state.albumTracks = []
+    state.albumTracksOffset = 0
+    state.moreAlbumTracks = false
+  },
+  setAlbum (state, data) {
+    state.albumUri = data.uri
+    state.albumName = data.name
+    state.albumArtistName = data.artists[0].name
+    state.albumImage = data.images && data.images.length > 0 ? data.images[0] : null
+  },
+  appendAlbumTracks (state, tracks) {
+    state.albumTracks = state.albumTracks.concat(tracks.items)
+    state.albumTracksOffset += tracks.limit
+    state.moreAlbumTracks = tracks.total > state.albumTracksOffset
   },
 }
 
@@ -54,12 +103,12 @@ const mutations = {
 // asynchronous operations.
 const actions = {
   search ({commit}) {
-    state.artistsOffset = 0
+    commit('resetData')
     return Spotify.search(state.query, 'artist,album,track', state.artistsOffset)
       .then(function (oData) {
-        commit('setArtists', oData.data.artists);
-        commit('setAlbums', oData.data.albums);
-        commit('setTracks', oData.data.tracks);
+        commit('appendArtists', oData.data.artists);
+        commit('appendAlbums', oData.data.albums);
+        commit('appendTracks', oData.data.tracks);
       })
       .catch(function (err) {
         alert(err);
@@ -90,6 +139,82 @@ const actions = {
       })
       .catch(function (err) {
         alert(err);
+      });
+  },
+  loadArtist ({commit}, id) {
+    state.selectedArtistId = id
+    commit('resetArtistData')
+    var aPromises = [
+      Spotify.loadArtist(state.selectedArtistId)
+        .then(function (oData) {
+          commit('setArtist', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        }),
+      Spotify.loadArtistAlbums(state.selectedArtistId, state.artistAlbumsOffset)
+        .then(function (oData) {
+          commit('appendArtistAlbums', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        }),
+      Spotify.loadArtistTracks(state.selectedArtistId)
+        .then(function (oData) {
+          commit('appendArtistTracks', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        })
+    ]
+    return aPromises
+  },
+  loadMoreArtistAlbums ({commit}) {
+    return Spotify.loadArtistAlbums(state.selectedArtistId, state.artistAlbumsOffset)
+      .then(function (oData) {
+        commit('appendArtistAlbums', oData.data);
+      })
+      .catch(function (err) {
+        alert(err);
+      });
+  },
+  loadAlbum ({commit}, id) {
+    state.selectedAlbumId = id
+    commit('resetAlbumData')
+    var aPromises = [
+      Spotify.loadAlbum(state.selectedAlbumId)
+        .then(function (oData) {
+          commit('setAlbum', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        }),
+      Spotify.loadAlbumTracks(state.selectedAlbumId, state.albumTracksOffset)
+        .then(function (oData) {
+          commit('appendAlbumTracks', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        })
+    ]
+    return aPromises
+  },
+  loadMoreAlbumTracks ({commit}) {
+    return Spotify.loadAlbumTracks(state.selectedAlbumId, state.albumTracksOffset)
+      .then(function (oData) {
+        commit('appendAlbumTracks', oData.data);
+      })
+      .catch(function (err) {
+        alert(err);
+      })
+  },
+  saveItem ({commit}, sUri) {
+    return axios.post('http://localhost:3000/settings/saveFigure', {streamUri: sUri})
+      .then(function () {
+        alert('success')
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
       });
   }
 }

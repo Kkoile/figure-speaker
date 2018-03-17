@@ -22,14 +22,55 @@ export default {
         }
       });
     });
+  },
+  loadArtist: function (sArtistId) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/artists/' + sArtistId, {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
+  },
+  loadArtistAlbums: function (sArtistId, iOffset) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/artists/' + sArtistId + '/albums?offset=' + iOffset, {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
+  },
+  loadArtistTracks: function (sArtistId) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/artists/' + sArtistId + '/top-tracks?country=DE', {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
+  },
+  loadAlbum: function (sAlbumId) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/albums/' + sAlbumId, {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
+  },
+  loadAlbumTracks: function (sAlbumId, iOffset) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/albums/' + sAlbumId + '/tracks?offset=' + iOffset, {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
   }
-
-// Vue.http.interceptors.push(function (request, next) {
-//     _getAuthToken().then(function (sAuthToken) {
-//         request.headers.set('Authorization', 'Bearer ' + sAuthToken);
-//         request.headers.set('Accept', 'application/json');
-//         next()
-//     });
-// });
-
 }
