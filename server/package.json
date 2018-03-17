@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "figure-speaker-server",
+  "version": "1.0.0",
+  "author": "Nils Hirsekorn",
+  "description": "Speaker which reacts to NFC tags and streams music",
+  "engines": {
+    "node": "^6.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "express": "4.16.2",
+    "ini": "1.3.5",
+    "mfrc522-rpi": "1.1.0",
+    "mopidy": "0.4.1",
+    "nfc-pcsc": "0.6.1",
+    "request": "2.83.0",
+    "request-promise": "4.2.2",
+    "spotify-web-api-node": "3.0.0",
+    "winston": "2.4.0"
+  },
+  "devDependencies": {
+    "eslint": "4.18.1",
+    "mocha": "5.0.1",
+    "nock": "9.2.1",
+    "sinon": "4.4.2",
+    "supertest": "3.0.0"
+  }
+}
