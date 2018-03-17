@@ -1,31 +1,43 @@
-"use strict";
+Vue.component('search-result', {
+    props: ['item'],
+    template: '<div class="searchItem"><img v-if="item.images" class="albumCover" :src="item.images[1].url"/><div class="titleCover" v-else>{{ item.name }}</div><button v-if="item.type===\'artist\'" class="itemButton" v-on:click="openArtist">Open</button><button v-else class="itemButton" v-on:click="saveItem">Save</button></div>',
+    methods: {
+        openArtist: function () {
+            Vue.http.get('./artist/' + this.item.id, function (oData) {
 
-var sTenantId;
-
-$(document).ready(function () {
-    // $('#url-input').bind('keypress', function (oEvent) {
-    //     var iKey = oEvent.which || oEvent.keyCode;
-    //     if (iKey === 13) {
-    //         getTenantId();
-    //     }
-    // });
-    // $('#email-input').bind('keypress', function (oEvent) {
-    //     var iKey = oEvent.which || oEvent.keyCode;
-    //     if (iKey === 13) {
-    //         cleanUser();
-    //     }
-    // });
+            })
+                .error(function (err) {
+                    alert(err);
+                });
+        },
+        saveItem: function () {
+            Vue.http.post('./settings/saveFigure', {streamUri: this.item.uri})
+                .error(function (err) {
+                    alert(err);
+                });
+        }
+    }
 });
 
-function saveCredentials() {
-    var sEmail = $("#email-input").val();
-    var sPassword = $("#password-input").val()
-    var sClientId = $("#clientid-input").val();
-    var sClientSecret = $("#clientsecret-input").val();
-    $.post('/settings/saveCredentials', {
-        email: sEmail,
-        password: sPassword,
-        clientId: sClientId,
-        clientSecret: sClientSecret
-    });
-}
+var app = new Vue({
+    el: '#app',
+    data: {
+        query: "",
+        artists: data.artists.items,
+        albums: data.albums.items,
+        tracks: data.tracks.items
+    },
+    methods: {
+        search: function () {
+            search(this.query).then(function (oData) {
+                var data = oData.body;
+                this.artists = data.artists.items;
+                this.albums = data.albums.items;
+                this.tracks = data.tracks.items;
+            }.bind(this))
+                .catch(function (err) {
+                    alert(err);
+                });
+        }
+    }
+});

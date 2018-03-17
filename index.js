@@ -11,8 +11,17 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+app.use(function(req, res, next) {
+    //console.log(req.path, req.headers);
+    res.header('Access-Control-Allow-Origin', "*"); // TODO - Make this more secure!!
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST');
+    res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,api-auth-token');
+
+    next();
+});
+
 app.use('/settings/', require('./api/settingsApi'));
-app.use('/search/', require('./api/searchApi'));
+app.use('/data/', require('./api/dataApi'));
 
 app.use(require('./api/errorHandler'));
 
@@ -34,7 +43,7 @@ app.post('/logLevel', function (req, res) {
     res.send("Successfully set log level to " + sLevel);
 });
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3001;
 var listener = app.listen(port, function () {
     winston.info('Figure Speaker HTTP server up and running, listening on port ' + listener.address().port);
 });

@@ -3,26 +3,49 @@
 <head>
     <title>Figure Speaker</title>
     <link href="/resources/style.css" rel="stylesheet"/>
+    <script src="file.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="index.js"></script>
-
-<div class="main">
-    <h1 class="text">Figure Speaker</h1>
-
-    <label class="text">Email</label>
-    <input id="email-input" type="text" placeholder="Email" required>
-    <label class="text">Password</label>
-    <input id="password-input" type="password" placeholder="Password" required>
-    <label class="text">Client Id</label>
-    <input id="clientid-input" type="text" placeholder="Client Id" required>
-    <label class="text">Client Secret</label>
-    <input id="clientsecret-input" type="text" placeholder="Client Secret" required>
-    <a role="button" onclick="saveCredentials();"
-       class="btn">Save Credentials</a>
+<div id="app">
+    <div>
+        <input v-model="query">
+        <button v-on:click="search">Search</button>
+    </div>
+    <div>
+        <h2>Artists</h2>
+        <ol class="searchResult">
+            <search-result
+                    v-for="artist in artists"
+                    v-bind:item="artist"
+                    v-bind:key="artist.uri">
+            </search-result>
+        </ol>
+        <h2>Albums</h2>
+        <ol class="searchResult">
+            <search-result
+                    v-for="album in albums"
+                    v-bind:item="album"
+                    v-bind:key="album.uri">
+            </search-result>
+        </ol>
+        <h2>Tracks</h2>
+        <ol class="searchResult">
+            <search-result
+                    v-for="track in tracks"
+                    v-bind:item="track"
+                    v-bind:key="track.uri">
+            </search-result>
+        </ol>
+    </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.0/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.1.13/vue-resource.min.js"></script>
+<!--<script src="index.js"></script>-->
+<!--<script src="spotify.js"></script>-->
+<script src="src/main.js"></script>
+
 </body>
 </html>
