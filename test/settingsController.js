@@ -140,12 +140,38 @@ describe('Settings Controller', function () {
         });
     });
     describe('saveFigure', function () {
+        it('should create a new .conf file if it is not there', function (done) {
+            var sSavedFile;
+
+            var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
+            var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
+
+            var oFSAccessStub = sandbox.stub(fs, 'accessSync').throws("Error");
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf');
+            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf')
+                .callsFake(function (sPath, sFile) {
+                    sSavedFile = sFile;
+                });
+
+            settingsController.saveFigure('DUMMY_URI').then(function () {
+                assert(oRfidConnectionIsConnectedStub.calledOnce);
+                assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oFSAccessStub.calledOnce);
+                assert(oFSReadFileStub.notCalled);
+                assert(oFSWriteFileStub.calledOnce);
+
+                assert(sSavedFile.includes('DUMMY_ID = DUMMY_URI'));
+                done();
+            });
+
+        });
         it('should add an uri to a connected figure', function (done) {
             var sSavedFile;
 
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
 
+            var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf').returns(sConfigFile);
             var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf')
@@ -156,6 +182,7 @@ describe('Settings Controller', function () {
             settingsController.saveFigure('DUMMY_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oFSAccessStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
 
@@ -170,6 +197,7 @@ describe('Settings Controller', function () {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('EXISTING_ID');
 
+            var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf').returns(sConfigFile);
             var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf')
@@ -180,6 +208,7 @@ describe('Settings Controller', function () {
             settingsController.saveFigure('NEW_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oFSAccessStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
 
@@ -192,12 +221,14 @@ describe('Settings Controller', function () {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(false);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId');
 
+            var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf');
             var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf');
 
             settingsController.saveFigure('DUMMY_URI').catch(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.notCalled);
+                assert(oFSAccessStub.notCalled);
                 assert(oFSReadFileStub.notCalled);
                 assert(oFSWriteFileStub.notCalled);
 
