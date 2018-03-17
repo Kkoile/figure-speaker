@@ -7,18 +7,14 @@ var ApplicationError = require('../lib/ApplicationError');
 
 var hostController = require('../lib/hostController');
 
-var searchApi = express.Router();
+var dataApi = express.Router();
 
-searchApi.route('/:host').get(function (req, res, next) {
-    if (!req.query.q) {
-        res.status(400).send("Query parameter is missing");
-        return;
-    }
-    hostController.search(req.params.host, req.query.q)
+dataApi.route('/:host/authToken').get(function (req, res, next) {
+    hostController.getAuthToken(req.params.host)
         .then(function (oData) {
             res.send(oData);
         })
         .catch(next);
 });
 
-module.exports = searchApi;
+module.exports = dataApi;

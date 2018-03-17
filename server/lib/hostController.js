@@ -12,7 +12,15 @@ exports.search = function (sHost, sQuery) {
     return hosts[sHost].search(sQuery);
 };
 
+exports.getArtist = function (sHost, sId) {
+    return hosts[sHost].getArtist(sId);
+};
+
 exports.getItemForUri = function (sUri) {
     var aParts = sUri.split(':');
     return hosts[aParts[0]].getItemForUri(sUri);
+};
+
+exports.getAuthToken = function (sHost) {
+    return hosts[sHost].getAuthToken();
 };

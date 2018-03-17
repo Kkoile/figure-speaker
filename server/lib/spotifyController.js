@@ -12,17 +12,18 @@ var spotifyApi = new SpotifyWebApi({
 
 exports.spotifyApi = spotifyApi;
 
-function _getAuthToken() {
+exports.getAuthToken = function () {
     return spotifyApi.clientCredentialsGrant()
         .then(function (data) {
             spotifyApi.setAccessToken(data.body['access_token']);
+            return data.body['access_token'];
         }, function (err) {
             console.log('Something went wrong when retrieving an access token for Spotify', err.message);
         });
-}
+};
 
 function _search(sQuery) {
-    return spotifyApi.search(sQuery, ['album', 'track'])
+    return spotifyApi.search(sQuery, ['artist', 'album', 'track'])
         .then(function (oData) {
             return oData.body;
         });
@@ -42,37 +43,55 @@ function _getTrack(sId) {
         });
 }
 
+function _getArtist(sId) {
+    return spotifyApi.getArtist(sId)
+        .then(function (oData) {
+            return oData.body;
+        });
+}
+
 exports.getAlbum = function (sId) {
     return _getAlbum(sId)
         .catch(function (oError) {
             if (oError.statusCode === 401) {
-                return _getAuthToken().then(_getAlbum.bind(this, sId));
+                return this.getAuthToken().then(_getAlbum.bind(this, sId));
             } else {
                 throw new ApplicationError(oError.message, oError.statusCode);
             }
-        });
+        }.bind(this));
 };
 
 exports.getTrack = function (sId) {
     return _getTrack(sId)
         .catch(function (oError) {
             if (oError.statusCode === 401) {
-                return _getAuthToken().then(_getTrack.bind(this, sId));
+                return this.getAuthToken().then(_getTrack.bind(this, sId));
             } else {
                 throw new ApplicationError(oError.message, oError.statusCode);
             }
-        });
+        }.bind(this));
+};
+
+exports.getArtist = function (sId) {
+    return _getArtist(sId)
+        .catch(function (oError) {
+            if (oError.statusCode === 401) {
+                return this.getAuthToken()().then(_getArtist.bind(this, sId));
+            } else {
+                throw new ApplicationError(oError.message, oError.statusCode);
+            }
+        }.bind(this));
 };
 
 exports.search = function (sQuery) {
     return _search(sQuery)
         .catch(function (oError) {
             if (oError.statusCode === 401) {
-                return _getAuthToken().then(_search.bind(this, sQuery));
+                return this.getAuthToken()().then(_search.bind(this, sQuery));
             } else {
                 throw new ApplicationError(oError.message, oError.statusCode);
             }
-        });
+        }.bind(this));
 };
 
 exports.getItemForUri = function (sUri) {
