@@ -22,7 +22,8 @@
     "request": "2.83.0",
     "request-promise": "4.2.2",
     "spotify-web-api-node": "3.0.0",
-    "winston": "2.4.0"
+    "winston": "2.4.0",
+    "wiringpi-node": "2.4.4"
   },
   "devDependencies": {
     "eslint": "4.18.1",

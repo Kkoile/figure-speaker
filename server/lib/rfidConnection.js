@@ -1,4 +1,4 @@
-if (process.env.USER === 'pi') {
+if (process.env.USER === 'root') {
     module.exports = require('./rfidRC522Connection');
 } else {
     module.exports = require('./rfidUSBConnection');
