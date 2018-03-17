@@ -6,16 +6,16 @@ export default {
       if (this.authToken) {
         return resolve(this.authToken);
       }
-      axios.get('http://localhost:3001/data/spotify/authToken')
+      axios.get('http://localhost:3000/data/spotify/authToken')
         .then(function (oData) {
           this.authToken = oData.data;
           resolve(this.authToken);
         }.bind(this));
     }.bind(this));
   },
-  search: function (sQuery) {
+  search: function (sQuery, sTypes, iOffset) {
     return this._getAuthToken().then(function (sAuthToken) {
-      return axios.get('https://api.spotify.com/v1/search?type=artist,album,track&q=' + sQuery, {
+      return axios.get('https://api.spotify.com/v1/search?type=' + sTypes + '&q=' + sQuery + '&offset=' + iOffset, {
         headers: {
           'Authorization': 'Bearer ' + sAuthToken,
           'Accept': 'application/json'

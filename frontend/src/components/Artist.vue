@@ -2,6 +2,7 @@
   <div class="hello">
     <h1>Artist</h1>
     <h2>{{ id }}</h2>
+    <button v-on:click="navigateBack">Back</button>
   </div>
 </template>
 
@@ -11,6 +12,11 @@
     data () {
       return {
         id: this.$route.params.id
+      }
+    },
+    methods: {
+      navigateBack: function () {
+        this.$router.back();
       }
     }
   }

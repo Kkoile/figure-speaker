@@ -20,7 +20,7 @@
         this.$router.push('/artist/' + this.item.id);
       },
       saveItem: function () {
-        axios.post('http://localhost:3001/settings/saveFigure', {streamUri: this.item.uri})
+        axios.post('http://localhost:3000/settings/saveFigure', {streamUri: this.item.uri})
           .then(function () {
             alert('success')
           })
@@ -45,16 +45,17 @@
   }
 
   .albumCover {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
   }
 
   .titleCover {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     background-color: aquamarine;
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: normal;
   }
 </style>
