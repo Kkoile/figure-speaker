@@ -11,9 +11,8 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use(function(req, res, next) {
-    //console.log(req.path, req.headers);
-    res.header('Access-Control-Allow-Origin', "*"); // TODO - Make this more secure!!
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', "*");
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST');
     res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,api-auth-token');
 
@@ -25,7 +24,7 @@ app.use('/data/', require('./api/dataApi'));
 
 app.use(require('./api/errorHandler'));
 
-app.use(express.static('public'));
+app.use(express.static('frontend/dist'));
 
 app.get('/', function (req, res) {
     res.redirect('/index.html');
