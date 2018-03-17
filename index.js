@@ -41,7 +41,7 @@ var listener = app.listen(port, function () {
 
 module.exports = listener;
 
-require('./lib/rfidConnection').init();
+require('./lib/rfidConnection');
 
 var mopidy = require('./lib/mopidy');
 mopidy.start().then(function () {
