@@ -147,8 +147,8 @@ describe('Settings Controller', function () {
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
 
             var oFSAccessStub = sandbox.stub(fs, 'accessSync').throws("Error");
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf');
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf')
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf');
+            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./figures.conf')
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
@@ -173,8 +173,8 @@ describe('Settings Controller', function () {
 
             var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf').returns(sConfigFile);
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf')
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./figures.conf')
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
@@ -199,8 +199,8 @@ describe('Settings Controller', function () {
 
             var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf').returns(sConfigFile);
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf')
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./figures.conf')
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
@@ -222,8 +222,8 @@ describe('Settings Controller', function () {
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId');
 
             var oFSAccessStub = sandbox.stub(fs, 'accessSync');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf');
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./data/figures.conf');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf');
+            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs('./figures.conf');
 
             settingsController.saveFigure('DUMMY_URI').catch(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
@@ -243,7 +243,7 @@ describe('Settings Controller', function () {
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('EXISTING_ID');
 
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf').returns(sConfigFile);
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
 
             var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri').withArgs('OLD_URI').resolves({});
 
@@ -262,7 +262,7 @@ describe('Settings Controller', function () {
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('NOT_EXISTING_ID');
 
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf').returns(sConfigFile);
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
 
             var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri');
 
@@ -281,7 +281,7 @@ describe('Settings Controller', function () {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(false);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId');
 
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./data/figures.conf');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf');
 
             var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri').withArgs('OLD_URI');
 

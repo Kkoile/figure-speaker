@@ -4,4 +4,5 @@
 .jshintignore
 .jshintrc
 node_modules/
-data/
+*figures.conf
+*package-lock.json

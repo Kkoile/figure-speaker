@@ -2,7 +2,7 @@
 
 module.exports = {
     Data: {
-        PathToFigures: './data/figures.conf'
+        PathToFigures: './figures.conf'
     },
     Mopidy: {
         PathToConfig: require("os").homedir() + '/.config/mopidy/mopidy.conf',

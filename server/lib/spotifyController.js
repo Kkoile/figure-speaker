@@ -87,7 +87,7 @@ exports.search = function (sQuery) {
     return _search(sQuery)
         .catch(function (oError) {
             if (oError.statusCode === 401) {
-                return this.getAuthToken()().then(_search.bind(this, sQuery));
+                return this.getAuthToken().then(_search.bind(this, sQuery));
             } else {
                 throw new ApplicationError(oError.message, oError.statusCode);
             }

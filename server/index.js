@@ -24,7 +24,7 @@ app.use('/data/', require('./api/dataApi'));
 
 app.use(require('./api/errorHandler'));
 
-app.use(express.static('frontend/dist'));
+app.use(express.static('../frontend/dist'));
 
 app.get('/', function (req, res) {
     res.redirect('/index.html');
