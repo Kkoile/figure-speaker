@@ -9,24 +9,26 @@ var mopidy = require('./mopidy.js');
 var rfidConnection = require('./rfidConnection');
 var hostController = require('./hostController');
 
-exports.saveCredentials = function (oCredentials) {
-    winston.info("saving credentials");
-    try {
-        var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
-        if (!oConfig.spotify) {
-            oConfig.spotify = {};
-        }
-        oConfig.spotify.enabled = true;
-        oConfig.spotify.username = oCredentials.email;
-        oConfig.spotify.password = oCredentials.password;
-        oConfig.spotify.client_id = oCredentials.clientId;
-        oConfig.spotify.client_secret = oCredentials.clientSecret;
+exports.getAccounts = function () {
+    winston.debug("load all accounts");
+    return hostController.getAccounts();
+};
 
-        fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
-    } catch (oError) {
-        throw new ApplicationError('Error while saving credentials', 500);
-    }
-    return mopidy.restart();
+exports.getAccountInfo = function (sHostId) {
+    winston.debug("load account info for ", sHostId);
+    return hostController.getAccountInfo(sHostId);
+};
+
+exports.saveAccount = function (sHostId, oAccount) {
+    winston.debug("save account for ", sHostId);
+    return hostController.saveAccount(sHostId, oAccount)
+        .then(mopidy.restart.bind(mopidy));
+};
+
+exports.deleteAccount = function (sHostId) {
+    winston.debug("delete account for ", sHostId);
+    return hostController.deleteAccount(sHostId)
+        .then(mopidy.restart.bind(mopidy));
 };
 
 exports.saveFigure = function (sStreamUri) {

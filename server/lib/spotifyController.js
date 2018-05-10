@@ -1,6 +1,8 @@
 'use strict';
 
 var winston = require('winston');
+var fs = require('fs');
+var ini = require('ini');
 var ApplicationError = require('./ApplicationError.js');
 var constants = require('./constants.js');
 var SpotifyWebApi = require('spotify-web-api-node');
@@ -11,6 +13,77 @@ var spotifyApi = new SpotifyWebApi({
 });
 
 exports.spotifyApi = spotifyApi;
+
+exports.getAccountInfo = function () {
+    var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+    if (!oConfig.spotify) {
+        oConfig.spotify = {};
+    }
+    var bEnabled = true;
+    if (oConfig.spotify.enabled !== null && oConfig.spotify.enabled !== undefined) {
+        bEnabled = !!oConfig.spotify.enabled;
+    }
+    return {
+        name: 'Spotify',
+        enabled: bEnabled,
+        username: !!oConfig.spotify.username ? oConfig.spotify.username : null,
+        client_id: !!oConfig.spotify.client_id ? oConfig.spotify.client_id : null,
+        configurable: true,
+        requiredInfo: [
+            {
+                key: 'username',
+                name: 'User Name'
+            }, {
+                key: 'password',
+                name: 'Password',
+                password: true
+            },
+            {
+                key: 'client_id',
+                name: 'Client Id'
+            },
+            {
+                key: 'client_secret',
+                name: 'Client Secret',
+                password: true
+            }
+        ]
+    };
+};
+
+exports.saveAccount = function (oAccount) {
+    if (!oAccount.username || !oAccount.password || !oAccount.client_id || !oAccount.client_secret) {
+        throw new ApplicationError('Not enough input given', 400);
+    }
+    winston.info("saving credentials");
+    try {
+        var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+        if (!oConfig.spotify) {
+            oConfig.spotify = {};
+        }
+        oConfig.spotify.enabled = true;
+        oConfig.spotify.username = oAccount.username;
+        oConfig.spotify.password = oAccount.password;
+        oConfig.spotify.client_id = oAccount.client_id;
+        oConfig.spotify.client_secret = oAccount.client_secret;
+
+        fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
+    } catch (oError) {
+        throw new ApplicationError('Error while saving credentials', 500);
+    }
+};
+
+exports.deleteAccount = function () {
+    winston.info("deleting credentials");
+    try {
+        var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+        oConfig.spotify = {enabled: false};
+
+        fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
+    } catch (oError) {
+        throw new ApplicationError('Error while deleting credentials', 500);
+    }
+};
 
 exports.getAuthToken = function () {
     return spotifyApi.clientCredentialsGrant()

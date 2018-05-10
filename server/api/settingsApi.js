@@ -9,6 +9,38 @@ var constants = require('../lib/constants.js');
 
 var settingsApi = express.Router();
 
+settingsApi.route('/accounts').get(function (req, res, next) {
+    settingsController.getAccounts()
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/accounts/:hostId').get(function (req, res, next) {
+    settingsController.getAccountInfo(req.params.hostId)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/accounts/:hostId').post(function (req, res, next) {
+    settingsController.saveAccount(req.params.hostId, req.body)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/accounts/:hostId').delete(function (req, res, next) {
+    settingsController.deleteAccount(req.params.hostId)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
 settingsApi.route('/saveCredentials').post(function (req, res, next) {
     if (!req.body.email || !req.body.password || !req.body.clientId || !req.body.clientSecret) {
         res.status(400).send("Email, Password, ClientId or ClientSecret is missing in body!");

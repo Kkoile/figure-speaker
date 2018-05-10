@@ -1,5 +1,6 @@
 var assert = require('assert');
 var sinon = require('sinon');
+var fs = require('fs');
 
 var constants = require('../lib/constants.js');
 var spotifyController = require('../lib/spotifyController');
@@ -16,6 +17,44 @@ describe('Spotify Controller', function () {
     afterEach(function () {
         sandbox.restore();
         spotifyController.spotifyApi.resetAccessToken();
+    });
+
+
+    describe('getAccountInfo', function () {
+        it('should read account info from config', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+
+            spotifyController.getAccountInfo();
+            assert(oFSReadFileStub.calledOnce);
+            done();
+        });
+        it('should transform account info correctly', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
+            sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+
+            var oAccount = spotifyController.getAccountInfo();
+            assert(oAccount.enabled === true);
+            assert(oAccount.username === 'DUMMY_USERNAME');
+            done();
+        });
+        it('should set account to disabled, if section is commented out', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_COMMENTED_SPOTIFY_SECTION.conf', 'utf8');
+            sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+
+            var oAccount = spotifyController.getAccountInfo();
+            assert(oAccount.enabled === false);
+            assert(oAccount.username === null);
+            done();
+        });
+        it('should put own host name into info', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
+            sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+
+            var oAccount = spotifyController.getAccountInfo();
+            assert(oAccount.name === 'Spotify');
+            done();
+        });
     });
 
     describe('search', function () {

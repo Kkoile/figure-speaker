@@ -1,30 +1,24 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
-  <div class="main">
+  <div>
+    <h2>Accounts</h2>
     <li>
-      <MainAccountListItem
+      <AccountListItem
         v-for="account in $store.state.accounts"
-        v-if="account.enabled"
+        v-if="account.configurable"
         v-bind:item="account"
-        v-bind:key="account.id"
-      >
-      </MainAccountListItem>
+        v-bind:key="account.id">
+      </AccountListItem>
     </li>
-    <button @click="openManageAccounts">Manage Accounts</button>
   </div>
 </template>
 
 <script>
-  import MainAccountListItem from '@/components/MainAccountListItem'
+  import AccountListItem from '@/components/AccountListItem'
 
   export default {
-    name: 'Main',
+    name: 'Accounts',
     components: {
-      MainAccountListItem
-    },
-    methods: {
-      openManageAccounts: function () {
-        this.$router.push('/accounts');
-      }
+      AccountListItem
     },
     beforeMount: function () {
       this.$store.dispatch('loadAccounts')
@@ -34,12 +28,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
   h1, h2 {
     font-weight: normal;
   }
@@ -56,9 +44,5 @@
 
   a {
     color: #42b983;
-  }
-
-  button {
-    width: 10rem;
   }
 </style>

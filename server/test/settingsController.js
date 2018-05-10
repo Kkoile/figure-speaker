@@ -22,6 +22,25 @@ describe('Settings Controller', function () {
         sandbox.restore();
     });
 
+    describe('getAccounts', function () {
+        it('should get all accounts of available extensions', function (done) {
+            var oHostControllerStub = sandbox.stub(hostController, 'getAccounts').resolves([{
+                enabled: true,
+                username: 'DUMMY_USERNAME'
+            }]);
+
+            settingsController.getAccounts().then(function (aAccounts) {
+                assert(aAccounts.length === 1);
+                assert(aAccounts[0].enabled === true);
+                assert(aAccounts[0].username === 'DUMMY_USERNAME');
+
+                assert(oHostControllerStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
     describe('saveCredentials', function () {
         it('should add a spotify section to the config file', function (done) {
             var sSavedFile;
