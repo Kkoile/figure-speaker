@@ -217,7 +217,7 @@ const actions = {
       })
   },
   saveItem ({commit}, sUri) {
-    return axios.post('http://localhost:3000/settings/saveFigure', {streamUri: sUri})
+    return axios.post('/settings/saveFigure', {streamUri: sUri})
       .then(function () {
         alert('success');
       })
@@ -226,7 +226,7 @@ const actions = {
       });
   },
   loadAccounts ({commit}) {
-    return axios.get('http://localhost:3000/settings/accounts')
+    return axios.get('/settings/accounts')
       .then(function (oData) {
         commit('setAccounts', oData.data);
       })
@@ -235,7 +235,7 @@ const actions = {
       });
   },
   loadAccountInfo ({commit}, sHostId) {
-    return axios.get('http://localhost:3000/settings/accounts/' + sHostId)
+    return axios.get('/settings/accounts/' + sHostId)
       .then(function (oData) {
         commit('setAccountInfo', oData.data);
       })
@@ -244,7 +244,7 @@ const actions = {
       });
   },
   saveAccount ({dispatch}, oAccount) {
-    return axios.post('http://localhost:3000/settings/accounts/' + oAccount.id, oAccount)
+    return axios.post('/settings/accounts/' + oAccount.id, oAccount)
       .then(function () {
         dispatch('loadAccountInfo', oAccount.id);
       })
@@ -253,7 +253,7 @@ const actions = {
       });
   },
   deleteAccount ({dispatch}, sHostId) {
-    return axios.delete('http://localhost:3000/settings/accounts/' + sHostId)
+    return axios.delete('/settings/accounts/' + sHostId)
       .then(function () {
         dispatch('loadAccountInfo', sHostId);
       })
