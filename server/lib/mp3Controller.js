@@ -13,7 +13,7 @@ exports.getAccountInfo = function () {
 };
 
 exports.saveAccount = function (oAccount) {
-    winston.info("Cannot save credentials for mp3");
+    return Promise.reject("Cannot save credentials for mp3");
 };
 
 exports.deleteAccount = function () {

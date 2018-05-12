@@ -41,123 +41,31 @@ describe('Settings Controller', function () {
         });
     });
 
-    describe('saveCredentials', function () {
-        it('should add a spotify section to the config file', function (done) {
-            var sSavedFile;
-
-            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITHOUT_SPOTIFY_SECTION.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf')
-                .callsFake(function (sPath, sFile) {
-                    sSavedFile = sFile;
-                });
+    describe('saveAccount', function () {
+        it('should restart mopidy', function (done) {
+            var oHostControllerStub = sandbox.stub(hostController, 'saveAccount').resolves();
             var oMopidyStub = sandbox.stub(mopidy, 'restart').resolves();
 
-            settingsController.saveCredentials({
-                email: 'DUMMY_EMAIL',
-                password: 'DUMMY_PASSWORD',
-                clientId: 'DUMMY_CLIENT_ID',
-                clientSecret: 'DUMMY_CLIENT_SECRET'
-            }).then(function () {
-                assert(oFSReadFileStub.calledOnce);
-                assert(oFSWriteFileStub.calledOnce);
+            settingsController.saveAccount('HOST_ID', {}).then(function () {
+                assert(oHostControllerStub.calledOnce);
                 assert(oMopidyStub.calledOnce);
-
-                assert(sSavedFile.includes('[spotify]'));
-                assert(sSavedFile.includes('username = DUMMY_EMAIL'));
-                assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
-                assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
-                assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
                 done();
             });
 
         });
-        it('should keep the existing spotify section and overwrite the comments', function (done) {
-            var sSavedFile;
+        it('should not restart mopidy if save failed', function (done) {
+            var oHostControllerStub = sandbox.stub(hostController, 'saveAccount').rejects();
+            var oMopidyStub = sandbox.stub(mopidy, 'restart');
 
-            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_COMMENTED_SPOTIFY_SECTION.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf')
-                .callsFake(function (sPath, sFile) {
-                    sSavedFile = sFile;
-                });
-            var oMopidyStub = sandbox.stub(mopidy, 'restart').resolves();
-
-            settingsController.saveCredentials({
-                email: 'DUMMY_EMAIL',
-                password: 'DUMMY_PASSWORD',
-                clientId: 'DUMMY_CLIENT_ID',
-                clientSecret: 'DUMMY_CLIENT_SECRET'
-            }).then(function () {
-                assert(oFSReadFileStub.calledOnce);
-                assert(oFSWriteFileStub.calledOnce);
-                assert(oMopidyStub.calledOnce);
-
-                assert(sSavedFile.includes('[spotify]'));
-                assert(sSavedFile.includes('username = DUMMY_EMAIL'));
-                assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
-                assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
-                assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
+            settingsController.saveAccount('HOST_ID', {}).catch(function () {
+                assert(oHostControllerStub.calledOnce);
+                assert(oMopidyStub.notCalled);
                 done();
             });
-        });
 
-        it('should keep the existing spotify section and overwrite the old credentials', function (done) {
-            var sSavedFile;
-
-            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_OLD_SPOTIFY_SECTION.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf')
-                .callsFake(function (sPath, sFile) {
-                    sSavedFile = sFile;
-                });
-            var oMopidyStub = sandbox.stub(mopidy, 'restart').resolves();
-
-            settingsController.saveCredentials({
-                email: 'DUMMY_EMAIL',
-                password: 'DUMMY_PASSWORD',
-                clientId: 'DUMMY_CLIENT_ID',
-                clientSecret: 'DUMMY_CLIENT_SECRET'
-            }).then(function () {
-                assert(oFSReadFileStub.calledOnce);
-                assert(oFSWriteFileStub.calledOnce);
-                assert(oMopidyStub.calledOnce);
-
-                assert(sSavedFile.includes('[spotify]'));
-                assert(sSavedFile.includes('username = DUMMY_EMAIL'));
-                assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
-                assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
-                assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
-                done();
-            });
-        });
-
-        it('should not overwrite other existing config', function (done) {
-            var sSavedFile;
-
-            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_OLD_SPOTIFY_SECTION.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
-            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf')
-                .callsFake(function (sPath, sFile) {
-                    sSavedFile = sFile;
-                });
-            var oMopidyStub = sandbox.stub(mopidy, 'restart').resolves();
-
-            settingsController.saveCredentials({
-                email: 'DUMMY_EMAIL',
-                password: 'DUMMY_PASSWORD',
-                clientId: 'DUMMY_CLIENT_ID',
-                clientSecret: 'DUMMY_CLIENT_SECRET'
-            }).then(function () {
-                assert(oFSReadFileStub.calledOnce);
-                assert(oFSWriteFileStub.calledOnce);
-                assert(oMopidyStub.calledOnce);
-
-                assert(sSavedFile.includes('color = true'));
-                done();
-            });
         });
     });
+
     describe('saveFigure', function () {
         it('should create a new .conf file if it is not there', function (done) {
             var sSavedFile;

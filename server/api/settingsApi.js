@@ -41,18 +41,6 @@ settingsApi.route('/accounts/:hostId').delete(function (req, res, next) {
         .catch(next);
 });
 
-settingsApi.route('/saveCredentials').post(function (req, res, next) {
-    if (!req.body.email || !req.body.password || !req.body.clientId || !req.body.clientSecret) {
-        res.status(400).send("Email, Password, ClientId or ClientSecret is missing in body!");
-        return;
-    }
-    settingsController.saveCredentials(req.body)
-        .then(function (oData) {
-            res.send(oData);
-        })
-        .catch(next);
-});
-
 settingsApi.route('/saveFigure').post(function (req, res, next) {
     if (!req.body.streamUri) {
         res.status(400).send("StreamUri is missing in body!");

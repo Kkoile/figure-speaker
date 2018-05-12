@@ -13,7 +13,7 @@ exports.getAccountInfo = function () {
 };
 
 exports.saveAccount = function (oAccount) {
-    winston.info("Cannot save account for youtube");
+    return Promise.reject("Cannot save account for youtube");
 };
 
 exports.deleteAccount = function () {

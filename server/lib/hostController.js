@@ -10,55 +10,59 @@ const hosts = {
     mp3: require('./mp3Controller')
 };
 
+exports.getControllerOfHost = function (sHostId) {
+    if (!hosts[sHostId]) {
+        throw new ApplicationError('Host does not exist: ' + sHostId, 404);
+    }
+    return hosts[sHostId];
+};
+
 exports.getAccounts = function () {
     return new Promise(function (resolve) {
         var aAccounts = [];
         for (var sHostId in hosts) {
             if (!hosts[sHostId].hasOwnProperty() && constants.Mopidy.Extensions.includes(sHostId)) {
-                var oAccount = hosts[sHostId].getAccountInfo();
+                var oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
                 oAccount.id = sHostId;
                 aAccounts.push(oAccount);
             }
         }
         resolve(aAccounts);
-    });
+    }.bind(this));
 };
 
 exports.getAccountInfo = function (sHostId) {
     return new Promise(function (resolve) {
-        var oAccount = hosts[sHostId].getAccountInfo();
+        var oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
         oAccount.id = sHostId;
         resolve(oAccount);
-    });
+    }.bind(this));
 };
 
 exports.saveAccount = function (sHostId, oAccount) {
-    return new Promise(function (resolve) {
-        hosts[sHostId].saveAccount(oAccount);
-        resolve();
-    });
+    return this.getControllerOfHost(sHostId).saveAccount(oAccount);
 };
 
 exports.deleteAccount = function (sHostId) {
     return new Promise(function (resolve) {
-        hosts[sHostId].deleteAccount();
+        this.getControllerOfHost(sHostId).deleteAccount();
         resolve();
-    });
+    }.bind(this));
 };
 
-exports.search = function (sHost, sQuery) {
-    return hosts[sHost].search(sQuery);
+exports.search = function (sHostId, sQuery) {
+    return this.getControllerOfHost(sHostId).search(sQuery);
 };
 
-exports.getArtist = function (sHost, sId) {
-    return hosts[sHost].getArtist(sId);
+exports.getArtist = function (sHostId, sId) {
+    return this.getControllerOfHost(sHostId).getArtist(sId);
 };
 
 exports.getItemForUri = function (sUri) {
     var aParts = sUri.split(':');
-    return hosts[aParts[0]].getItemForUri(sUri);
+    return this.getControllerOfHost(aParts[0]).getItemForUri(sUri);
 };
 
-exports.getAuthToken = function (sHost) {
-    return hosts[sHost].getAuthToken();
+exports.getAuthToken = function (sHostId) {
+    return this.getControllerOfHost(sHostId).getAuthToken();
 };

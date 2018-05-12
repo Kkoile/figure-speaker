@@ -52,25 +52,28 @@ exports.getAccountInfo = function () {
 };
 
 exports.saveAccount = function (oAccount) {
-    if (!oAccount.username || !oAccount.password || !oAccount.client_id || !oAccount.client_secret) {
-        throw new ApplicationError('Not enough input given', 400);
-    }
-    winston.info("saving credentials");
-    try {
-        var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
-        if (!oConfig.spotify) {
-            oConfig.spotify = {};
+    return new Promise(function (resolve) {
+        if (!oAccount.username || !oAccount.password || !oAccount.client_id || !oAccount.client_secret) {
+            throw new ApplicationError('Not enough input given', 400);
         }
-        oConfig.spotify.enabled = true;
-        oConfig.spotify.username = oAccount.username;
-        oConfig.spotify.password = oAccount.password;
-        oConfig.spotify.client_id = oAccount.client_id;
-        oConfig.spotify.client_secret = oAccount.client_secret;
+        winston.info("saving credentials");
+        try {
+            var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+            if (!oConfig.spotify) {
+                oConfig.spotify = {};
+            }
+            oConfig.spotify.enabled = true;
+            oConfig.spotify.username = oAccount.username;
+            oConfig.spotify.password = oAccount.password;
+            oConfig.spotify.client_id = oAccount.client_id;
+            oConfig.spotify.client_secret = oAccount.client_secret;
 
-        fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
-    } catch (oError) {
-        throw new ApplicationError('Error while saving credentials', 500);
-    }
+            fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
+        } catch (oError) {
+            throw new ApplicationError('Error while saving credentials', 500);
+        }
+        resolve();
+    });
 };
 
 exports.deleteAccount = function () {
