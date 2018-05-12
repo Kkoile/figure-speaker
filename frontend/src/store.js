@@ -6,6 +6,8 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 const state = {
+  accounts: [],
+  account: {requiredInfo: []},
   query: "",
   artists: [],
   artistsOffset: 0,
@@ -33,6 +35,12 @@ const state = {
 }
 
 const mutations = {
+  setAccounts (state, accounts) {
+    state.accounts = accounts;
+  },
+  setAccountInfo (state, account) {
+    state.account = account;
+  },
   resetData (state) {
     state.artists = []
     state.artistsOffset = 0
@@ -209,9 +217,45 @@ const actions = {
       })
   },
   saveItem ({commit}, sUri) {
-    return axios.post('http://localhost:3000/settings/saveFigure', {streamUri: sUri})
+    return axios.post('/settings/saveFigure', {streamUri: sUri})
       .then(function () {
-        alert('success')
+        alert('success');
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  loadAccounts ({commit}) {
+    return axios.get('/settings/accounts')
+      .then(function (oData) {
+        commit('setAccounts', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  loadAccountInfo ({commit}, sHostId) {
+    return axios.get('/settings/accounts/' + sHostId)
+      .then(function (oData) {
+        commit('setAccountInfo', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  saveAccount ({dispatch}, oAccount) {
+    return axios.post('/settings/accounts/' + oAccount.id, oAccount)
+      .then(function () {
+        dispatch('loadAccountInfo', oAccount.id);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  deleteAccount ({dispatch}, sHostId) {
+    return axios.delete('/settings/accounts/' + sHostId)
+      .then(function () {
+        dispatch('loadAccountInfo', sHostId);
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));

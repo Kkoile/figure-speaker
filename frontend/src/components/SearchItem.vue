@@ -16,9 +16,9 @@
     methods: {
       openItem: function () {
         if (this.item.type === 'artist') {
-          this.$router.push('/artist/' + this.item.id);
+          this.$router.push('/spotify/artist/' + this.item.id);
         } else {
-          this.$router.push('/album/' + this.item.id);
+          this.$router.push('/spotify/album/' + this.item.id);
         }
       },
       saveItem: function () {

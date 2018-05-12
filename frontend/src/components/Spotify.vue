@@ -1,5 +1,6 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div>
+    <h1>Spotify</h1>
     <div>
       <input v-model="$store.state.query">
       <button @click="search">Search</button>
@@ -52,7 +53,7 @@
   import {mapActions} from 'vuex'
 
   export default {
-    name: 'Search',
+    name: 'Spotify',
     components: {
       SearchItem
     },

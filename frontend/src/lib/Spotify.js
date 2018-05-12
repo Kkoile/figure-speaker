@@ -6,7 +6,7 @@ export default {
       if (this.authToken) {
         return resolve(this.authToken);
       }
-      axios.get('http://localhost:3000/data/spotify/authToken')
+      axios.get('/data/spotify/authToken')
         .then(function (oData) {
           this.authToken = oData.data;
           resolve(this.authToken);
