@@ -97,21 +97,24 @@ exports.getPlayMode = function () {
     }.bind(this));
 };
 
-exports._getProgressOfSong = function (vProgress, vLastPlayed) {
+exports._getProgressOfSong = function (oTrackInfo) {
     return this.getPlayMode().then(function (oPlayMode) {
-        var iProgress = parseInt(vProgress),
-            oLastPlayed = new Date(vLastPlayed);
+        var iProgress = parseInt(oTrackInfo.progress),
+            iTrackLength = parseInt(oTrackInfo.track_length),
+            iTracklistLength = parseInt(oTrackInfo.tracklist_length),
+            iTrackIndex = parseInt(oTrackInfo.track_index),
+            oLastPlayed = new Date(oTrackInfo.last_played);
         if (oPlayMode.playMode === constants.PlayMode.Resume) {
             var oReferenceDate = new Date();
             oReferenceDate.setDate(oReferenceDate.getDate() - oPlayMode.resetAfterDays);
-            if (oReferenceDate > oLastPlayed) {
+            if (oReferenceDate > oLastPlayed || (iTracklistLength - iTrackIndex === 1 && iTrackLength - iProgress < 10 * 1000)) {
                 return 0;
             } else {
                 return iProgress;
             }
         }
         return 0;
-    });
+    }.bind(this));
 };
 
 exports.getFigurePlayInformation = function () {
@@ -127,19 +130,19 @@ exports.getFigurePlayInformation = function () {
     }
 
     var sCardId = rfidConnection.getCardId();
-    if (oConfig[sCardId]) {
-        return this._getProgressOfSong(oConfig[sCardId].progress, oConfig[sCardId].last_played).then(function (iProgress) {
-            var oData = oConfig[sCardId];
-            oData.cardId = sCardId;
-            oData.progress = iProgress;
-            winston.info('Found the following figure:', JSON.stringify(oData));
-            return oData;
+    var oFigure = oConfig[sCardId];
+    if (oFigure) {
+        return this._getProgressOfSong(oFigure).then(function (iProgress) {
+            oFigure.cardId = sCardId;
+            oFigure.progress = iProgress;
+            winston.info('Found the following figure:', JSON.stringify(oFigure));
+            return oFigure;
         });
     }
     return Promise.resolve(null);
 };
 
-exports.saveFigurePlayInformation = function (sCardId, iProgress) {
+exports.saveFigurePlayInformation = function (sCardId, oTrackInfo) {
     winston.info("save figure play information");
     return new Promise(function (resolve) {
         var oConfig;
@@ -148,7 +151,10 @@ exports.saveFigurePlayInformation = function (sCardId, iProgress) {
         } catch (oError) {
             throw new ApplicationError('Error while reading figure', 500);
         }
-        oConfig[sCardId].progress = iProgress;
+        oConfig[sCardId].progress = oTrackInfo.timePosition;
+        oConfig[sCardId].track_index = oTrackInfo.trackIndex;
+        oConfig[sCardId].track_length = oTrackInfo.trackLength;
+        oConfig[sCardId].tracklist_length = oTrackInfo.tracklistLength;
         oConfig[sCardId].last_played = new Date().toISOString();
         this._saveFiguresFile(oConfig);
         resolve();

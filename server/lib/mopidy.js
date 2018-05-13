@@ -89,6 +89,26 @@ exports.onCardRemoved = function () {
         .then(function () {
             return mopidy.playback.getTimePosition();
         }.bind(this))
+        .then(function (iTimePosition) {
+            return mopidy.tracklist.index()
+                .then(function (iIndex) {
+                    return {timePosition: iTimePosition, trackIndex: iIndex};
+                });
+        }.bind(this))
+        .then(function (oTrackInfo) {
+            return mopidy.tracklist.getLength()
+                .then(function (iLength) {
+                    oTrackInfo.tracklistLength = iLength;
+                    return oTrackInfo;
+                });
+        }.bind(this))
+        .then(function (oTrackInfo) {
+            return mopidy.playback.getCurrentTrack()
+                .then(function (oTrack) {
+                    oTrackInfo.trackLength = oTrack.length;
+                    return oTrackInfo;
+                });
+        }.bind(this))
         .then(settingsController.saveFigurePlayInformation.bind(settingsController, this._sCurrentFigureId))
         .catch(function (oError) {
             winston.error('Error while getting current time position, or saving figure play information', oError);
