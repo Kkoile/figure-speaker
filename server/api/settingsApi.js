@@ -41,6 +41,26 @@ settingsApi.route('/accounts/:hostId').delete(function (req, res, next) {
         .catch(next);
 });
 
+settingsApi.route('/playMode').get(function (req, res, next) {
+    settingsController.getPlayMode()
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/playMode').post(function (req, res, next) {
+    if (!req.body.playMode) {
+        res.status(400).send("PlayMode is missing in body!");
+        return;
+    }
+    settingsController.setPlayMode(req.body.playMode, req.body.resetAfterDays)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
 settingsApi.route('/saveFigure').post(function (req, res, next) {
     if (!req.body.streamUri) {
         res.status(400).send("StreamUri is missing in body!");

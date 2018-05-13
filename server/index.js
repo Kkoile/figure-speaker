@@ -54,7 +54,7 @@ rfidConnection.init();
 
 var mopidy = require('./lib/mopidy');
 mopidy.start().then(function () {
-    console.log("Mopidy started");
+    winston.info("Mopidy started");
 });
 var signals = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
 signals.forEach(function (sSignal) {
