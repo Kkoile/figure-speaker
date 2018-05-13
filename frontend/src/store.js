@@ -6,6 +6,8 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 const state = {
+  playMode: null,
+  resetAfterDays: 0,
   accounts: [],
   account: {requiredInfo: []},
   query: "",
@@ -35,6 +37,10 @@ const state = {
 }
 
 const mutations = {
+  setPlayMode (state, playMode) {
+    state.playMode = playMode.playMode;
+    state.resetAfterDays = playMode.resetAfterDays;
+  },
   setAccounts (state, accounts) {
     state.accounts = accounts;
   },
@@ -219,6 +225,24 @@ const actions = {
   saveItem ({commit}, sUri) {
     return axios.post('/settings/saveFigure', {streamUri: sUri})
       .then(function () {
+        alert('success');
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  loadPlayMode ({commit}) {
+    return axios.get('/settings/playMode')
+      .then(function (oData) {
+        commit('setPlayMode', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  savePlayMode ({commit}, oPlayMode) {
+    return axios.post('/settings/playMode', oPlayMode)
+      .then(function (oData) {
         alert('success');
       })
       .catch(function (err) {

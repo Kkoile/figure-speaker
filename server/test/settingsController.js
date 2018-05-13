@@ -7,6 +7,7 @@ var rfidConnection = require('../lib/rfidConnection');
 var hostController = require('../lib/hostController');
 
 var constants = require('../lib/constants.js');
+var ApplicationError = require('../lib/ApplicationError.js');
 var settingsController = require('../lib/settingsController.js');
 
 var sHomePath = require("os").homedir();
@@ -87,7 +88,7 @@ describe('Settings Controller', function () {
                 assert(oFSReadFileStub.notCalled);
                 assert(oFSWriteFileStub.calledOnce);
 
-                assert(sSavedFile.includes('DUMMY_ID = DUMMY_URI'));
+                assert(sSavedFile.includes('[DUMMY_ID]\nuri = DUMMY_URI'));
                 done();
             });
 
@@ -113,7 +114,7 @@ describe('Settings Controller', function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
 
-                assert(sSavedFile.includes('DUMMY_ID = DUMMY_URI'));
+                assert(sSavedFile.includes('[DUMMY_ID]\nuri = DUMMY_URI'));
                 done();
             });
 
@@ -139,7 +140,7 @@ describe('Settings Controller', function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
 
-                assert(sSavedFile.includes('EXISTING_ID = NEW_URI'));
+                assert(sSavedFile.includes('[EXISTING_ID]\nuri = NEW_URI'));
                 done();
             });
 
@@ -166,18 +167,15 @@ describe('Settings Controller', function () {
     });
     describe('getFigureWithInformation', function () {
         it('should get data of a connected figure', function (done) {
-            var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
-            var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('EXISTING_ID');
+            var oGetFigureInfoStub = sandbox.stub(settingsController, 'getFigurePlayInformation').resolves({
+                cardId: 'CARD_ID',
+                uri: 'DUMMY_URI'
+            });
 
-            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
-            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
-
-            var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri').withArgs('OLD_URI').resolves({});
+            var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri').withArgs('DUMMY_URI').resolves({});
 
             settingsController.getFigureWithInformation().then(function () {
-                assert(oRfidConnectionIsConnectedStub.calledOnce);
-                assert(oRfidConnectionGetIdStub.calledOnce);
-                assert(oFSReadFileStub.calledOnce);
+                assert(oGetFigureInfoStub.calledOnce);
                 assert(oHostControllerStub.calledOnce);
 
                 done();
@@ -185,21 +183,79 @@ describe('Settings Controller', function () {
 
         });
         it('should return nothing because figure is not yet set', function (done) {
+            var oGetFigureInfoStub = sandbox.stub(settingsController, 'getFigurePlayInformation').resolves(null);
+
+            var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri');
+
+            settingsController.getFigureWithInformation().then(function (oData) {
+                assert(oGetFigureInfoStub.calledOnce);
+                assert(oHostControllerStub.notCalled);
+
+                assert(oData === undefined);
+                done();
+            });
+
+        });
+        it('should throw an error because no card is detected', function (done) {
+            var oGetFigureInfoStub = sandbox.stub(settingsController, 'getFigurePlayInformation').rejects(new ApplicationError('No card detected', 400));
+
+            var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri');
+
+            settingsController.getFigureWithInformation().catch(function (oError) {
+                assert(oError.status === 400);
+                assert(oGetFigureInfoStub.calledOnce);
+                assert(oHostControllerStub.notCalled);
+
+                done();
+            });
+
+        });
+    });
+    describe('getFigurePlayInformation', function () {
+        it('should get data of a connected figure', function (done) {
+            var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
+            var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('EXISTING_ID');
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+
+            var oGetProgressStub = sandbox.stub(settingsController, '_getProgressOfSong').resolves(0);
+
+            settingsController.getFigurePlayInformation().then(function (oData) {
+                console.log(oData)
+                assert(oData.cardId === 'EXISTING_ID');
+                assert(oData.uri === 'OLD_URI');
+                assert(oData.progress === 0);
+                assert(oData.lastPlayed === undefined);
+
+                assert(oRfidConnectionIsConnectedStub.calledOnce);
+                assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oFSReadFileStub.calledOnce);
+
+                done();
+            });
+
+        });
+        it('should return nothing, because figure is not yet set', function (done) {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('NOT_EXISTING_ID');
 
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
 
+            var oGetProgressStub = sandbox.stub(settingsController, '_getProgressOfSong');
+
             var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri');
 
-            settingsController.getFigureWithInformation().then(function (oData) {
+            settingsController.getFigurePlayInformation().then(function (oData) {
+                assert(oData === null);
+
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
+                assert(oGetProgressStub.notCalled);
                 assert(oHostControllerStub.notCalled);
 
-                assert(oData === undefined);
                 done();
             });
 
@@ -210,14 +266,259 @@ describe('Settings Controller', function () {
 
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf');
 
-            var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri').withArgs('OLD_URI');
+            var oGetProgressStub = sandbox.stub(settingsController, '_getProgressOfSong');
+            var oHostControllerStub = sandbox.stub(hostController, 'getItemForUri');
 
-            settingsController.getFigureWithInformation().catch(function () {
+            settingsController.getFigurePlayInformation().catch(function (oError) {
+                assert(oError.status === 400);
+
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.notCalled);
                 assert(oFSReadFileStub.notCalled);
+                assert(oGetProgressStub.notCalled);
                 assert(oHostControllerStub.notCalled);
 
+                done();
+            });
+
+        });
+    });
+
+    describe('_getProgressOfSong', function () {
+        it('should resume, if play mode is set to RESUME', function (done) {
+
+            var oGetPlayModeStub = sandbox.stub(settingsController, 'getPlayMode').resolves({
+                playMode: 'RESUME',
+                resetAfterDays: 7
+            });
+
+            var oLastPlayed = new Date();
+            oLastPlayed.setDate(oLastPlayed.getDate() - 1);
+            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
+                assert(iProgress === 200);
+
+                assert(oGetPlayModeStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should not resume, if last played is too late', function (done) {
+
+            var oGetPlayModeStub = sandbox.stub(settingsController, 'getPlayMode').resolves({
+                playMode: 'RESUME',
+                resetAfterDays: 7
+            });
+
+            var oLastPlayed = new Date();
+            oLastPlayed.setDate(oLastPlayed.getDate() - 10);
+            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
+                assert(iProgress === 0);
+
+                assert(oGetPlayModeStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should reset, if play mode is set to RESET', function (done) {
+
+            var oGetPlayModeStub = sandbox.stub(settingsController, 'getPlayMode').resolves({
+                playMode: 'RESET'
+            });
+
+            var oLastPlayed = new Date();
+            oLastPlayed.setDate(oLastPlayed.getDate() - 1);
+            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
+                assert(iProgress === 0);
+
+                assert(oGetPlayModeStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should work with progress as string', function (done) {
+
+            var oGetPlayModeStub = sandbox.stub(settingsController, 'getPlayMode').resolves({
+                playMode: 'RESUME',
+                resetAfterDays: 7
+            });
+
+            var oLastPlayed = new Date();
+            oLastPlayed.setDate(oLastPlayed.getDate() - 1);
+            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
+                assert(iProgress === 200);
+
+                assert(oGetPlayModeStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should work with last played as string', function (done) {
+
+            var oGetPlayModeStub = sandbox.stub(settingsController, 'getPlayMode').resolves({
+                playMode: 'RESUME',
+                resetAfterDays: 7
+            });
+
+            var oLastPlayed = new Date();
+            oLastPlayed.setDate(oLastPlayed.getDate() - 1);
+            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
+                assert(iProgress === 200);
+
+                assert(oGetPlayModeStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('getPlayMode', function () {
+        it('should return resume and 7, if figures.conf does not exist', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+
+            settingsController.getPlayMode().then(function (oPlayMode) {
+                assert(oPlayMode.playMode === 'RESUME');
+                assert(oPlayMode.resetAfterDays === 7);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return resume and 2 for given figures.conf', function (done) {
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+
+            settingsController.getPlayMode().then(function (oPlayMode) {
+                assert(oPlayMode.playMode === 'RESUME');
+                assert(oPlayMode.resetAfterDays === 2);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return reset for given figures.conf', function (done) {
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+
+            settingsController.getPlayMode().then(function (oPlayMode) {
+                assert(oPlayMode.playMode === 'RESET');
+                assert(oPlayMode.resetAfterDays === 7);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('setPlayMode', function () {
+        it('should create a section "general" if it does not exist', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setPlayMode('RESUME', 2).then(function () {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.play_mode === 'RESUME');
+                assert(oSavedConfig.general.reset_after_days === 2);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should overwrite existing "general" section', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setPlayMode('RESUME', 2).then(function () {
+                assert(oSavedConfig.general.play_mode === 'RESUME');
+                assert(oSavedConfig.general.reset_after_days === 2);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should not set reset_after_days if it is not passed', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setPlayMode('RESUME').then(function () {
+                assert(oSavedConfig.general.play_mode === 'RESUME');
+                assert(!oSavedConfig.general.reset_after_days);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should delete existing reset_after_days if it is not passed', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setPlayMode('RESUME').then(function () {
+                assert(oSavedConfig.general.play_mode === 'RESUME');
+                assert(!oSavedConfig.general.reset_after_days);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should set play_mode to RESET', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setPlayMode('RESET').then(function () {
+                assert(oSavedConfig.general.play_mode === 'RESET');
+                assert(!oSavedConfig.general.reset_after_days);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should keep play_mode to RESET', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setPlayMode('RESET').then(function () {
+                assert(oSavedConfig.general.play_mode === 'RESET');
+                assert(!oSavedConfig.general.reset_after_days);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
                 done();
             });
 
