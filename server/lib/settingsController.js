@@ -159,6 +159,7 @@ exports._saveFiguresFile = function (oConfig) {
     try {
         fs.writeFileSync(constants.Data.PathToFigures, ini.stringify(oConfig, {whitespace: true}));
     } catch (oError) {
+        winston.error(oError);
         throw new ApplicationError('Error while saving figure', 500);
     }
 };

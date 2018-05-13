@@ -24,6 +24,7 @@ exports.start = function () {
         this.mopidyProcess = child_process.spawn('mopidy');
         this.mopidyProcess.stderr.on('data', function (data) {
             if (data.toString().includes('server running')) {
+                winston.info("Mopidy started");
                 return resolve();
             }
         });
@@ -40,14 +41,17 @@ exports.stop = function () {
         this.mopidyProcess.on('close', function () {
             resolve();
         });
-        this.mopidyProcess.kill('SIGTERM');
+        this.onCardRemoved().then(function () {
+            this.mopidyProcess.kill('SIGTERM');
+            delete this.mopidyProcess;
+        }.bind(this));
     }.bind(this));
 };
 
 exports.restart = function () {
     winston.info("restarting mopidy");
     return this.stop()
-        .then(this.start);
+        .then(this.start.bind(this));
 };
 
 exports._playItem = function (oData) {
