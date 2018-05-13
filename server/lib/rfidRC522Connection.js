@@ -15,10 +15,8 @@ exports.init = function () {
             if (sCard && iInactivityCounter > 4) {
                 console.log("Card removed");
                 sCard = null;
-                iInactivityCounter = 0;
                 aListeners.forEach(function (oListener) {
                     try {
-
                         oListener.onCardRemoved && oListener.onCardRemoved.call(oListener);
                     } catch (err) {
                         console.error("Error while informing listener.", err);
@@ -27,6 +25,7 @@ exports.init = function () {
             }
             return;
         }
+        iInactivityCounter = 0;
         response = mfrc522.getUid();
         if (!response.status) {
             console.log("UID Scan Error");
@@ -47,7 +46,7 @@ exports.init = function () {
             }
         });
 
-    }.bind(this), 500);
+    }.bind(this), 100);
 };
 
 exports.stop = function () {
