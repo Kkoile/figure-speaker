@@ -61,7 +61,14 @@ exports._playItem = function (oData) {
             .then(mopidy.library.lookup.bind(mopidy, oData.uri))
             .then(mopidy.tracklist.add.bind(mopidy))
             .then(function () {
-                return mopidy.playback.seek(oData.progress || 0);
+                return mopidy.playback.play();
+            }.bind(this))
+            .then(function () {
+                return new Promise(function (resolve) {
+                    setTimeout(function () {
+                        mopidy.playback.seek(oData.progress || 0).then(resolve);
+                    }, 10);
+                });
             }.bind(this));
     }
 };
