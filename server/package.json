@@ -13,16 +13,19 @@
   },
   "main": "index.js",
   "dependencies": {
+    "ajv": "^6.0.0",
     "body-parser": "1.18.2",
     "express": "4.16.2",
     "ini": "1.3.5",
-    "mfrc522-rpi": "1.1.0",
-    "mopidy": "0.4.1",
-    "nfc-pcsc": "0.6.1",
+    "mopidy": "0.5.0",
     "request": "2.83.0",
     "request-promise": "4.2.2",
     "spotify-web-api-node": "3.0.0",
-    "winston": "2.4.0",
+    "winston": "2.4.0"
+  },
+  "optionalDependencies": {
+    "mfrc522-rpi": "1.1.0",
+    "nfc-pcsc": "0.6.1",
     "wiringpi-node": "2.4.4"
   },
   "devDependencies": {
