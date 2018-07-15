@@ -1,9 +1,9 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div>
-    <h1>MP3</h1>
+    <h1>{{ $t("mp3.title.title") }}</h1>
     <div>
-      <input v-model="$store.state.mp3.query" placeholder="MP3 URL" v-on:keyup.enter="save">
-      <button @click="save">Save</button>
+      <input v-model="$store.state.mp3.query" v-bind:placeholder="$t('mp3.url.placeholder')" v-on:keyup.enter="save">
+      <button @click="save">{{ $t("common.save.button") }}</button>
     </div>
   </div>
 </template>

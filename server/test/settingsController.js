@@ -524,4 +524,70 @@ describe('Settings Controller', function () {
 
         });
     });
+
+    describe('getLanguage', function () {
+        it('should return the default language if no language is configured', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+
+            settingsController.getLanguage().then(function (sLanguage) {
+                assert(sLanguage === constants.General.Language);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return the configured language', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+
+            settingsController.getLanguage().then(function (sLanguage) {
+                assert(sLanguage === 'de');
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('setLanguage', function () {
+        it('should set the language', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setLanguage('de').then(function (sLanguage) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.language === 'de');
+                assert(sLanguage === 'de');
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should overwrite the old language', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setLanguage('new').then(function (sLanguage) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.language === 'new');
+                assert(sLanguage === 'new');
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+    });
 });

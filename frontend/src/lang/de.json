@@ -1,0 +1,116 @@
+{
+  "main": {
+    "settings": {
+      "button": "Einstellungen"
+    },
+    "openAccount": {
+      "button": "Öffnen"
+    }
+  },
+  "settings": {
+    "accounts": {
+      "title": "Konten"
+    },
+    "accountActive": {
+      "text": "aktiv"
+    },
+    "accountInactive": {
+      "text": "inaktiv"
+    },
+    "manageAccount": {
+      "button": "Verwalte Account"
+    },
+    "playMode": {
+      "title": "Abspiel Modus"
+    },
+    "resume": {
+      "text": "Weiterlaufen"
+    },
+    "resumeAfter": {
+      "label": "Setze Stand nach soviel Tagen zurück"
+    },
+    "reset": {
+      "text": "Zurücksetzen"
+    },
+    "language": {
+      "title": "Sprache"
+    },
+    "languageEn": {
+      "text": "Englisch"
+    },
+    "languageDe": {
+      "text": "Deutsch"
+    }
+  },
+  "mp3": {
+    "title": {
+      "title": "MP3"
+    },
+    "url": {
+      "placeholder": "MP3 URL"
+    }
+  },
+  "youtube": {
+    "title": {
+      "title": "Youtube"
+    },
+    "url": {
+      "placeholder": "URL"
+    }
+  },
+  "spotify": {
+    "title": {
+      "title": "Spotify"
+    },
+    "artists": {
+      "title": "Artisten"
+    },
+    "albums": {
+      "title": "Albums"
+    },
+    "tracks": {
+      "title": "Titel"
+    },
+    "saveAlbum": {
+      "button": "Speicher Album"
+    },
+    "topTracks": {
+      "title": "Beste Titel"
+    },
+    "manageAccount": {
+      "title": "Verwalte Spotify Konto"
+    },
+    "userName": {
+      "label": "Benutzername"
+    },
+    "password": {
+      "label": "Passwort"
+    },
+    "clientId": {
+      "label": "Client Id"
+    },
+    "clientSecret": {
+      "label": "Client Secret"
+    }
+  },
+  "common": {
+    "save": {
+      "button": "Speichern"
+    },
+    "delete": {
+      "button": "Löschen"
+    },
+    "search": {
+      "button": "Suchen"
+    },
+    "more": {
+      "button": "Mehr"
+    },
+    "noData": {
+      "text": "Keine Daten"
+    },
+    "open": {
+      "button": "Öffnen"
+    }
+  }
+}

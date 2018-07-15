@@ -7,7 +7,10 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  beforeMount: function () {
+    this.$store.dispatch('loadLanguage');
+  }
 };
 </script>
 

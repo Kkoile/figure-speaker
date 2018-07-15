@@ -9,7 +9,7 @@
       >
       </MainAccountListItem>
     </li>
-    <button @click="openSettings">Settings</button>
+    <button @click="openSettings">{{ $t("main.settings.button") }}</button>
   </div>
 </template>
 
@@ -32,7 +32,6 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .main {
     display: flex;
