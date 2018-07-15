@@ -2,7 +2,7 @@
   <div>
     <h1>MP3</h1>
     <div>
-      <input v-model="$store.state.query" placeholder="MP3 URL">
+      <input v-model="$store.state.mp3.query" placeholder="MP3 URL" v-on:keyup.enter="save">
       <button @click="save">Save</button>
     </div>
   </div>
@@ -14,7 +14,7 @@ export default {
   name: 'Mp3',
   methods: {
     save: function () {
-      this.$store.dispatch('saveItem', this.$store.state.query);
+      this.$store.dispatch('mp3/saveItem', this.$store.state.mp3.query);
     }
   }
 };

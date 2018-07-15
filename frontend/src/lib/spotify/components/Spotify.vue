@@ -2,53 +2,62 @@
   <div>
     <h1>Spotify</h1>
     <div>
-      <input v-model="$store.state.query">
+      <input v-model="$store.state.spotify.query" v-on:keyup.enter="search">
       <button @click="search">Search</button>
     </div>
     <div class="searchResult">
       <h2>Artists</h2>
       <li class="searchList">
         <SearchItem
-          v-for="artist in $store.state.artists"
+          v-for="artist in $store.state.spotify.artists"
           v-bind:item="artist"
           v-bind:key="artist.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.moreArtists" @click="loadMoreArtists">More</button>
+          <button v-if="$store.state.spotify.moreArtists" @click="loadMoreArtists">More</button>
         </div>
       </li>
+      <div v-if="$store.state.spotify.artists.length === 0">
+          No Data
+      </div>
     </div>
     <div class="searchResult">
       <h2>Albums</h2>
       <li class="searchList">
         <SearchItem
-          v-for="album in $store.state.albums"
+          v-for="album in $store.state.spotify.albums"
           v-bind:item="album"
           v-bind:key="album.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.moreAlbums" @click="loadMoreAlbums">More</button>
+          <button v-if="$store.state.spotify.moreAlbums" @click="loadMoreAlbums">More</button>
         </div>
       </li>
+      <div v-if="$store.state.spotify.albums.length === 0">
+          No Data
+      </div>
     </div>
     <div class="searchResult">
       <h2>Tracks</h2>
       <li class="searchList">
         <SearchItem
-          v-for="track in $store.state.tracks"
+          v-for="track in $store.state.spotify.tracks"
           v-bind:item="track"
           v-bind:key="track.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.moreTracks" @click="loadMoreTracks">More</button>
+          <button v-if="$store.state.spotify.moreTracks" @click="loadMoreTracks">More</button>
         </div>
       </li>
+      <div v-if="$store.state.spotify.tracks.length === 0">
+          No Data
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import SearchItem from '@/components/SearchItem';
+import SearchItem from './SearchItem';
 import {mapActions} from 'vuex';
 
 export default {
@@ -56,7 +65,7 @@ export default {
   components: {
     SearchItem
   },
-  methods: mapActions([
+  methods: mapActions('spotify/', [
     'search',
     'loadMoreArtists',
     'loadMoreAlbums',

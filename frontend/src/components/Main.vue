@@ -2,14 +2,14 @@
   <div class="main">
     <li>
       <MainAccountListItem
-        v-for="account in $store.state.accounts"
+        v-for="account in $store.state.settings.accounts"
         v-if="account.enabled"
         v-bind:item="account"
         v-bind:key="account.id"
       >
       </MainAccountListItem>
     </li>
-    <button @click="openManageAccounts">Manage Accounts</button>
+    <button @click="openSettings">Settings</button>
   </div>
 </template>
 
@@ -22,8 +22,8 @@ export default {
     MainAccountListItem
   },
   methods: {
-    openManageAccounts: function () {
-      this.$router.push('/accounts');
+    openSettings: function () {
+      this.$router.push('/settings');
     }
   },
   beforeMount: function () {

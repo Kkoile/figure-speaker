@@ -12,7 +12,7 @@ export default {
   props: ['item'],
   methods: {
     saveItem: function () {
-      this.$store.dispatch('saveItem', this.item.uri);
+      this.$store.dispatch('spotify/saveItem', this.item.uri);
     }
   }
 };

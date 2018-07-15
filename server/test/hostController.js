@@ -5,33 +5,44 @@ var constants = require('../lib/constants.js');
 var hostController = require('../lib/hostController');
 
 var spotifyController = require('../lib/spotifyController');
+var mp3Controller = require('../lib/mp3Controller');
+var youtubeController = require('../lib/youtubeController');
 
 describe('Host Controller', function () {
 
     var sandbox;
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
-        constants.Mopidy.Extensions = ['spotify']
     });
 
     afterEach(function () {
         sandbox.restore();
-        constants.Mopidy.Extensions = [];
     });
 
     describe('getAccounts', function () {
         it('should call all known hosts', function (done) {
             var oSpotifyStub = sandbox.stub(spotifyController, 'getAccountInfo').returns({
+                name: 'Spotify',
                 enabled: true,
-                username: 'DUMMY_USERNAME'
+                username: 'DUMMY_USERNAME',
+                configurable: true
+            });
+            var oMP3Stub = sandbox.stub(mp3Controller, 'getAccountInfo').returns({
+                name: 'MP3',
+                enabled: true,
+                configurable: false
+            });
+            var oYoutubeStub = sandbox.stub(youtubeController, 'getAccountInfo').returns({
+                name: 'Youtube',
+                enabled: true,
+                configurable: false
             });
 
             hostController.getAccounts().then(function (aAccounts) {
-                assert(aAccounts.length === 1);
-                assert(aAccounts[0].enabled === true);
-                assert(aAccounts[0].username === 'DUMMY_USERNAME');
-
+                assert(aAccounts.length === 3);
                 assert(oSpotifyStub.calledOnce);
+                assert(oMP3Stub.calledOnce);
+                assert(oYoutubeStub.calledOnce);
                 done();
             });
         });

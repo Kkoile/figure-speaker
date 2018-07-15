@@ -1,26 +1,26 @@
 <template>
   <div>
-    <h1>{{ $store.state.albumArtistName }}</h1>
-    <h2>{{ $store.state.albumName }}</h2>
+    <h1>{{ $store.state.spotify.albumArtistName }}</h1>
+    <h2>{{ $store.state.spotify.albumName }}</h2>
     <div class="albumOverview">
       <button @click="saveItem">Save Album</button>
       <h2>Tracks</h2>
       <div class="trackList">
         <AlbumTrackItem
-          v-for="track in $store.state.albumTracks"
+          v-for="track in $store.state.spotify.albumTracks"
           v-bind:item="track"
           v-bind:key="track.uri">
         </AlbumTrackItem>
       </div>
       <div class="loadMoreButton">
-        <button v-if="$store.state.moreAlbumTracks" @click="loadMoreAlbumTracks">More</button>
+        <button v-if="$store.state.spotify.moreAlbumTracks" @click="loadMoreAlbumTracks">More</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import AlbumTrackItem from '@/components/AlbumTrackItem';
+import AlbumTrackItem from './AlbumTrackItem';
 
 export default {
   id: 'Album',
@@ -29,14 +29,14 @@ export default {
   },
   methods: {
     loadMoreAlbumTracks: function () {
-      this.$store.dispatch('loadMoreAlbumTracks');
+      this.$store.dispatch('spotify/loadMoreAlbumTracks');
     },
     saveItem: function () {
-      this.$store.dispatch('saveItem', this.$store.state.albumUri);
+      this.$store.dispatch('spotify/saveItem', this.$store.state.spotify.albumUri);
     }
   },
   beforeMount: function () {
-    this.$store.dispatch('loadAlbum', this.$route.params.id);
+    this.$store.dispatch('spotify/loadAlbum', this.$route.params.id);
   }
 };
 </script>

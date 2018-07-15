@@ -2,12 +2,12 @@
   <div class="main">
     <div class="section">
       <h2>Play Mode</h2>
-      <select v-model="$store.state.playMode">
+      <select v-model="$store.state.settings.playMode">
         <option value="RESUME">Resume</option>
         <option value="RESET">Reset</option>
       </select>
-      <div v-if="$store.state.playMode === 'RESUME'">
-        Reset state after days: <input v-model="$store.state.resetAfterDays"
+      <div v-if="$store.state.settings.playMode === 'RESUME'">
+        Reset state after days: <input v-model="$store.state.settings.resetAfterDays"
                                        type="number">
       </div>
       <button @click="savePlayMode">Save Play Mode</button>
@@ -16,7 +16,7 @@
       <h2>Accounts</h2>
       <li>
         <AccountListItem
-          v-for="account in $store.state.accounts"
+          v-for="account in $store.state.settings.accounts"
           v-if="account.configurable"
           v-bind:item="account"
           v-bind:key="account.id">
@@ -30,15 +30,15 @@
 import AccountListItem from '@/components/AccountListItem';
 
 export default {
-  name: 'Accounts',
+  name: 'Settings',
   components: {
     AccountListItem
   },
   methods: {
     savePlayMode: function () {
       this.$store.dispatch('savePlayMode', {
-        playMode: this.$store.state.playMode,
-        resetAfterDays: this.$store.state.resetAfterDays
+        playMode: this.$store.state.settings.playMode,
+        resetAfterDays: this.$store.state.settings.resetAfterDays
       });
     }
   },
