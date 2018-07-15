@@ -210,14 +210,8 @@ const actions = {
         alert(err);
       });
   },
-  saveItem ({commit}, sUri) {
-    return axios.post('/settings/saveFigure', {streamUri: sUri})
-      .then(function () {
-        alert('success');
-      })
-      .catch(function (err) {
-        alert(JSON.stringify(err.response.data));
-      });
+  saveItem ({dispatch}, sUri) {
+    dispatch('saveItem', sUri, { root: true });
   },
   loadAccountInfo ({commit}) {
     return axios.get('/settings/accounts/spotify')

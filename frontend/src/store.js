@@ -12,8 +12,7 @@ Vue.use(Vuex);
 const state = {
   playMode: null,
   resetAfterDays: 0,
-  accounts: [],
-  account: {requiredInfo: []}
+  accounts: []
 };
 
 const mutations = {
@@ -23,15 +22,10 @@ const mutations = {
   },
   setAccounts (state, accounts) {
     state.accounts = accounts;
-  },
-  setAccountInfo (state, account) {
-    state.account = account;
   }
 };
 
-// actions are functions that cause side effects and can involve
-// asynchronous operations.
-const actions = {
+const settingsActions = {
   loadPlayMode ({commit}) {
     return axios.get('/settings/playMode')
       .then(function (oData) {
@@ -59,15 +53,6 @@ const actions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadAccountInfo ({commit}, sHostId) {
-    return axios.get('/settings/accounts/' + sHostId)
-      .then(function (oData) {
-        commit('setAccountInfo', oData.data);
-      })
-      .catch(function (err) {
-        alert(JSON.stringify(err.response.data));
-      });
-  },
   saveAccount ({dispatch}, oAccount) {
     return axios.post('/settings/accounts/' + oAccount.id, oAccount)
       .then(function () {
@@ -88,14 +73,27 @@ const actions = {
   }
 };
 
+const actions = {
+  saveItem ({commit}, sUri) {
+    return axios.post('/settings/saveFigure', {streamUri: sUri})
+      .then(function () {
+        alert('success');
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  }
+};
+
 const getters = {};
 
 export default new Vuex.Store({
+  actions,
   modules: {
     settings: {
       state,
       getters,
-      actions,
+      actions: settingsActions,
       mutations
     },
     spotify,
