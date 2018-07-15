@@ -10,12 +10,12 @@
 
 <script>
 
-  export default {
-    name: 'Mp3',
-    methods: {
-      save: function () {
-        this.$store.dispatch('saveItem', this.$store.state.query);
-      }
+export default {
+  name: 'Mp3',
+  methods: {
+    save: function () {
+      this.$store.dispatch('saveItem', this.$store.state.query);
     }
   }
+};
 </script>

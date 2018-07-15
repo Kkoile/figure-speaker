@@ -27,20 +27,20 @@
 </template>
 
 <script>
-  export default {
-    name: 'ManageAccount',
-    methods: {
-      save: function () {
-        this.$store.dispatch('saveAccount', this.$store.state.account)
-      },
-      remove: function () {
-        this.$store.dispatch('deleteAccount', this.$store.state.account.id)
-      }
+export default {
+  name: 'ManageAccount',
+  methods: {
+    save: function () {
+      this.$store.dispatch('saveAccount', this.$store.state.account);
     },
-    beforeMount: function () {
-      this.$store.dispatch('loadAccountInfo', this.$route.params.hostId)
+    remove: function () {
+      this.$store.dispatch('deleteAccount', this.$store.state.account.id);
     }
+  },
+  beforeMount: function () {
+    this.$store.dispatch('loadAccountInfo', this.$route.params.hostId);
   }
+};
 </script>
 
 <style scoped>

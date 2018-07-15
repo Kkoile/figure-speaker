@@ -20,25 +20,25 @@
 </template>
 
 <script>
-  import AlbumTrackItem from '@/components/AlbumTrackItem'
+import AlbumTrackItem from '@/components/AlbumTrackItem';
 
-  export default {
-    id: 'Album',
-    components: {
-      AlbumTrackItem
+export default {
+  id: 'Album',
+  components: {
+    AlbumTrackItem
+  },
+  methods: {
+    loadMoreAlbumTracks: function () {
+      this.$store.dispatch('loadMoreAlbumTracks');
     },
-    methods: {
-      loadMoreAlbumTracks: function () {
-        this.$store.dispatch('loadMoreAlbumTracks')
-      },
-      saveItem: function () {
-        this.$store.dispatch('saveItem', this.$store.state.albumUri)
-      }
-    },
-    beforeMount: function () {
-      this.$store.dispatch('loadAlbum', this.$route.params.id)
+    saveItem: function () {
+      this.$store.dispatch('saveItem', this.$store.state.albumUri);
     }
+  },
+  beforeMount: function () {
+    this.$store.dispatch('loadAlbum', this.$route.params.id);
   }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

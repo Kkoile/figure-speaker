@@ -6,17 +6,16 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
 
-  export default {
-    name: 'AlbumTrackItem',
-    props: ['item'],
-    methods: {
-      saveItem: function () {
-        this.$store.dispatch('saveItem', this.item.uri)
-      }
+export default {
+  name: 'AlbumTrackItem',
+  props: ['item'],
+  methods: {
+    saveItem: function () {
+      this.$store.dispatch('saveItem', this.item.uri);
     }
   }
+};
 </script>
 
 <style scoped>
@@ -26,6 +25,7 @@
     justify-content: space-between;
     width: 100%;
   }
+
   .itemButton {
     margin: 4px;
   }

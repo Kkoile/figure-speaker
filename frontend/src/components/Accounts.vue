@@ -27,26 +27,26 @@
 </template>
 
 <script>
-  import AccountListItem from '@/components/AccountListItem'
+import AccountListItem from '@/components/AccountListItem';
 
-  export default {
-    name: 'Accounts',
-    components: {
-      AccountListItem
-    },
-    methods: {
-      savePlayMode: function () {
-        this.$store.dispatch('savePlayMode', {
-          playMode: this.$store.state.playMode,
-          resetAfterDays: this.$store.state.resetAfterDays
-        })
-      }
-    },
-    beforeMount: function () {
-      this.$store.dispatch('loadAccounts');
-      this.$store.dispatch('loadPlayMode');
+export default {
+  name: 'Accounts',
+  components: {
+    AccountListItem
+  },
+  methods: {
+    savePlayMode: function () {
+      this.$store.dispatch('savePlayMode', {
+        playMode: this.$store.state.playMode,
+        resetAfterDays: this.$store.state.resetAfterDays
+      });
     }
+  },
+  beforeMount: function () {
+    this.$store.dispatch('loadAccounts');
+    this.$store.dispatch('loadPlayMode');
   }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

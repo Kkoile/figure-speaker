@@ -48,22 +48,21 @@
 </template>
 
 <script>
-  import Spotify from '@/lib/Spotify'
-  import SearchItem from '@/components/SearchItem'
-  import {mapActions} from 'vuex'
+import SearchItem from '@/components/SearchItem';
+import {mapActions} from 'vuex';
 
-  export default {
-    name: 'Spotify',
-    components: {
-      SearchItem
-    },
-    methods: mapActions([
-      'search',
-      'loadMoreArtists',
-      'loadMoreAlbums',
-      'loadMoreTracks'
-    ])
-  }
+export default {
+  name: 'Spotify',
+  components: {
+    SearchItem
+  },
+  methods: mapActions([
+    'search',
+    'loadMoreArtists',
+    'loadMoreAlbums',
+    'loadMoreTracks'
+  ])
+};
 </script>
 
 <style scoped>

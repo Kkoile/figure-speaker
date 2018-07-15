@@ -14,22 +14,22 @@
 </template>
 
 <script>
-  import MainAccountListItem from '@/components/MainAccountListItem'
+import MainAccountListItem from '@/components/MainAccountListItem';
 
-  export default {
-    name: 'Main',
-    components: {
-      MainAccountListItem
-    },
-    methods: {
-      openManageAccounts: function () {
-        this.$router.push('/accounts');
-      }
-    },
-    beforeMount: function () {
-      this.$store.dispatch('loadAccounts')
+export default {
+  name: 'Main',
+  components: {
+    MainAccountListItem
+  },
+  methods: {
+    openManageAccounts: function () {
+      this.$router.push('/accounts');
     }
+  },
+  beforeMount: function () {
+    this.$store.dispatch('loadAccounts');
   }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

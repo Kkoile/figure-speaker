@@ -1,15 +1,15 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Main from '@/components/Main'
-import Accounts from '@/components/Accounts'
-import ManageAccount from '@/components/ManageAccount'
-import Spotify from '@/components/Spotify'
-import Youtube from '@/components/Youtube'
-import Mp3 from '@/components/Mp3'
-import Artist from '@/components/Artist'
-import Album from '@/components/Album'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Main from '@/components/Main';
+import Accounts from '@/components/Accounts';
+import ManageAccount from '@/components/ManageAccount';
+import Spotify from '@/components/Spotify';
+import Youtube from '@/components/Youtube';
+import Mp3 from '@/components/Mp3';
+import Artist from '@/components/Artist';
+import Album from '@/components/Album';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -54,4 +54,4 @@ export default new Router({
       component: Album
     }
   ]
-})
+});

@@ -10,14 +10,14 @@
 
 <script>
 
-  export default {
-    name: 'Youtube',
-    methods: {
-      save: function () {
-        this.$store.dispatch('saveItem', 'yt:' + this.$store.state.query);
-      }
+export default {
+  name: 'Youtube',
+  methods: {
+    save: function () {
+      this.$store.dispatch('saveItem', 'yt:' + this.$store.state.query);
     }
   }
+};
 </script>
 
 <style scoped>

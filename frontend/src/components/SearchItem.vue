@@ -10,22 +10,22 @@
 </template>
 
 <script>
-  export default {
-    name: 'SearchItem',
-    props: ['item'],
-    methods: {
-      openItem: function () {
-        if (this.item.type === 'artist') {
-          this.$router.push('/spotify/artist/' + this.item.id);
-        } else {
-          this.$router.push('/spotify/album/' + this.item.id);
-        }
-      },
-      saveItem: function () {
-        this.$store.dispatch('saveItem', this.item.uri)
+export default {
+  name: 'SearchItem',
+  props: ['item'],
+  methods: {
+    openItem: function () {
+      if (this.item.type === 'artist') {
+        this.$router.push('/spotify/artist/' + this.item.id);
+      } else {
+        this.$router.push('/spotify/album/' + this.item.id);
       }
+    },
+    saveItem: function () {
+      this.$store.dispatch('saveItem', this.item.uri);
     }
   }
+};
 </script>
 
 <style scoped>

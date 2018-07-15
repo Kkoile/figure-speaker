@@ -6,15 +6,15 @@
 </template>
 
 <script>
-  export default {
-    name: 'MainAccountListItem',
-    props: ['item'],
-    methods: {
-      openAccountPage: function () {
-        this.$router.push('/' + this.item.id);
-      }
+export default {
+  name: 'MainAccountListItem',
+  props: ['item'],
+  methods: {
+    openAccountPage: function () {
+      this.$router.push('/' + this.item.id);
     }
   }
+};
 </script>
 
 <style scoped>

@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import Spotify from './lib/Spotify'
-import axios from 'axios'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Spotify from './lib/Spotify';
+import axios from 'axios';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const state = {
   playMode: null,
   resetAfterDays: 0,
   accounts: [],
   account: {requiredInfo: []},
-  query: "",
+  query: '',
   artists: [],
   artistsOffset: 0,
   moreArtists: false,
@@ -33,8 +33,8 @@ const state = {
   albumImage: null,
   albumTracks: [],
   albumTracksOffset: 0,
-  moreAlbumTracks: false,
-}
+  moreAlbumTracks: false
+};
 
 const mutations = {
   setPlayMode (state, playMode) {
@@ -48,76 +48,76 @@ const mutations = {
     state.account = account;
   },
   resetData (state) {
-    state.artists = []
-    state.artistsOffset = 0
-    state.moreArtists = false
-    state.albums = []
-    state.albumsOffset = 0
-    state.moreAlbums = false
-    state.tracks = []
-    state.tracksOffset = 0
-    state.moreTracks = false
+    state.artists = [];
+    state.artistsOffset = 0;
+    state.moreArtists = false;
+    state.albums = [];
+    state.albumsOffset = 0;
+    state.moreAlbums = false;
+    state.tracks = [];
+    state.tracksOffset = 0;
+    state.moreTracks = false;
   },
   appendArtists (state, artists) {
-    state.artists = state.artists.concat(artists.items)
-    state.artistsOffset += artists.limit
-    state.moreArtists = artists.total > state.artistsOffset
+    state.artists = state.artists.concat(artists.items);
+    state.artistsOffset += artists.limit;
+    state.moreArtists = artists.total > state.artistsOffset;
   },
   appendAlbums (state, albums) {
-    state.albums = state.albums.concat(albums.items)
-    state.albumsOffset += albums.limit
-    state.moreAlbums = albums.total > state.albumsOffset
+    state.albums = state.albums.concat(albums.items);
+    state.albumsOffset += albums.limit;
+    state.moreAlbums = albums.total > state.albumsOffset;
   },
   appendTracks (state, tracks) {
-    state.tracks = state.tracks.concat(tracks.items)
-    state.tracksOffset += tracks.limit
-    state.moreTracks = tracks.total > state.tracksOffset
+    state.tracks = state.tracks.concat(tracks.items);
+    state.tracksOffset += tracks.limit;
+    state.moreTracks = tracks.total > state.tracksOffset;
   },
   resetArtistData (state) {
-    state.artistName = null
-    state.artistAlbums = []
-    state.artistAlbumsOffset = 0
-    state.moreArtistAlbums = false
-    state.artistTracks = []
+    state.artistName = null;
+    state.artistAlbums = [];
+    state.artistAlbumsOffset = 0;
+    state.moreArtistAlbums = false;
+    state.artistTracks = [];
   },
   setArtist (state, data) {
-    state.artistName = data.name
+    state.artistName = data.name;
   },
   appendArtistAlbums (state, albums) {
-    state.artistAlbums = state.artistAlbums.concat(albums.items)
-    state.artistAlbumsOffset += albums.limit
-    state.moreArtistAlbums = albums.total > state.artistAlbumsOffset
+    state.artistAlbums = state.artistAlbums.concat(albums.items);
+    state.artistAlbumsOffset += albums.limit;
+    state.moreArtistAlbums = albums.total > state.artistAlbumsOffset;
   },
   appendArtistTracks (state, tracks) {
-    state.artistTracks = state.artistTracks.concat(tracks.tracks)
+    state.artistTracks = state.artistTracks.concat(tracks.tracks);
   },
   resetAlbumData (state) {
-    state.albumUri = null
-    state.albumName = null
-    state.albumArtistName = null
-    state.albumImage = null
-    state.albumTracks = []
-    state.albumTracksOffset = 0
-    state.moreAlbumTracks = false
+    state.albumUri = null;
+    state.albumName = null;
+    state.albumArtistName = null;
+    state.albumImage = null;
+    state.albumTracks = [];
+    state.albumTracksOffset = 0;
+    state.moreAlbumTracks = false;
   },
   setAlbum (state, data) {
-    state.albumUri = data.uri
-    state.albumName = data.name
-    state.albumArtistName = data.artists[0].name
-    state.albumImage = data.images && data.images.length > 0 ? data.images[0] : null
+    state.albumUri = data.uri;
+    state.albumName = data.name;
+    state.albumArtistName = data.artists[0].name;
+    state.albumImage = data.images && data.images.length > 0 ? data.images[0] : null;
   },
   appendAlbumTracks (state, tracks) {
-    state.albumTracks = state.albumTracks.concat(tracks.items)
-    state.albumTracksOffset += tracks.limit
-    state.moreAlbumTracks = tracks.total > state.albumTracksOffset
-  },
-}
+    state.albumTracks = state.albumTracks.concat(tracks.items);
+    state.albumTracksOffset += tracks.limit;
+    state.moreAlbumTracks = tracks.total > state.albumTracksOffset;
+  }
+};
 
 // actions are functions that cause side effects and can involve
 // asynchronous operations.
 const actions = {
   search ({commit}) {
-    commit('resetData')
+    commit('resetData');
     return Spotify.search(state.query, 'artist,album,track', state.artistsOffset)
       .then(function (oData) {
         commit('appendArtists', oData.data.artists);
@@ -156,8 +156,8 @@ const actions = {
       });
   },
   loadArtist ({commit}, id) {
-    state.selectedArtistId = id
-    commit('resetArtistData')
+    state.selectedArtistId = id;
+    commit('resetArtistData');
     var aPromises = [
       Spotify.loadArtist(state.selectedArtistId)
         .then(function (oData) {
@@ -180,8 +180,8 @@ const actions = {
         .catch(function (err) {
           alert(err);
         })
-    ]
-    return aPromises
+    ];
+    return aPromises;
   },
   loadMoreArtistAlbums ({commit}) {
     return Spotify.loadArtistAlbums(state.selectedArtistId, state.artistAlbumsOffset)
@@ -193,8 +193,8 @@ const actions = {
       });
   },
   loadAlbum ({commit}, id) {
-    state.selectedAlbumId = id
-    commit('resetAlbumData')
+    state.selectedAlbumId = id;
+    commit('resetAlbumData');
     var aPromises = [
       Spotify.loadAlbum(state.selectedAlbumId)
         .then(function (oData) {
@@ -210,8 +210,8 @@ const actions = {
         .catch(function (err) {
           alert(err);
         })
-    ]
-    return aPromises
+    ];
+    return aPromises;
   },
   loadMoreAlbumTracks ({commit}) {
     return Spotify.loadAlbumTracks(state.selectedAlbumId, state.albumTracksOffset)
@@ -220,7 +220,7 @@ const actions = {
       })
       .catch(function (err) {
         alert(err);
-      })
+      });
   },
   saveItem ({commit}, sUri) {
     return axios.post('/settings/saveFigure', {streamUri: sUri})
@@ -285,9 +285,9 @@ const actions = {
         alert(JSON.stringify(err.response.data));
       });
   }
-}
+};
 
-const getters = {}
+const getters = {};
 
 // A Vuex instance is created by combining the state, mutations, actions,
 // and getters.
@@ -296,4 +296,4 @@ export default new Vuex.Store({
   getters,
   actions,
   mutations
-})
+});

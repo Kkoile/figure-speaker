@@ -7,15 +7,15 @@
 </template>
 
 <script>
-  export default {
-    name: 'AccountListItem',
-    props: ['item'],
-    methods: {
-      openManageAccount: function () {
-        this.$router.push('/accounts/' + this.item.id);
-      }
+export default {
+  name: 'AccountListItem',
+  props: ['item'],
+  methods: {
+    openManageAccount: function () {
+      this.$router.push('/accounts/' + this.item.id);
     }
   }
+};
 </script>
 
 <style scoped>

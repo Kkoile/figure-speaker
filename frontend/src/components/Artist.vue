@@ -26,21 +26,21 @@
 </template>
 
 <script>
-  import SearchItem from '@/components/SearchItem'
-  import {mapActions} from 'vuex'
+import SearchItem from '@/components/SearchItem';
+import {mapActions} from 'vuex';
 
-  export default {
-    id: 'Artist',
-    components: {
-      SearchItem
-    },
-    methods: mapActions([
-      'loadMoreArtistAlbums'
-    ]),
-    beforeMount: function () {
-      this.$store.dispatch('loadArtist', this.$route.params.id)
-    }
+export default {
+  id: 'Artist',
+  components: {
+    SearchItem
+  },
+  methods: mapActions([
+    'loadMoreArtistAlbums'
+  ]),
+  beforeMount: function () {
+    this.$store.dispatch('loadArtist', this.$route.params.id);
   }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
