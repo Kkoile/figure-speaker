@@ -590,4 +590,70 @@ describe('Settings Controller', function () {
 
         });
     });
+
+    describe('getMaxVolume', function () {
+        it('should return the default max volume if no max volume is configured', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+
+            settingsController.getMaxVolume().then(function (iMaxVolume) {
+                assert(iMaxVolume === constants.General.MaxVolume);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return the configured max volume', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+
+            settingsController.getMaxVolume().then(function (iMaxVolume) {
+                assert(iMaxVolume === 50);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('setMaxVolume', function () {
+        it('should set the max volume', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setMaxVolume(75).then(function (iMaxVolume) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.max_volume === 75);
+                assert(iMaxVolume === 75);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should overwrite the old max volume', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setMaxVolume(75).then(function (iMaxVolume) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.max_volume === 75);
+                assert(iMaxVolume === 75);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+    });
 });

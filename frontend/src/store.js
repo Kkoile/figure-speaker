@@ -24,7 +24,8 @@ const state = {
       id: 'de',
       text: 'settings.languageDe.text'
     }
-  ]
+  ],
+  maxVolume: 100
 };
 
 const mutations = {
@@ -38,6 +39,9 @@ const mutations = {
   setLanguage (state, sLanguage) {
     state.language = sLanguage;
     app.$i18n.locale = sLanguage;
+  },
+  setMaxVolume (state, iMaxVolume) {
+    state.maxVolume = iMaxVolume;
   }
 };
 
@@ -69,7 +73,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadLanguage ({commit, root}) {
+  loadLanguage ({commit}) {
     return axios.get('/settings/language')
       .then(function (oData) {
         commit('setLanguage', oData.data);
@@ -82,6 +86,24 @@ const settingsActions = {
     return axios.post('/settings/language', {language: sLanguage})
       .then(function (oData) {
         commit('setLanguage', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  loadMaxVolume ({commit}) {
+    return axios.get('/settings/maxVolume')
+      .then(function (oData) {
+        commit('setMaxVolume', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  saveMaxVolume ({commit}, iMaxVolume) {
+    return axios.post('/settings/maxVolume', {maxVolume: iMaxVolume})
+      .then(function (oData) {
+        commit('setMaxVolume', oData.data);
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));

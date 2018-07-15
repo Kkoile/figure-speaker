@@ -8,6 +8,11 @@
       <button @click="saveLanguage">{{ $t("common.save.button") }}</button>
     </div>
     <div class="section">
+      <h2>{{ $t("settings.maxVolume.title") }}</h2>
+        <input v-model="$store.state.settings.maxVolume" type="number" min="0" max="100">
+      <button @click="saveMaxVolume">{{ $t("common.save.button") }}</button>
+    </div>
+    <div class="section">
       <h2>{{ $t("settings.playMode.title") }}</h2>
       <select v-model="$store.state.settings.playMode">
         <option value="RESUME">{{ $t("settings.resume.text") }}</option>
@@ -50,11 +55,15 @@ export default {
     },
     saveLanguage: function () {
       this.$store.dispatch('saveLanguage', this.$store.state.settings.language);
+    },
+    saveMaxVolume: function () {
+      this.$store.dispatch('saveMaxVolume', this.$store.state.settings.maxVolume);
     }
   },
   beforeMount: function () {
     this.$store.dispatch('loadAccounts');
     this.$store.dispatch('loadPlayMode');
+    this.$store.dispatch('loadMaxVolume');
   }
 };
 </script>

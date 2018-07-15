@@ -32,6 +32,9 @@
     "reset": {
       "text": "Zurücksetzen"
     },
+    "maxVolume": {
+      "title": "Maximale Lautstärke"
+    },
     "language": {
       "title": "Sprache"
     },

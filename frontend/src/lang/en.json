@@ -32,6 +32,9 @@
     "reset": {
       "text": "Reset"
     },
+    "maxVolume": {
+      "title": "Max Volume"
+    },
     "language": {
       "title": "Language"
     },

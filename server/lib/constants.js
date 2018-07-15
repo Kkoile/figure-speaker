@@ -2,7 +2,8 @@
 
 module.exports = {
     General: {
-        Language: 'en'
+        Language: 'en',
+        MaxVolume: 100
     },
     Data: {
         PathToFigures: './figures.conf'

@@ -208,3 +208,38 @@ exports.setLanguage = function (sLanguage) {
         resolve(oConfig.general.language);
     }.bind(this));
 };
+
+exports.getMaxVolume = function () {
+    winston.debug("get max volume");
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading max volume', 500);
+        }
+        var iMaxVolume = constants.General.MaxVolume;
+        if (oConfig.general && oConfig.general.max_volume) {
+            iMaxVolume = parseInt(oConfig.general.max_volume);
+        }
+        resolve(iMaxVolume);
+    }.bind(this));
+};
+
+exports.setMaxVolume = function (iMaxVolume) {
+    winston.info("set max volume:", iMaxVolume);
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading max volume', 500);
+        }
+        if (!oConfig.general) {
+            oConfig.general = {};
+        }
+        oConfig.general.max_volume = iMaxVolume;
+        this._saveFiguresFile(oConfig);
+        resolve(oConfig.general.max_volume);
+    }.bind(this));
+};

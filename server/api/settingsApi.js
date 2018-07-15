@@ -101,4 +101,24 @@ settingsApi.route('/language').post(function (req, res, next) {
         .catch(next);
 });
 
+settingsApi.route('/maxVolume').get(function (req, res, next) {
+    settingsController.getMaxVolume()
+        .then(function (iMaxVolume) {
+            res.send(iMaxVolume.toString());
+        })
+        .catch(next);
+});
+
+settingsApi.route('/maxVolume').post(function (req, res, next) {
+    if (!req.body.maxVolume) {
+        res.status(400).send("Max Volume is missing in body!");
+        return;
+    }
+    settingsController.setMaxVolume(req.body.maxVolume)
+        .then(function (iMaxVolume) {
+            res.send(iMaxVolume);
+        })
+        .catch(next);
+});
+
 module.exports = settingsApi;
