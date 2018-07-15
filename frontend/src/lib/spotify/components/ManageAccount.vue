@@ -2,19 +2,20 @@
   <div class="main">
     <h2>{{ $t("spotify.manageAccount.title") }}</h2>
     <div>
+      <p v-html="$t('spotify.credentials.text', {url: mopidyUrl})"/>
       <li>
         <ul>
           <div>
             {{ $t("spotify.userName.label") }}: <input v-model="$store.state.spotify.account.username">
           </div>
           <div>
-            {{ $t("spotify.password.label") }}: <input v-model="$store.state.spotify.account.password" :type="password">
+            {{ $t("spotify.password.label") }}: <input v-model="$store.state.spotify.account.password" type="password">
           </div>
           <div>
             {{ $t("spotify.clientId.label") }}: <input v-model="$store.state.spotify.account.client_id">
           </div>
           <div>
-            {{ $t("spotify.clientSecret.label") }}: <input v-model="$store.state.spotify.account.client_secret" :type="password">
+            {{ $t("spotify.clientSecret.label") }}: <input v-model="$store.state.spotify.account.client_secret" type="password">
           </div>
         </ul>
       </li>
@@ -29,6 +30,11 @@
 <script>
 export default {
   name: 'SpotifyManageAccount',
+  data: function () {
+    return {
+      mopidyUrl: 'https://www.mopidy.com/authenticate/'
+    };
+  },
   methods: {
     save: function () {
       this.$store.dispatch('spotify/saveAccount');

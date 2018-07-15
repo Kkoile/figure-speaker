@@ -83,6 +83,9 @@
     "manageAccount": {
       "title": "Manage Spotify Account"
     },
+    "credentials": {
+      "text": "Please input your user name and password in the first two input fields. <br> After that visit <a href=\"{url}\" target=\"_blank\">{url}</a> and follow the instructions under 'Spotify' in order to generate client id and secret for your account. <br> These have to be copied to 'Client Id' and 'Client Secret' on this page."
+    },
     "userName": {
       "label": "User Name"
     },

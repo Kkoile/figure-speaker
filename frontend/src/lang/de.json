@@ -18,7 +18,7 @@
       "text": "inaktiv"
     },
     "manageAccount": {
-      "button": "Verwalte Account"
+      "button": "Konto Verwalten"
     },
     "playMode": {
       "title": "Abspiel Modus"
@@ -82,6 +82,9 @@
     },
     "manageAccount": {
       "title": "Verwalte Spotify Konto"
+    },
+    "credentials": {
+      "text": "Bitte gib deinen Benutzernamen und Passwort in die ersten beiden Eingabefelder ein. <br> Danach gehe auf <a href=\"{url}\" target=\"_blank\">{url}</a> und folge den Anweisungen unter 'Spotify' um Client Id und Secret für dein Konto zu generieren. <br> Diese müssen dann bei 'Client Id' und 'Client Secret' auf dieser Seite eingefügt werden."
     },
     "userName": {
       "label": "Benutzername"
