@@ -2,7 +2,7 @@
   <div>
     <h1>Youtube</h1>
     <div>
-      <input v-model="$store.state.query" placeholder="URL">
+      <input v-model="$store.state.youtube.query" placeholder="URL" v-on:keyup.enter="save">
       <button @click="save">Save</button>
     </div>
   </div>
@@ -14,7 +14,7 @@ export default {
   name: 'Youtube',
   methods: {
     save: function () {
-      this.$store.dispatch('saveItem', 'yt:' + this.$store.state.query);
+      this.$store.dispatch('youtube/saveItem', this.$store.state.youtube.query);
     }
   }
 };

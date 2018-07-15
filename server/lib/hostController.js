@@ -2,7 +2,6 @@
 
 var winston = require('winston');
 var ApplicationError = require('./ApplicationError.js');
-var constants = require('./constants.js');
 
 const hosts = {
     spotify: require('./spotifyController'),
@@ -21,7 +20,7 @@ exports.getAccounts = function () {
     return new Promise(function (resolve) {
         var aAccounts = [];
         for (var sHostId in hosts) {
-            if (!hosts[sHostId].hasOwnProperty() && constants.Mopidy.Extensions.includes(sHostId)) {
+            if (!hosts[sHostId].hasOwnProperty()) {
                 var oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
                 oAccount.id = sHostId;
                 aAccounts.push(oAccount);

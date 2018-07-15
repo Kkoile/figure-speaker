@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1>Artist: {{ $store.state.artistName }}</h1>
+    <h1>Artist: {{ $store.state.spotify.artistName }}</h1>
     <div class="searchResult">
       <h2>Top Tracks</h2>
       <li class="searchList">
         <SearchItem
-          v-for="track in $store.state.artistTracks"
+          v-for="track in $store.state.spotify.artistTracks"
           v-bind:item="track"
           v-bind:key="track.uri">
         </SearchItem>
@@ -13,12 +13,12 @@
       <h2>Albums</h2>
       <li class="searchList">
         <SearchItem
-          v-for="album in $store.state.artistAlbums"
+          v-for="album in $store.state.spotify.artistAlbums"
           v-bind:item="album"
           v-bind:key="album.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.moreArtistAlbums" @click="loadMoreArtistAlbums">More</button>
+          <button v-if="$store.state.spotify.moreArtistAlbums" @click="loadMoreArtistAlbums">More</button>
         </div>
       </li>
     </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import SearchItem from '@/components/SearchItem';
+import SearchItem from './SearchItem';
 import {mapActions} from 'vuex';
 
 export default {
@@ -34,11 +34,11 @@ export default {
   components: {
     SearchItem
   },
-  methods: mapActions([
+  methods: mapActions('spotify/', [
     'loadMoreArtistAlbums'
   ]),
   beforeMount: function () {
-    this.$store.dispatch('loadArtist', this.$route.params.id);
+    this.$store.dispatch('spotify/loadArtist', this.$route.params.id);
   }
 };
 </script>

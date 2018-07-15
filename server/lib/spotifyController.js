@@ -28,26 +28,7 @@ exports.getAccountInfo = function () {
         enabled: bEnabled,
         username: !!oConfig.spotify.username ? oConfig.spotify.username : null,
         client_id: !!oConfig.spotify.client_id ? oConfig.spotify.client_id : null,
-        configurable: true,
-        requiredInfo: [
-            {
-                key: 'username',
-                name: 'User Name'
-            }, {
-                key: 'password',
-                name: 'Password',
-                password: true
-            },
-            {
-                key: 'client_id',
-                name: 'Client Id'
-            },
-            {
-                key: 'client_secret',
-                name: 'Client Secret',
-                password: true
-            }
-        ]
+        configurable: true
     };
 };
 

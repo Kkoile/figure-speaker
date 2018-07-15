@@ -12,7 +12,7 @@ export default {
   props: ['item'],
   methods: {
     openManageAccount: function () {
-      this.$router.push('/accounts/' + this.item.id);
+      this.$router.push('/' + this.item.id + '/manageAccount');
     }
   }
 };
