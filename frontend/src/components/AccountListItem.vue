@@ -1,8 +1,8 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="listItem">
     {{ item.name }}
-    enabled: {{ item.enabled }}
-    <button @click="openManageAccount">Manage Account</button>
+    ({{ item.enabled ? $t("settings.accountActive.text") : $t("settings.accountInactive.text")}})
+    <button @click="openManageAccount">{{ $t("settings.manageAccount.button") }}</button>
   </div>
 </template>
 

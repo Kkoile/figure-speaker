@@ -1,0 +1,110 @@
+{
+  "main": {
+    "settings": {
+      "button": "Settings"
+    },
+    "openAccount": {
+      "button": "Open"
+    }
+  },
+  "settings": {
+    "accounts": {
+      "title": "Accounts"
+    },
+    "accountActive": {
+      "text": "active"
+    },
+    "accountInactive": {
+      "text": "inactive"
+    },
+    "manageAccount": {
+      "button": "Manage Accont"
+    },
+    "playMode": {
+      "title": "Play Mode"
+    },
+    "savePlayMode": {
+      "button": "Save Play Mode"
+    },
+    "resume": {
+      "text": "Resume"
+    },
+    "resumeAfter": {
+      "label": "Reset state after that amount of days"
+    },
+    "reset": {
+      "text": "Reset"
+    }
+  },
+  "mp3": {
+    "title": {
+      "title": "MP3"
+    },
+    "url": {
+      "placeholder": "MP3 URL"
+    }
+  },
+  "youtube": {
+    "title": {
+      "title": "Youtube"
+    },
+    "url": {
+      "placeholder": "URL"
+    }
+  },
+  "spotify": {
+    "title": {
+      "title": "Spotify"
+    },
+    "artists": {
+      "title": "Artists"
+    },
+    "albums": {
+      "title": "Albums"
+    },
+    "tracks": {
+      "title": "Tracks"
+    },
+    "saveAlbum": {
+      "button": "Save Album"
+    },
+    "topTracks": {
+      "title": "Top Tracks"
+    },
+    "manageAccount": {
+      "title": "Manage Spotify Account"
+    },
+    "userName": {
+      "label": "User Name"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "clientId": {
+      "label": "Client Id"
+    },
+    "clientSecret": {
+      "label": "Client Secret"
+    }
+  },
+  "common": {
+    "save": {
+      "button": "Save"
+    },
+    "delete": {
+      "button": "Delete"
+    },
+    "search": {
+      "button": "Search"
+    },
+    "more": {
+      "button": "More"
+    },
+    "noData": {
+      "text": "No Data"
+    },
+    "open": {
+      "button": "Open"
+    }
+  }
+}

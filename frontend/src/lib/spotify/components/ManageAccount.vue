@@ -1,26 +1,26 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="main">
-    <h2>Manage Spotify Account}</h2>
+    <h2>{{ $t("spotify.manageAccount.title") }}</h2>
     <div>
       <li>
         <ul>
           <div>
-            User Name: <input v-model="$store.state.spotify.account.username">
+            {{ $t("spotify.userName.label") }}: <input v-model="$store.state.spotify.account.username">
           </div>
           <div>
-            Password: <input v-model="$store.state.spotify.account.password" :type="password">
+            {{ $t("spotify.password.label") }}: <input v-model="$store.state.spotify.account.password" :type="password">
           </div>
           <div>
-            Client Id: <input v-model="$store.state.spotify.account.client_id">
+            {{ $t("spotify.clientId.label") }}: <input v-model="$store.state.spotify.account.client_id">
           </div>
           <div>
-            Password: <input v-model="$store.state.spotify.account.client_secret" :type="password">
+            {{ $t("spotify.clientSecret.label") }}: <input v-model="$store.state.spotify.account.client_secret" :type="password">
           </div>
         </ul>
       </li>
       <div class="buttonArea">
-        <button @click="save">Save</button>
-        <button @click="remove">Delete</button>
+        <button @click="save">{{ $t("common.save.button") }}</button>
+        <button @click="remove">{{ $t("common.delete.button") }}</button>
       </div>
     </div>
   </div>

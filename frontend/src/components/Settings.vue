@@ -1,19 +1,19 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="main">
     <div class="section">
-      <h2>Play Mode</h2>
+      <h2>{{ $t("settings.playMode.title") }}</h2>
       <select v-model="$store.state.settings.playMode">
-        <option value="RESUME">Resume</option>
-        <option value="RESET">Reset</option>
+        <option value="RESUME">{{ $t("settings.resume.text") }}</option>
+        <option value="RESET">{{ $t("settings.reset.text") }}</option>
       </select>
       <div v-if="$store.state.settings.playMode === 'RESUME'">
-        Reset state after days: <input v-model="$store.state.settings.resetAfterDays"
+        {{ $t("settings.resumeAfter.label") }}: <input v-model="$store.state.settings.resetAfterDays"
                                        type="number">
       </div>
-      <button @click="savePlayMode">Save Play Mode</button>
+      <button @click="savePlayMode">{{ $t("settings.savePlayMode.button") }}</button>
     </div>
     <div class="section">
-      <h2>Accounts</h2>
+      <h2>{{ $t("settings.accounts.title") }}</h2>
       <li>
         <AccountListItem
           v-for="account in $store.state.settings.accounts"

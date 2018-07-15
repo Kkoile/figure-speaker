@@ -4,8 +4,8 @@
     <div class="titleCover" v-else>
       {{ item.name }}
     </div>
-    <button v-if="item.type==='track'" class="itemButton" v-on:click="saveItem">Save</button>
-    <button v-else class="itemButton" v-on:click="openItem">Open</button>
+    <button v-if="item.type==='track'" class="itemButton" v-on:click="saveItem">{{ $t("common.save.button") }}</button>
+    <button v-else class="itemButton" v-on:click="openItem">{{ $t("common.open.button") }}</button>
   </div>
 </template>
 

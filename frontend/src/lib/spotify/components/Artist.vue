@@ -2,7 +2,7 @@
   <div>
     <h1>Artist: {{ $store.state.spotify.artistName }}</h1>
     <div class="searchResult">
-      <h2>Top Tracks</h2>
+      <h2>{{ $t("spotify.topTracks.title") }}</h2>
       <li class="searchList">
         <SearchItem
           v-for="track in $store.state.spotify.artistTracks"
@@ -10,7 +10,7 @@
           v-bind:key="track.uri">
         </SearchItem>
       </li>
-      <h2>Albums</h2>
+      <h2>{{ $t("spotify.albums.title") }}</h2>
       <li class="searchList">
         <SearchItem
           v-for="album in $store.state.spotify.artistAlbums"
@@ -18,7 +18,7 @@
           v-bind:key="album.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.spotify.moreArtistAlbums" @click="loadMoreArtistAlbums">More</button>
+          <button v-if="$store.state.spotify.moreArtistAlbums" @click="loadMoreArtistAlbums">{{ $t("common.more.button") }}</button>
         </div>
       </li>
     </div>

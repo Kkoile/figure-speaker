@@ -1,7 +1,7 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="listItem">
     {{ item.name }}
-    <button @click="openAccountPage">Open</button>
+    <button @click="openAccountPage">{{ $t("main.openAccount.button") }}</button>
   </div>
 </template>
 
