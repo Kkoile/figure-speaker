@@ -23,9 +23,6 @@
     "playMode": {
       "title": "Abspiel Modus"
     },
-    "savePlayMode": {
-      "button": "Speicher Abspiel Modus"
-    },
     "resume": {
       "text": "Weiterlaufen"
     },
@@ -34,6 +31,15 @@
     },
     "reset": {
       "text": "Zurücksetzen"
+    },
+    "language": {
+      "title": "Sprache"
+    },
+    "languageEn": {
+      "text": "Englisch"
+    },
+    "languageDe": {
+      "text": "Deutsch"
     }
   },
   "mp3": {

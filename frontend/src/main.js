@@ -5,7 +5,7 @@ import store from './store';
 import i18n from './lang/lang';
 
 /* eslint-disable no-new */
-new Vue({
+export const app = new Vue({
   el: '#app',
   router,
   store,

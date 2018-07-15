@@ -1,6 +1,9 @@
 'use strict';
 
 module.exports = {
+    General: {
+        Language: 'en'
+    },
     Data: {
         PathToFigures: './figures.conf'
     },

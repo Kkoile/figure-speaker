@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import {app} from './main';
 import spotify from './lib/spotify/store';
 import mp3 from './lib/mp3/store';
 import youtube from './lib/youtube/store';
@@ -12,7 +13,18 @@ Vue.use(Vuex);
 const state = {
   playMode: null,
   resetAfterDays: 0,
-  accounts: []
+  accounts: [],
+  language: 'en',
+  availableLanguages: [
+    {
+      id: 'en',
+      text: 'settings.languageEn.text'
+    },
+    {
+      id: 'de',
+      text: 'settings.languageDe.text'
+    }
+  ]
 };
 
 const mutations = {
@@ -22,6 +34,10 @@ const mutations = {
   },
   setAccounts (state, accounts) {
     state.accounts = accounts;
+  },
+  setLanguage (state, sLanguage) {
+    state.language = sLanguage;
+    app.$i18n.locale = sLanguage;
   }
 };
 
@@ -53,24 +69,25 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  saveAccount ({dispatch}, oAccount) {
-    return axios.post('/settings/accounts/' + oAccount.id, oAccount)
-      .then(function () {
-        dispatch('loadAccountInfo', oAccount.id);
+  loadLanguage ({commit, root}) {
+    return axios.get('/settings/language')
+      .then(function (oData) {
+        commit('setLanguage', oData.data);
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));
       });
   },
-  deleteAccount ({dispatch}, sHostId) {
-    return axios.delete('/settings/accounts/' + sHostId)
-      .then(function () {
-        dispatch('loadAccountInfo', sHostId);
+  saveLanguage ({commit}, sLanguage) {
+    return axios.post('/settings/language', {language: sLanguage})
+      .then(function (oData) {
+        commit('setLanguage', oData.data);
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));
       });
   }
+
 };
 
 const actions = {

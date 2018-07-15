@@ -173,3 +173,38 @@ exports.getFigureWithInformation = function () {
             }
         });
 };
+
+exports.getLanguage = function () {
+    winston.debug("get language");
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading language', 500);
+        }
+        var sLanguage = constants.General.Language;
+        if (oConfig.general && oConfig.general.language) {
+            sLanguage = oConfig.general.language;
+        }
+        resolve(sLanguage);
+    }.bind(this));
+};
+
+exports.setLanguage = function (sLanguage) {
+    winston.info("set language:", sLanguage);
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading language', 500);
+        }
+        if (!oConfig.general) {
+            oConfig.general = {};
+        }
+        oConfig.general.language = sLanguage;
+        this._saveFiguresFile(oConfig);
+        resolve(oConfig.general.language);
+    }.bind(this));
+};

@@ -81,4 +81,24 @@ settingsApi.route('/getFigureWithInformation').get(function (req, res, next) {
         .catch(next);
 });
 
+settingsApi.route('/language').get(function (req, res, next) {
+    settingsController.getLanguage()
+        .then(function (sLanguage) {
+            res.send(sLanguage);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/language').post(function (req, res, next) {
+    if (!req.body.language) {
+        res.status(400).send("Language is missing in body!");
+        return;
+    }
+    settingsController.setLanguage(req.body.language)
+        .then(function (sLanguage) {
+            res.send(sLanguage);
+        })
+        .catch(next);
+});
+
 module.exports = settingsApi;

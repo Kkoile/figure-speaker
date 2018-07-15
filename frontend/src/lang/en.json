@@ -23,9 +23,6 @@
     "playMode": {
       "title": "Play Mode"
     },
-    "savePlayMode": {
-      "button": "Save Play Mode"
-    },
     "resume": {
       "text": "Resume"
     },
@@ -34,6 +31,15 @@
     },
     "reset": {
       "text": "Reset"
+    },
+    "language": {
+      "title": "Language"
+    },
+    "languageEn": {
+      "text": "English"
+    },
+    "languageDe": {
+      "text": "German"
     }
   },
   "mp3": {

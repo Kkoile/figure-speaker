@@ -1,6 +1,13 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="main">
     <div class="section">
+      <h2>{{ $t("settings.language.title") }}</h2>
+      <select v-model="$store.state.settings.language">
+        <option v-for="language in $store.state.settings.availableLanguages" v-bind:value="language.id" v-bind:key="language.id">{{ $t(language.text) }}</option>
+      </select>
+      <button @click="saveLanguage">{{ $t("common.save.button") }}</button>
+    </div>
+    <div class="section">
       <h2>{{ $t("settings.playMode.title") }}</h2>
       <select v-model="$store.state.settings.playMode">
         <option value="RESUME">{{ $t("settings.resume.text") }}</option>
@@ -10,7 +17,7 @@
         {{ $t("settings.resumeAfter.label") }}: <input v-model="$store.state.settings.resetAfterDays"
                                        type="number">
       </div>
-      <button @click="savePlayMode">{{ $t("settings.savePlayMode.button") }}</button>
+      <button @click="savePlayMode">{{ $t("common.save.button") }}</button>
     </div>
     <div class="section">
       <h2>{{ $t("settings.accounts.title") }}</h2>
@@ -40,6 +47,9 @@ export default {
         playMode: this.$store.state.settings.playMode,
         resetAfterDays: this.$store.state.settings.resetAfterDays
       });
+    },
+    saveLanguage: function () {
+      this.$store.dispatch('saveLanguage', this.$store.state.settings.language);
     }
   },
   beforeMount: function () {
