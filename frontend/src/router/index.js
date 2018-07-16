@@ -12,12 +12,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Main',
+      name: 'main',
       component: Main
     },
     {
       path: '/settings',
-      name: 'Settings',
+      name: 'settings',
       component: Settings
     },
     ...Spotify,

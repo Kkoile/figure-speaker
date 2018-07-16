@@ -1,10 +1,7 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div>
-    <h1>{{ $t("youtube.title.title") }}</h1>
-    <div>
-      <input v-model="$store.state.youtube.query" v-bind:placeholder="$t('youtube.url.placeholder')" v-on:keyup.enter="save">
-      <button @click="save">{{ $t("common.save.button") }}</button>
-    </div>
+    <input v-model="$store.state.youtube.query" v-bind:placeholder="$t('youtube.url.placeholder')" v-on:keyup.enter="save">
+    <button @click="save">{{ $t("common.save.button") }}</button>
   </div>
 </template>
 

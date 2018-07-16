@@ -1,7 +1,13 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="listItem">
-    {{ item.name }}
-    <button @click="openAccountPage">{{ $t("main.openAccount.button") }}</button>
+    <md-card>
+      <md-card-header>
+        <div class="md-title">{{ item.name }}</div>
+      </md-card-header>
+      <md-card-actions>
+        <md-button v-on:click="openAccountPage">{{ $t("main.openAccount.button") }}</md-button>
+      </md-card-actions>
+    </md-card>
   </div>
 </template>
 
@@ -18,10 +24,10 @@ export default {
 </script>
 
 <style scoped>
-  .listItem {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 5px;
+  .md-card {
+    width: 320px;
+    margin: 4px;
+    display: inline-block;
+    vertical-align: top;
   }
 </style>

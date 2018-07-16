@@ -1,4 +1,24 @@
 {
+  "navigation": {
+    "navigation": {
+      "title": "Navigation"
+    },
+    "main": {
+      "title": "Startseite"
+    },
+    "spotify": {
+      "title": "Spotify"
+    },
+    "mp3": {
+      "title": "MP3"
+    },
+    "youtube": {
+      "title": "Youtube"
+    },
+    "settings": {
+      "title": "Einstellungen"
+    }
+  },
   "main": {
     "settings": {
       "button": "Einstellungen"
@@ -46,25 +66,16 @@
     }
   },
   "mp3": {
-    "title": {
-      "title": "MP3"
-    },
     "url": {
       "placeholder": "MP3 URL"
     }
   },
   "youtube": {
-    "title": {
-      "title": "Youtube"
-    },
     "url": {
       "placeholder": "URL"
     }
   },
   "spotify": {
-    "title": {
-      "title": "Spotify"
-    },
     "artists": {
       "title": "Artisten"
     },
