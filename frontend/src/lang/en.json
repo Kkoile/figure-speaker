@@ -47,7 +47,7 @@
       "text": "Resume"
     },
     "resumeAfter": {
-      "label": "Reset state after that amount of days"
+      "label": "Reset after amount of days"
     },
     "reset": {
       "text": "Reset"
