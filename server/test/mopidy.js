@@ -193,6 +193,19 @@ describe('Mopidy', function () {
                 done();
             });
         });
+        it('should do nothing if no track is playing', function (done) {
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume');
+            var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume');
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
+            mopidy.mopidy = undefined;
+
+            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+                assert(oGetCurrentVolumeStub.notCalled);
+                assert(oMaxVolumeStub.notCalled);
+                assert(oSetCurrentVolumeStub.notCalled);
+                done();
+            });
+        });
     });
 
 });

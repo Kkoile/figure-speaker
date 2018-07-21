@@ -220,17 +220,20 @@ describe('Settings Controller', function () {
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
 
             var oGetProgressStub = sandbox.stub(settingsController, '_getProgressOfSong').resolves(0);
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
 
             settingsController.getFigurePlayInformation().then(function (oData) {
-                console.log(oData)
                 assert(oData.cardId === 'EXISTING_ID');
                 assert(oData.uri === 'OLD_URI');
                 assert(oData.progress === 0);
                 assert(oData.lastPlayed === undefined);
+                assert(oData.volume === 70);
 
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
+                assert(oGetProgressStub.calledOnce);
+                assert(oGetCurrentVolumeStub.calledOnce);
 
                 done();
             });
@@ -648,6 +651,72 @@ describe('Settings Controller', function () {
                 assert(!!oSavedConfig.general);
                 assert(oSavedConfig.general.max_volume === 75);
                 assert(iMaxVolume === 75);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('getCurrentVolume', function () {
+        it('should return the default current volume if no current volume is configured', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+
+            settingsController.getCurrentVolume().then(function (icurrentVolume) {
+                assert(icurrentVolume === constants.General.CurrentVolume);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return the configured current volume', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+
+            settingsController.getCurrentVolume().then(function (iCurrentVolume) {
+                assert(iCurrentVolume === 30);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('setCurrentVolume', function () {
+        it('should set the current volume', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns('');
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setCurrentVolume(60).then(function (iCurrentVolume) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.current_volume === 60);
+                assert(iCurrentVolume === 60);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should overwrite the old current volume', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs('./figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setCurrentVolume(40).then(function (iCurrentVolume) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.current_volume === 40);
+                assert(iCurrentVolume === 40);
 
                 assert(oFSReadFileStub.calledOnce);
                 assert(oSaveFiguresStub.calledOnce);

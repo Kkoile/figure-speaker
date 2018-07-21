@@ -6,28 +6,28 @@ try {
 } catch (oError) {
     winston.error("Dependency onoff could not be required. Perhaps you do not run on raspberry?");
 }
-var Gpio;
+exports.Gpio = undefined;
 if (onoff) {
-    Gpio = onoff.Gpio;
-};
+    this.Gpio = onoff.Gpio;
+}
 
-var increaseVolumeButton;
-var decreaseVolumeButton;
+exports.increaseVolumeButton = undefined;
+exports.decreaseVolumeButton = undefined;
 
-var aListeners = [];
+exports.listeners = [];
 
-function _notifyListeners(sVolumeChange) {
-    aListeners.forEach(function(oListener) {
+exports._notifyListeners = function(sVolumeChange) {
+    this.listeners.forEach(function(oListener) {
         try {
             oListener.onVolumeChange(sVolumeChange);
         } catch (oError) {
             console.error("Could not notify listener for volume change", oError);
         }
     });
-}
+};
 
 exports.init = function () {
-    if (!Gpio) {
+    if (!this.Gpio) {
         winston.warn("Did not find dependency for connecting to GPIO. Perhaps you do not run on raspberry?");
         return;
     }
@@ -38,33 +38,38 @@ exports.init = function () {
     if (!increaseVolumeButtonGPIO || !decreaseVolumeButtonGPIO) {
         winston.error("Could not initialize Volume Controller, because environment variables for GPIOs for buttons are not set.");
         winston.error("Set GPIO_INCREASE_VOLUME_BUTTON and GPIO_DECREASE_VOLUME_BUTTON to their GPIO pin number.");
+        return;
     }
 
-    increaseVolumeButton = new Gpio(increaseVolumeButtonGPIO, 'in', 'both');
-    decreaseVolumeButton = new Gpio(decreaseVolumeButtonGPIO, 'in', 'both');
+    this.increaseVolumeButton = new this.Gpio(increaseVolumeButtonGPIO, 'in', 'both');
+    this.decreaseVolumeButton = new this.Gpio(decreaseVolumeButtonGPIO, 'in', 'both');
 
-    increaseVolumeButton.watch(function (err, value) {
+    this.increaseVolumeButton.watch(function (err, value) {
         if (err) {
             console.error('There was an error while watching increase volume button ', err);
             return;
         }
-        _notifyListeners(constants.VolumeChange.Increase);
-    });
+        this._notifyListeners(constants.VolumeChange.Increase);
+    }.bind(this));
 
-    decreaseVolumeButton.watch(function (err, value) {
+    this.decreaseVolumeButton.watch(function (err, value) {
         if (err) {
             console.error('There was an error while watching decrease volume button ', err);
             return;
         }
-        _notifyListeners(constants.VolumeChange.Decrease);
-    });
+        this._notifyListeners(constants.VolumeChange.Decrease);
+    }.bind(this));
 };
 
 exports.stop = function() {
-  increaseVolumeButton && increaseVolumeButton.unexport();
-  decreaseVolumeButton && decreaseVolumeButton.unexport();
+  this.increaseVolumeButton && this.increaseVolumeButton.unexport();
+  this.decreaseVolumeButton && this.decreaseVolumeButton.unexport();
 };
 
 exports.listen = function (oListener) {
-    aListeners.push(oListener);
+    if (!oListener.onVolumeChange) {
+        winston.error("Could not add volume listener, because it does not implement `onVolumeChange` method");
+        return;
+    }
+    this.listeners.push(oListener);
 };

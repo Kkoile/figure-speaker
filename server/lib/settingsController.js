@@ -129,12 +129,15 @@ exports.getFigurePlayInformation = function () {
     var sCardId = rfidConnection.getCardId();
     if (oConfig[sCardId]) {
         return this._getProgressOfSong(oConfig[sCardId].progress, oConfig[sCardId].last_played).then(function (iProgress) {
-            var oData = oConfig[sCardId];
-            oData.cardId = sCardId;
-            oData.progress = iProgress;
-            winston.info('Found the following figure:', JSON.stringify(oData));
-            return oData;
-        });
+            return this.getCurrentVolume().then(function(iCurrentVolume) {
+                var oData = oConfig[sCardId];
+                oData.cardId = sCardId;
+                oData.progress = iProgress;
+                oData.volume = iCurrentVolume;
+                winston.info('Found the following figure:', JSON.stringify(oData));
+                return oData;
+            });
+        }.bind(this));
     }
     return Promise.resolve(null);
 };
@@ -253,7 +256,7 @@ exports.getCurrentVolume = function () {
         } catch (oError) {
             throw new ApplicationError('Error while reading current volume', 500);
         }
-        var iCurrentVolume = constants.General.MaxVolume;
+        var iCurrentVolume = constants.General.CurrentVolume;
         if (oConfig.general && oConfig.general.current_volume) {
             iCurrentVolume = parseInt(oConfig.general.current_volume);
         }
