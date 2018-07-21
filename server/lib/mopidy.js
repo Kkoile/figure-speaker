@@ -7,10 +7,13 @@ var child_process = require('child_process');
 var settingsController = require('./settingsController');
 
 var Mopidy = require("mopidy");
-var mopidy;
+exports.mopidy = undefined;
 
 var rfidConnection = require('./rfidConnection');
 rfidConnection.listenForScan(this);
+
+var volumeController = require('./volumeController');
+volumeController.listen(this);
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
@@ -57,18 +60,18 @@ exports.restart = function () {
 exports._playItem = function (oData) {
     if (oData) {
         this._sCurrentFigureId = oData.cardId;
-        mopidy.tracklist.clear()
-            .then(mopidy.library.lookup.bind(mopidy, oData.uri))
-            .then(mopidy.tracklist.add.bind(mopidy))
+        this.mopidy.tracklist.clear()
+            .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
+            .then(this.mopidy.tracklist.add.bind(this.mopidy))
             .then(function () {
-                return mopidy.playback.play();
+                return this.mopidy.playback.play();
             }.bind(this))
             .then(function () {
                 return new Promise(function (resolve) {
                     setTimeout(function () {
-                        mopidy.playback.seek(oData.progress || 0).then(resolve);
-                    }, 10);
-                });
+                        this.mopidy.playback.seek(oData.progress || 0).then(resolve);
+                    }.bind(this), 10);
+                }.bind(this));
             }.bind(this));
     }
 };
@@ -80,21 +83,21 @@ exports._getAndPlayFigure = function () {
 
 exports.onNewCardDetected = function () {
     this.mopidyStarted.then(function () {
-        mopidy = new Mopidy({
+        this.mopidy = new Mopidy({
             webSocketUrl: constants.Mopidy.WebSocketUrl,
             callingConvention: 'by-position-only'
         });
-        mopidy.on("state:online", this._getAndPlayFigure.bind(this));
+        this.mopidy.on("state:online", this._getAndPlayFigure.bind(this));
     }.bind(this));
 };
 
 exports.onCardRemoved = function () {
-    if (!mopidy || !this._sCurrentFigureId) {
+    if (!this.mopidy || !this._sCurrentFigureId) {
         return Promise.resolve();
     }
-    return mopidy.playback.pause()
+    return this.mopidy.playback.pause()
         .then(function () {
-            return mopidy.playback.getTimePosition();
+            return this.mopidy.playback.getTimePosition();
         }.bind(this))
         .then(settingsController.saveFigurePlayInformation.bind(settingsController, this._sCurrentFigureId))
         .catch(function (oError) {
@@ -102,7 +105,31 @@ exports.onCardRemoved = function () {
         })
         .then(function () {
             this._sCurrentFigureId = null;
-            mopidy.close();
-            mopidy.off();
+            this.mopidy.close();
+            this.mopidy.off();
+        }.bind(this));
+};
+
+exports.onVolumeChange = function (sVolumeChange) {
+    if (!this.mopidy) {
+        return Promise.resolve();
+    }
+    return settingsController.getCurrentVolume()
+        .then(function(iCurrentVolume) {
+            return settingsController.getMaxVolume()
+                .then(function(iMaxVolume) {
+                    var iNewVolume = iCurrentVolume;
+                    if (sVolumeChange === constants.VolumeChange.Increase) {
+                        iNewVolume += constants.VolumeChange.Interval;
+                    }
+                    if (sVolumeChange === constants.VolumeChange.Decrease) {
+                        iNewVolume -= constants.VolumeChange.Interval;
+                    }
+                    if (iNewVolume === iCurrentVolume || iNewVolume > iMaxVolume || iNewVolume < constants.General.MinVolume) {
+                        return;
+                    }
+                    return this.mopidy.playback.volume(iNewVolume)
+                        .then(settingsController.setCurrentVolume.bind(settingsController, iNewVolume));
+                }.bind(this));
         }.bind(this));
 };

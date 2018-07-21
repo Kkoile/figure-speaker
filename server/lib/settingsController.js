@@ -243,3 +243,38 @@ exports.setMaxVolume = function (iMaxVolume) {
         resolve(oConfig.general.max_volume);
     }.bind(this));
 };
+
+exports.getCurrentVolume = function () {
+    winston.debug("get current volume");
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading current volume', 500);
+        }
+        var iCurrentVolume = constants.General.MaxVolume;
+        if (oConfig.general && oConfig.general.current_volume) {
+            iCurrentVolume = parseInt(oConfig.general.current_volume);
+        }
+        resolve(iCurrentVolume);
+    }.bind(this));
+};
+
+exports.setCurrentVolume = function (iCurrentVolume) {
+    winston.info("set current volume:", iCurrentVolume);
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading current volume', 500);
+        }
+        if (!oConfig.general) {
+            oConfig.general = {};
+        }
+        oConfig.general.current_volume = iCurrentVolume;
+        this._saveFiguresFile(oConfig);
+        resolve(oConfig.general.current_volume);
+    }.bind(this));
+};

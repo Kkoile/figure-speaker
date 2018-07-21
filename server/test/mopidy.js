@@ -1,7 +1,9 @@
 var assert = require('assert');
 var sinon = require('sinon');
+var constants = require('../lib/constants');
 
 var child_process = require('child_process');
+var settingsController = require('../lib/settingsController');
 
 var mopidy = require('../lib/mopidy.js');
 
@@ -93,6 +95,101 @@ describe('Mopidy', function () {
             mopidy.restart().then(function () {
                 assert(oStopStub.calledOnce);
                 assert(oStartStub.calledOnce);
+                done();
+            });
+        });
+    });
+
+    describe('onVolumeChange', function () {
+        it('should increase the volume', function (done) {
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
+            var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
+            var iNewCurrentVolume;
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume').callsFake(function(iCurrentVolumeToSet) {
+                iNewCurrentVolume = iCurrentVolumeToSet;
+            });
+            var iCurrentVolumeToSet;
+            mopidy.mopidy =  {
+                playback: {
+                    volume: function(iVolume) {
+                        iCurrentVolumeToSet = iVolume;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+                assert(iNewCurrentVolume === 70 + constants.VolumeChange.Interval);
+                assert(iCurrentVolumeToSet === 70 + constants.VolumeChange.Interval);
+
+                assert(oGetCurrentVolumeStub.calledOnce);
+                assert(oMaxVolumeStub.calledOnce);
+                assert(oSetCurrentVolumeStub.calledOnce);
+                done();
+            });
+        });
+        it('should decrease the volume', function (done) {
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
+            var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
+            var iNewCurrentVolume;
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume').callsFake(function(iCurrentVolumeToSet) {
+                iNewCurrentVolume = iCurrentVolumeToSet;
+            });
+            var iCurrentVolumeToSet;
+            mopidy.mopidy =  {
+                playback: {
+                    volume: function(iVolume) {
+                        iCurrentVolumeToSet = iVolume;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy.onVolumeChange(constants.VolumeChange.Decrease).then(function () {
+                assert(iNewCurrentVolume === 70 - constants.VolumeChange.Interval);
+                assert(iCurrentVolumeToSet === 70 - constants.VolumeChange.Interval);
+
+                assert(oGetCurrentVolumeStub.calledOnce);
+                assert(oMaxVolumeStub.calledOnce);
+                assert(oSetCurrentVolumeStub.calledOnce);
+                done();
+            });
+        });
+        it('should not increase the volume', function (done) {
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
+            var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(70);
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
+            mopidy.mopidy =  {
+                playback: {
+                    volume: function() {
+                        assert(false);
+                    }
+                }
+            };
+
+            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+                assert(oGetCurrentVolumeStub.calledOnce);
+                assert(oMaxVolumeStub.calledOnce);
+                assert(oSetCurrentVolumeStub.notCalled);
+                done();
+            });
+        });
+        it('should not decrease the volume', function (done) {
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(10);
+            var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
+            mopidy.mopidy =  {
+                playback: {
+                    volume: function() {
+                        assert(false);
+                    }
+                }
+            };
+
+            mopidy.onVolumeChange(constants.VolumeChange.Decrease).then(function () {
+                assert(oGetCurrentVolumeStub.calledOnce);
+                assert(oMaxVolumeStub.calledOnce);
+                assert(oSetCurrentVolumeStub.notCalled);
                 done();
             });
         });

@@ -52,6 +52,9 @@ module.exports = listener;
 var rfidConnection = require('./lib/rfidConnection');
 rfidConnection.init();
 
+var volumeController = require('./lib/volumeController');
+volumeController.init();
+
 var mopidy = require('./lib/mopidy');
 mopidy.start();
 
@@ -59,6 +62,7 @@ var signals = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
 signals.forEach(function (sSignal) {
     process.on(sSignal, function () {
         rfidConnection.stop();
+        volumeController.stop();
         mopidy.stop().then(function () {
             process.exit(0);
         });
