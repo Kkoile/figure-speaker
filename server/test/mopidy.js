@@ -111,7 +111,7 @@ describe('Mopidy', function () {
             var iCurrentVolumeToSet;
             mopidy.mopidy =  {
                 playback: {
-                    volume: function(iVolume) {
+                    setVolume: function(iVolume) {
                         iCurrentVolumeToSet = iVolume;
                         return Promise.resolve();
                     }
@@ -138,7 +138,7 @@ describe('Mopidy', function () {
             var iCurrentVolumeToSet;
             mopidy.mopidy =  {
                 playback: {
-                    volume: function(iVolume) {
+                    setVolume: function(iVolume) {
                         iCurrentVolumeToSet = iVolume;
                         return Promise.resolve();
                     }
@@ -161,7 +161,7 @@ describe('Mopidy', function () {
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
             mopidy.mopidy =  {
                 playback: {
-                    volume: function() {
+                    setVolume: function() {
                         assert(false);
                     }
                 }
@@ -180,7 +180,7 @@ describe('Mopidy', function () {
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
             mopidy.mopidy =  {
                 playback: {
-                    volume: function() {
+                    setVolume: function() {
                         assert(false);
                     }
                 }

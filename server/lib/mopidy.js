@@ -128,7 +128,7 @@ exports.onVolumeChange = function (sVolumeChange) {
                     if (iNewVolume === iCurrentVolume || iNewVolume > iMaxVolume || iNewVolume < constants.General.MinVolume) {
                         return;
                     }
-                    return this.mopidy.playback.volume(iNewVolume)
+                    return this.mopidy.playback.setVolume(iNewVolume)
                         .then(settingsController.setCurrentVolume.bind(settingsController, iNewVolume));
                 }.bind(this));
         }.bind(this));
