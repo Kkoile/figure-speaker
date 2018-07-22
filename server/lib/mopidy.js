@@ -9,8 +9,12 @@ var settingsController = require('./settingsController');
 var Mopidy = require("mopidy");
 exports.mopidy = undefined;
 
-var rfidConnection = require('./rfidConnection');
-rfidConnection.listenForScan(this);
+try {
+    var rfidConnection = require('./rfidConnection');
+    rfidConnection.listenForScan(this);
+} catch (oError) {
+    winston.error("Could not listen for RFID Scans.", oError);
+}
 
 var volumeController = require('./volumeController');
 

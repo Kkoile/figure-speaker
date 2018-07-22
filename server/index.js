@@ -49,8 +49,13 @@ var listener = app.listen(port, function () {
 
 module.exports = listener;
 
-var rfidConnection = require('./lib/rfidConnection');
-rfidConnection.init();
+var rfidConnection;
+try {
+    rfidConnection = require('./lib/rfidConnection');
+    rfidConnection.init();
+} catch (oError) {
+    winston.error("Could not initialized RFID Connection.", oError);
+}
 
 var volumeController = require('./lib/volumeController');
 volumeController.init();
@@ -61,7 +66,7 @@ mopidy.start();
 var signals = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
 signals.forEach(function (sSignal) {
     process.on(sSignal, function () {
-        rfidConnection.stop();
+        rfidConnection && rfidConnection.stop();
         volumeController.stop();
         mopidy.stop().then(function () {
             process.exit(0);
