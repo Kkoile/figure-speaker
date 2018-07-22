@@ -5,10 +5,10 @@ node_js:
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
-  file: "project"
+  file: "source.zip"
   skip_cleanup: true
 
 before_deploy:
   - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-  - cd $TRAVIS_BUILD_DIR
-  - zip project
+  - cd ../
+  - zip -r source.zip .
