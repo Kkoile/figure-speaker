@@ -9,9 +9,6 @@ jobs:
   include:
     - stage: release
       script: echo "Deploying to GitHub releases ..."
-      before_deploy:
-        - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-        - zip project
       deploy:
         provider: releases
         api_key: $GITHUB_OAUTH_TOKEN
@@ -19,3 +16,8 @@ jobs:
         skip_cleanup: true
         on:
           tags: true
+
+before_deploy:
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - cd $TRAVIS_BUILD_DIR
+  - zip project
