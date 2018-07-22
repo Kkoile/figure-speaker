@@ -63,7 +63,9 @@ exports._playItem = function (oData) {
         this.mopidy.tracklist.clear()
             .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
             .then(this.mopidy.tracklist.add.bind(this.mopidy))
-            .then(this.mopidy.playback.setVolume.bind(this.mopidy, oData.volume))
+            .then(function() {
+                return this.mopidy.playback.setVolume(oData.volume);
+            }.bind(this))
             .then(function () {
                 return this.mopidy.playback.play();
             }.bind(this))
