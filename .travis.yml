@@ -7,8 +7,6 @@ stages:
     if: branch = master
 jobs:
   include:
-    - stage: test
-      script: ./test
     - stage: release
       script: echo "Deploying to GitHub releases ..."
       before_deploy:
