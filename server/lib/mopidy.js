@@ -13,7 +13,6 @@ var rfidConnection = require('./rfidConnection');
 rfidConnection.listenForScan(this);
 
 var volumeController = require('./volumeController');
-volumeController.listen(this);
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
@@ -136,3 +135,5 @@ exports.onVolumeChange = function (sVolumeChange) {
                 }.bind(this));
         }.bind(this));
 };
+
+volumeController.listen(this);
