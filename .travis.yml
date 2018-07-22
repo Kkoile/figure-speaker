@@ -1,3 +1,23 @@
 language: node_js
 node_js:
   - "node"
+stages:
+  - test
+  - name: release
+    if: branch = master
+jobs:
+  include:
+    - stage: test
+      script: ./test
+    - stage: release
+      script: echo "Deploying to GitHub releases ..."
+      before_deploy:
+        - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+        - zip project
+      deploy:
+        provider: releases
+        api_key: $GITHUB_OAUTH_TOKEN
+        file: "project"
+        skip_cleanup: true
+        on:
+          tags: true
