@@ -3,7 +3,7 @@
 module.exports = {
     General: {
         Language: 'en',
-        MinVolume: 10,
+        MinVolume: 5,
         MaxVolume: 100,
         CurrentVolume: 70
     },

@@ -175,7 +175,7 @@ describe('Mopidy', function () {
             });
         });
         it('should not decrease the volume', function (done) {
-            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(10);
+            var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(5);
             var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
             mopidy.mopidy =  {
