@@ -96,6 +96,100 @@ describe('VolumeController', function () {
             assert(bDecreaseWatchCalled);
             done();
         });
+        it('should notify listeners if button is pressed', function (done) {
+            process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
+            process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
+            VolumeController.increaseVolumeButton = undefined;
+            VolumeController.decreaseVolumeButton = undefined;
+
+            var fnIncreaseWatchCallback;
+            var oIncreaseButton = {
+                watch: function(fnCallback) {
+                    fnIncreaseWatchCallback = fnCallback;
+                }
+            };
+            var fnDecreaseWatchCallback;
+            var oDecreaseButton = {
+                watch: function(fnCallback) {
+                    fnDecreaseWatchCallback = fnCallback;
+                }
+            };
+            function Gpio(iPin) {
+                if (iPin == 1) {
+                    return oIncreaseButton;
+                }
+                if (iPin == 2) {
+                    return oDecreaseButton;
+                }
+            }
+            Gpio.prototype.constructor = Gpio;
+            VolumeController.Gpio = Gpio;
+
+            var oStub = sandbox.stub(VolumeController, '_notifyListeners');
+            var oIncreaseNotifyListenersStub = oStub.withArgs("INCREASE");
+            var oDecreaseNotifyListenersStub = oStub.withArgs("DECREASE");
+
+            VolumeController.init();
+            fnIncreaseWatchCallback(null, 1);
+            assert(oIncreaseNotifyListenersStub.calledOnce);
+            fnIncreaseWatchCallback(null, 0);
+            assert(oIncreaseNotifyListenersStub.calledOnce);
+            assert(oDecreaseNotifyListenersStub.notCalled);
+            fnDecreaseWatchCallback(null, 1);
+            assert(oIncreaseNotifyListenersStub.calledOnce);
+            assert(oDecreaseNotifyListenersStub.calledOnce);
+            fnDecreaseWatchCallback(null, 0);
+            assert(oIncreaseNotifyListenersStub.calledOnce);
+            assert(oDecreaseNotifyListenersStub.calledOnce);
+            done();
+        });
+        it('should not notify listeners if an error occurred when pressing a button', function (done) {
+            process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
+            process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
+            VolumeController.increaseVolumeButton = undefined;
+            VolumeController.decreaseVolumeButton = undefined;
+
+            var fnIncreaseWatchCallback;
+            var oIncreaseButton = {
+                watch: function(fnCallback) {
+                    fnIncreaseWatchCallback = fnCallback;
+                }
+            };
+            var fnDecreaseWatchCallback;
+            var oDecreaseButton = {
+                watch: function(fnCallback) {
+                    fnDecreaseWatchCallback = fnCallback;
+                }
+            };
+            function Gpio(iPin) {
+                if (iPin == 1) {
+                    return oIncreaseButton;
+                }
+                if (iPin == 2) {
+                    return oDecreaseButton;
+                }
+            }
+            Gpio.prototype.constructor = Gpio;
+            VolumeController.Gpio = Gpio;
+
+            var oStub = sandbox.stub(VolumeController, '_notifyListeners');
+            var oIncreaseNotifyListenersStub = oStub.withArgs("INCREASE");
+            var oDecreaseNotifyListenersStub = oStub.withArgs("DECREASE");
+
+            VolumeController.init();
+            fnIncreaseWatchCallback(new Error(), 1);
+            assert(oIncreaseNotifyListenersStub.notCalled);
+            fnIncreaseWatchCallback(null, 0);
+            assert(oIncreaseNotifyListenersStub.notCalled);
+            assert(oDecreaseNotifyListenersStub.notCalled);
+            fnDecreaseWatchCallback(null, 1);
+            assert(oIncreaseNotifyListenersStub.notCalled);
+            assert(oDecreaseNotifyListenersStub.calledOnce);
+            fnDecreaseWatchCallback(new Error(), 0);
+            assert(oIncreaseNotifyListenersStub.notCalled);
+            assert(oDecreaseNotifyListenersStub.calledOnce);
+            done();
+        });
     });
 
     describe('stop', function () {

@@ -44,20 +44,24 @@ exports.init = function () {
     this.increaseVolumeButton = new this.Gpio(increaseVolumeButtonGPIO, 'in', 'both');
     this.decreaseVolumeButton = new this.Gpio(decreaseVolumeButtonGPIO, 'in', 'both');
 
-    this.increaseVolumeButton.watch(function (err, value) {
+    this.increaseVolumeButton.watch(function (err, iValue) {
         if (err) {
             console.error('There was an error while watching increase volume button ', err);
             return;
         }
-        this._notifyListeners(constants.VolumeChange.Increase);
+        if (iValue === constants.VolumeChange.Push) {
+            this._notifyListeners(constants.VolumeChange.Increase);
+        }
     }.bind(this));
 
-    this.decreaseVolumeButton.watch(function (err, value) {
+    this.decreaseVolumeButton.watch(function (err, iValue) {
         if (err) {
             console.error('There was an error while watching decrease volume button ', err);
             return;
         }
-        this._notifyListeners(constants.VolumeChange.Decrease);
+        if (iValue === constants.VolumeChange.Push) {
+            this._notifyListeners(constants.VolumeChange.Decrease);
+        }
     }.bind(this));
 };
 

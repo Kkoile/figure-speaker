@@ -21,6 +21,8 @@ module.exports = {
     VolumeChange: {
         Increase: "INCREASE",
         Decrease: "DECREASE",
+        Push: 1,
+        Release: 0,
         Interval: 5
     },
     Player: {
