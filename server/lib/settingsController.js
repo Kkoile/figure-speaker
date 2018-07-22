@@ -265,7 +265,7 @@ exports.getCurrentVolume = function () {
 };
 
 exports.setCurrentVolume = function (iCurrentVolume) {
-    winston.info("set current volume:", iCurrentVolume);
+    winston.debug("set current volume:", iCurrentVolume);
     return new Promise(function (resolve) {
         var oConfig;
         try {
