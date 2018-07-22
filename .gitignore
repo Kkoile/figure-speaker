@@ -6,3 +6,4 @@
 node_modules/
 *figures.conf
 *package-lock.json
+server/.nyc_output/

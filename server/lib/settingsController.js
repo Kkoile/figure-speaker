@@ -129,12 +129,15 @@ exports.getFigurePlayInformation = function () {
     var sCardId = rfidConnection.getCardId();
     if (oConfig[sCardId]) {
         return this._getProgressOfSong(oConfig[sCardId].progress, oConfig[sCardId].last_played).then(function (iProgress) {
-            var oData = oConfig[sCardId];
-            oData.cardId = sCardId;
-            oData.progress = iProgress;
-            winston.info('Found the following figure:', JSON.stringify(oData));
-            return oData;
-        });
+            return this.getCurrentVolume().then(function(iCurrentVolume) {
+                var oData = oConfig[sCardId];
+                oData.cardId = sCardId;
+                oData.progress = iProgress;
+                oData.volume = iCurrentVolume;
+                winston.info('Found the following figure:', JSON.stringify(oData));
+                return oData;
+            });
+        }.bind(this));
     }
     return Promise.resolve(null);
 };
@@ -241,5 +244,40 @@ exports.setMaxVolume = function (iMaxVolume) {
         oConfig.general.max_volume = iMaxVolume;
         this._saveFiguresFile(oConfig);
         resolve(oConfig.general.max_volume);
+    }.bind(this));
+};
+
+exports.getCurrentVolume = function () {
+    winston.debug("get current volume");
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading current volume', 500);
+        }
+        var iCurrentVolume = constants.General.CurrentVolume;
+        if (oConfig.general && oConfig.general.current_volume) {
+            iCurrentVolume = parseInt(oConfig.general.current_volume);
+        }
+        resolve(iCurrentVolume);
+    }.bind(this));
+};
+
+exports.setCurrentVolume = function (iCurrentVolume) {
+    winston.debug("set current volume:", iCurrentVolume);
+    return new Promise(function (resolve) {
+        var oConfig;
+        try {
+            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+        } catch (oError) {
+            throw new ApplicationError('Error while reading current volume', 500);
+        }
+        if (!oConfig.general) {
+            oConfig.general = {};
+        }
+        oConfig.general.current_volume = iCurrentVolume;
+        this._saveFiguresFile(oConfig);
+        resolve(oConfig.general.current_volume);
     }.bind(this));
 };

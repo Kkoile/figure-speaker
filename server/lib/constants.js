@@ -3,7 +3,9 @@
 module.exports = {
     General: {
         Language: 'en',
-        MaxVolume: 100
+        MinVolume: 5,
+        MaxVolume: 100,
+        CurrentVolume: 70
     },
     Data: {
         PathToFigures: './figures.conf'
@@ -15,6 +17,13 @@ module.exports = {
     PlayMode: {
         Resume: 'RESUME',
         Reset: 'RESET'
+    },
+    VolumeChange: {
+        Increase: "INCREASE",
+        Decrease: "DECREASE",
+        Push: 1,
+        Release: 0,
+        Interval: 5
     },
     Player: {
         DefaultPlayMode: 'RESUME',
