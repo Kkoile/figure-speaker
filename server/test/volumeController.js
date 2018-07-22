@@ -16,8 +16,12 @@ describe('VolumeController', function () {
 
     describe('init', function () {
         it('should return if environment variables for GPIOs are not set', function (done) {
-            process.env.GPIO_INCREASE_VOLUME_BUTTON = undefined;
-            process.env.GPIO_DECREASE_VOLUME_BUTTON = undefined;
+            function Gpio(iPin) {}
+            Gpio.prototype.constructor = Gpio;
+            VolumeController.Gpio = Gpio;
+
+            delete process.env.GPIO_INCREASE_VOLUME_BUTTON;
+            delete process.env.GPIO_DECREASE_VOLUME_BUTTON;
             VolumeController.increaseVolumeButton = undefined;
             VolumeController.decreaseVolumeButton = undefined;
 
@@ -27,7 +31,11 @@ describe('VolumeController', function () {
             done();
         });
         it('should return if one environment variable for GPIOs is not set', function (done) {
-            process.env.GPIO_INCREASE_VOLUME_BUTTON = undefined;
+            function Gpio(iPin) {}
+            Gpio.prototype.constructor = Gpio;
+            VolumeController.Gpio = Gpio;
+
+            delete process.env.GPIO_INCREASE_VOLUME_BUTTON;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 1;
             VolumeController.increaseVolumeButton = undefined;
             VolumeController.decreaseVolumeButton = undefined;
@@ -38,8 +46,12 @@ describe('VolumeController', function () {
             done();
         });
         it('should return if one environment variable for GPIOs is not set', function (done) {
+            function Gpio(iPin) {}
+            Gpio.prototype.constructor = Gpio;
+            VolumeController.Gpio = Gpio;
+
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
-            process.env.GPIO_DECREASE_VOLUME_BUTTON = undefined;
+            delete process.env.GPIO_DECREASE_VOLUME_BUTTON;
             VolumeController.increaseVolumeButton = undefined;
             VolumeController.decreaseVolumeButton = undefined;
 
