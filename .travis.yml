@@ -7,6 +7,7 @@ deploy:
     secure: CE39fvI0hUG7FHH1QbEBkB280gPuuWDJ4gpix4h1XNaqo1U/FT3nygN1bOVT1IH12BVXsHUFS8UREg8Q9IuxEffrOGVQ5zNBPR4XfUFOQ/6u5G1jBcuQ6cjgJKtWDk2EMEdUw2jbFQ+MQ0a/uRN45vt0b9Jz4kgA0kNwXvamdh6XMbPoTQUvPF5nS4NBVt+yLbiPhe5ep0jJlWVrGW1hWR/fBYxh3zHYyaeAzx2rq9koCeXzAd4FFhIu+Vz4SWkWxrnOM+qtq+oGuZWh1FPScHWCWiLgZpk9aftUR2KYY3PYry3WbKK3P7Eyx+OSnybn0hmaO/BJMKkOKxJQpjJTmQmuZqItB3e4WKxIDd2SRAG+QQxJx1KRARYyuLO/z1ip8/oZrDqcAgYGXPT76dXxQk+b+CO1iIL0Halzex50jP/9TGteXY2uugu2RI9a5eLXrh6fEFa7IzNUUO565ywaET2u5KhAx+fs+T4toY3J1lB1uOx8TtcYEI6rNG/8beK01LkyZHInrI5p+iwR/CMODtY9tWFiK05RBbeE0fR/KNdVHGtseOZk3pJrReG52rxUQ+2/B1fXnzhdmJv0cpLM9C8fSvy/fW0KK5wIibdIb0iF/ZKtpT8bgHCcvVAh+JgDklvIToJG3Gyn6kyboIZmFoIwdissS1czleCz+dANHdQ=
   on:
     repo: Kkoile/figure-speaker
+    tags: true
 
 before_deploy:
 - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
