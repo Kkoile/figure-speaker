@@ -1,5 +1,5 @@
 {
-  "private": false,
+  "preferGlobal": true,
   "name": "figure-speaker",
   "version": "1.0.0",
   "author": "Nils Hirsekorn <Nils_Hirsekorn@online.de>",
