@@ -8,8 +8,3 @@ deploy:
   on:
     repo: Kkoile/figure-speaker
     tags: true
-
-before_deploy:
-- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-- cd ../
-- zip -r source.zip figure-speaker -x *.git* -x *node_modules*

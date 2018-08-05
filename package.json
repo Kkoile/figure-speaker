@@ -2,7 +2,7 @@
   "private": true,
   "name": "figure-speaker",
   "version": "1.0.0",
-  "author": "Nils Hirsekorn",
+  "author": "Nils Hirsekorn <Nils_Hirsekorn@online.de>",
   "description": "Speaker which reacts to NFC tags and streams music",
   "scripts": {
     "install": "node install.js",

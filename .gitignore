@@ -5,5 +5,5 @@
 .jshintrc
 node_modules/
 *figures.conf
-*package-lock.json
+package-lock.json
 server/.nyc_output/
