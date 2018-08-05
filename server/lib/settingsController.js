@@ -159,6 +159,12 @@ exports.saveFigurePlayInformation = function (sCardId, iProgress) {
 };
 
 exports._saveFiguresFile = function (oConfig) {
+    if (!fs.existsSync(constants.Data.PathToGeneralConfig)){
+        fs.mkdirSync(constants.Data.PathToGeneralConfig);
+    }
+    if (!fs.existsSync(constants.Data.PathToAppConfig)){
+        fs.mkdirSync(constants.Data.PathToAppConfig);
+    }
     try {
         fs.writeFileSync(constants.Data.PathToFigures, ini.stringify(oConfig, {whitespace: true}));
     } catch (oError) {

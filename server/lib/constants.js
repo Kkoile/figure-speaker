@@ -1,5 +1,10 @@
 'use strict';
 
+var sPathToGeneralConfig = require("os").homedir() + '/.config';
+var sPathToAppConfig = sPathToGeneralConfig + '/figure-speaker';
+var sPathToConfigFile = sPathToAppConfig + '/figures.conf';
+
+
 module.exports = {
     General: {
         Language: 'en',
@@ -8,7 +13,9 @@ module.exports = {
         CurrentVolume: 70
     },
     Data: {
-        PathToFigures: './figures.conf'
+        PathToGeneralConfig: sPathToGeneralConfig,
+        PathToAppConfig: sPathToAppConfig,
+        PathToFigures: sPathToConfigFile
     },
     Mopidy: {
         PathToConfig: require("os").homedir() + '/.config/mopidy/mopidy.conf',
