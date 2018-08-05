@@ -63,6 +63,22 @@
                v-bind:key="account.id">
         <AccountListItem v-bind:item="account"></AccountListItem>
       </md-card>
+
+      <md-card>
+        <md-card-header>
+          <div class="md-title">{{ $t("settings.updates.title") }}</div>
+        </md-card-header>
+
+        <md-card-content>
+          <label for="currentVersion">{{ $t("settings.currentVersion.label") }}</label>
+          <md-input name="currentVersion" id="currentVersion" disabled="true" v-model="$store.state.settings.currentVersion" />
+        </md-card-content>
+
+        <md-card-actions>
+          <md-button @click="checkForUpdate" class="md-primary">{{ $t("settings.checkForUpdate.button") }}</md-button>
+          <md-button @click="installUpdate" class="md-secondary">{{ $t("settings.installUpdate.button") }}</md-button>
+        </md-card-actions>
+      </md-card>
     </form>
   </div>
 </template>
@@ -87,12 +103,19 @@ export default {
     },
     saveMaxVolume: function () {
       this.$store.dispatch('saveMaxVolume', this.$store.state.settings.maxVolume);
+    },
+    checkForUpdate: function () {
+      this.$store.dispatch('checkForUpdate', this.$store.state.settings.currentVersion);
+    },
+    installUpdate: function () {
+      window.location.href = 'http://localhost:3001';
     }
   },
   beforeMount: function () {
     this.$store.dispatch('loadAccounts');
     this.$store.dispatch('loadPlayMode');
     this.$store.dispatch('loadMaxVolume');
+    this.$store.dispatch('loadCurrentVersion');
   }
 };
 </script>

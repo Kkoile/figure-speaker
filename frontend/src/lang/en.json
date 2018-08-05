@@ -63,6 +63,18 @@
     },
     "languageDe": {
       "text": "German"
+    },
+    "updates": {
+      "title": "Updates"
+    },
+    "currentVersion": {
+      "label": "Current Version"
+    },
+    "checkForUpdate": {
+      "button": "Check for Update"
+    },
+    "installUpdate": {
+      "button": "Install Update"
     }
   },
   "mp3": {

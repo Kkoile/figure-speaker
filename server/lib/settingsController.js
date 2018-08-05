@@ -1,5 +1,6 @@
 'use strict';
 
+var packageJson = require('../package.json');
 var winston = require('winston');
 var fs = require('fs');
 var ini = require('ini');
@@ -249,5 +250,12 @@ exports.setCurrentVolume = function (iCurrentVolume) {
         oConfig.general.current_volume = iCurrentVolume;
         this._saveFiguresFile(oConfig);
         resolve(oConfig.general.current_volume);
+    }.bind(this));
+};
+
+exports.getCurrentVersion = function () {
+    winston.debug("get current version");
+    return new Promise(function (resolve) {
+        resolve(packageJson.version);
     }.bind(this));
 };
