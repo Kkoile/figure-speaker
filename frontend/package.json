@@ -1,6 +1,6 @@
 {
   "name": "figure-speaker-frontend",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Speaker which reacts to NFC tags and streams music",
   "author": "Nils_Hirsekorn@online.de",
   "private": true,
