@@ -6,7 +6,7 @@ import ManageAccount from '../components/ManageAccount';
 export default [
   {
     path: '/spotify',
-    name: 'Spotify',
+    name: 'spotify',
     component: Spotify
   },
   {

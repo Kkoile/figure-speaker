@@ -3,7 +3,7 @@
     <h1>{{ $store.state.spotify.albumArtistName }}</h1>
     <h2>{{ $store.state.spotify.albumName }}</h2>
     <div class="albumOverview">
-      <button @click="saveItem">{{ $t("spotify.saveAlbum.button") }}</button>
+      <md-button @click="saveItem">{{ $t("spotify.saveAlbum.button") }}</md-button>
       <h2>{{ $t("spotify.tracks.title") }}</h2>
       <div class="trackList">
         <AlbumTrackItem
@@ -13,7 +13,7 @@
         </AlbumTrackItem>
       </div>
       <div class="loadMoreButton">
-        <button v-if="$store.state.spotify.moreAlbumTracks" @click="loadMoreAlbumTracks">{{ $t("common.more.button") }}</button>
+        <md-button v-if="$store.state.spotify.moreAlbumTracks" @click="loadMoreAlbumTracks">{{ $t("common.more.button") }}</md-button>
       </div>
     </div>
   </div>

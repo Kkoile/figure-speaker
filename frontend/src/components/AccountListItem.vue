@@ -1,8 +1,12 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
-  <div class="listItem">
-    {{ item.name }}
-    ({{ item.enabled ? $t("settings.accountActive.text") : $t("settings.accountInactive.text")}})
-    <button @click="openManageAccount">{{ $t("settings.manageAccount.button") }}</button>
+  <div>
+    <md-card-header>
+      <div class="md-title">{{ item.name }} ({{ item.enabled ? $t("settings.accountActive.text") : $t("settings.accountInactive.text")}})</div>
+    </md-card-header>
+
+    <md-card-actions>
+      <md-button @click="openManageAccount" class="md-primary">{{ $t("settings.manageAccount.button") }}</md-button>
+    </md-card-actions>
   </div>
 </template>
 
@@ -17,12 +21,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-  .listItem {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 5px;
-  }
-</style>

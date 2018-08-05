@@ -1,7 +1,7 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="listEntry">
     {{ item.name }}
-    <button class="itemButton" v-on:click="saveItem">{{ $t("common.save.button") }}</button>
+    <md-button class="itemButton" v-on:click="saveItem">{{ $t("common.save.button") }}</md-button>
   </div>
 </template>
 

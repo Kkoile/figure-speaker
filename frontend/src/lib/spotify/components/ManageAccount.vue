@@ -1,29 +1,38 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div class="main">
-    <h2>{{ $t("spotify.manageAccount.title") }}</h2>
-    <div>
-      <p v-html="$t('spotify.credentials.text', {url: mopidyUrl})"/>
-      <li>
-        <ul>
-          <div>
-            {{ $t("spotify.userName.label") }}: <input v-model="$store.state.spotify.account.username">
-          </div>
-          <div>
-            {{ $t("spotify.password.label") }}: <input v-model="$store.state.spotify.account.password" type="password">
-          </div>
-          <div>
-            {{ $t("spotify.clientId.label") }}: <input v-model="$store.state.spotify.account.client_id">
-          </div>
-          <div>
-            {{ $t("spotify.clientSecret.label") }}: <input v-model="$store.state.spotify.account.client_secret" type="password">
-          </div>
-        </ul>
-      </li>
-      <div class="buttonArea">
-        <button @click="save">{{ $t("common.save.button") }}</button>
-        <button @click="remove">{{ $t("common.delete.button") }}</button>
-      </div>
-    </div>
+    <form class="md-layout">
+      <md-card>
+        <md-card-header>
+          <div class="md-title">{{ $t("spotify.manageAccount.title") }}</div>
+        </md-card-header>
+
+        <md-card-content>
+          <md-field>
+            <label for="username">{{ $t("spotify.userName.label") }}</label>
+            <md-input name="username" id="username" v-model="$store.state.spotify.account.username" />
+          </md-field>
+          <md-field>
+            <label for="password">{{ $t("spotify.password.label") }}</label>
+            <md-input name="password" id="password" type="password" v-model="$store.state.spotify.account.password" />
+          </md-field>
+          <md-field>
+            <label for="client_id">{{ $t("spotify.clientId.label") }}</label>
+            <md-input name="client_id" id="client_id" v-model="$store.state.spotify.account.client_id" />
+          </md-field>
+          <md-field>
+            <label for="client_secret">{{ $t("spotify.clientSecret.label") }}</label>
+            <md-input name="client_secret" id="client_secret" type="password" v-model="$store.state.spotify.account.client_secret" />
+          </md-field>
+        </md-card-content>
+
+        <md-progress-bar md-mode="indeterminate" v-if="sending" />
+
+        <md-card-actions>
+          <md-button @click="remove" class="md-secondary">{{ $t("common.delete.button") }}</md-button>
+          <md-button @click="save" class="md-primary">{{ $t("common.save.button") }}</md-button>
+        </md-card-actions>
+      </md-card>
+    </form>
   </div>
 </template>
 
@@ -32,15 +41,22 @@ export default {
   name: 'SpotifyManageAccount',
   data: function () {
     return {
-      mopidyUrl: 'https://www.mopidy.com/authenticate/'
+      mopidyUrl: 'https://www.mopidy.com/authenticate/',
+      sending: false
     };
   },
   methods: {
     save: function () {
-      this.$store.dispatch('spotify/saveAccount');
+      this.sending = true;
+      this.$store.dispatch('spotify/saveAccount').then(function () {
+        this.sending = false;
+      }.bind(this));
     },
     remove: function () {
-      this.$store.dispatch('spotify/deleteAccount');
+      this.sending = true;
+      this.$store.dispatch('spotify/deleteAccount').then(function () {
+        this.sending = false;
+      }.bind(this));
     }
   },
   beforeMount: function () {

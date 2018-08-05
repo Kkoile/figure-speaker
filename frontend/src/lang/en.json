@@ -1,4 +1,24 @@
 {
+  "navigation": {
+    "navigation": {
+      "title": "Navigation"
+    },
+    "main": {
+      "title": "Home"
+    },
+    "spotify": {
+      "title": "Spotify"
+    },
+    "mp3": {
+      "title": "MP3"
+    },
+    "youtube": {
+      "title": "Youtube"
+    },
+    "settings": {
+      "title": "Settings"
+    }
+  },
   "main": {
     "settings": {
       "button": "Settings"
@@ -27,7 +47,7 @@
       "text": "Resume"
     },
     "resumeAfter": {
-      "label": "Reset state after that amount of days"
+      "label": "Reset after amount of days"
     },
     "reset": {
       "text": "Reset"
@@ -46,25 +66,16 @@
     }
   },
   "mp3": {
-    "title": {
-      "title": "MP3"
-    },
     "url": {
       "placeholder": "MP3 URL"
     }
   },
   "youtube": {
-    "title": {
-      "title": "Youtube"
-    },
     "url": {
       "placeholder": "URL"
     }
   },
   "spotify": {
-    "title": {
-      "title": "Spotify"
-    },
     "artists": {
       "title": "Artists"
     },

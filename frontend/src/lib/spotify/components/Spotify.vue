@@ -1,10 +1,11 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div>
-    <h1>{{ $t("spotify.title.title") }}</h1>
-    <div>
-      <input v-model="$store.state.spotify.query" v-on:keyup.enter="search">
-      <button @click="search">{{ $t("common.search.button") }}</button>
-    </div>
+    <md-field>
+      <md-input v-model="$store.state.spotify.query" v-on:keyup.enter="search"></md-input>
+      <md-button @click="search" class="md-icon-button">
+        <md-icon>search</md-icon>
+      </md-button>
+    </md-field>
     <div class="searchResult">
       <h2>{{ $t("spotify.artists.title") }}</h2>
       <li class="searchList">
@@ -14,7 +15,7 @@
           v-bind:key="artist.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.spotify.moreArtists" @click="loadMoreArtists">{{ $t("common.more.button") }}</button>
+          <md-button v-if="$store.state.spotify.moreArtists" @click="loadMoreArtists">{{ $t("common.more.button") }}</md-button>
         </div>
       </li>
       <div v-if="$store.state.spotify.artists.length === 0">
@@ -30,7 +31,7 @@
           v-bind:key="album.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.spotify.moreAlbums" @click="loadMoreAlbums">{{ $t("common.more.button") }}</button>
+          <md-button v-if="$store.state.spotify.moreAlbums" @click="loadMoreAlbums">{{ $t("common.more.button") }}</md-button>
         </div>
       </li>
       <div v-if="$store.state.spotify.albums.length === 0">
@@ -46,7 +47,7 @@
           v-bind:key="track.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.spotify.moreTracks" @click="loadMoreTracks">{{ $t("common.more.button") }}</button>
+          <md-button v-if="$store.state.spotify.moreTracks" @click="loadMoreTracks">{{ $t("common.more.button") }}</md-button>
         </div>
       </li>
       <div v-if="$store.state.spotify.tracks.length === 0">

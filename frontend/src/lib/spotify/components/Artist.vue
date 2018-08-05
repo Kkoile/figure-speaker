@@ -18,7 +18,7 @@
           v-bind:key="album.uri">
         </SearchItem>
         <div class="loadMoreButton">
-          <button v-if="$store.state.spotify.moreArtistAlbums" @click="loadMoreArtistAlbums">{{ $t("common.more.button") }}</button>
+          <md-button v-if="$store.state.spotify.moreArtistAlbums" @click="loadMoreArtistAlbums">{{ $t("common.more.button") }}</md-button>
         </div>
       </li>
     </div>

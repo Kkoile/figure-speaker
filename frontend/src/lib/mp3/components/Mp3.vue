@@ -1,10 +1,9 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml">
   <div>
-    <h1>{{ $t("mp3.title.title") }}</h1>
-    <div>
-      <input v-model="$store.state.mp3.query" v-bind:placeholder="$t('mp3.url.placeholder')" v-on:keyup.enter="save">
-      <button @click="save">{{ $t("common.save.button") }}</button>
-    </div>
+    <md-field>
+      <md-input v-model="$store.state.mp3.query" v-bind:placeholder="$t('mp3.url.placeholder')" v-on:keyup.enter="save"></md-input>
+      <md-button @click="save">{{ $t("common.save.button") }}</md-button>
+    </md-field>
   </div>
 </template>
 
