@@ -1,7 +1,7 @@
 {
   "preferGlobal": true,
   "name": "figure-speaker-server",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Nils Hirsekorn",
   "description": "Speaker which reacts to NFC tags and streams music",
   "engines": {
