@@ -9,3 +9,6 @@ deploy:
   on:
     tags: true
     repo: Kkoile/figure-speaker
+  skip_cleanup: true
+  before_deploy:
+    - npm run build

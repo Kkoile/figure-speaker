@@ -12,9 +12,6 @@
     "test": "mocha"
   },
   "main": "index.js",
-  "bin": {
-    "figure-speaker": "./bin/start-server.js"
-  },
   "dependencies": {
     "ajv": "^6.0.0",
     "body-parser": "1.18.2",
