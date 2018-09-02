@@ -1,7 +1,7 @@
 {
   "preferGlobal": true,
   "name": "figure-speaker",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Nils Hirsekorn <Nils_Hirsekorn@online.de>",
   "description": "Speaker which reacts to NFC tags and streams music",
   "repository": "git@github.com:Kkoile/figure-speaker.git",
@@ -14,9 +14,5 @@
   },
   "bin": {
     "figure-speaker": "./server/bin/start-server.js"
-  },
-  "dependencies": {
-    "figure-speaker-frontend": "file:frontend",
-    "figure-speaker-server": "file:server"
   }
 }
