@@ -4,6 +4,8 @@
   "version": "0.0.3",
   "author": "Nils Hirsekorn <Nils_Hirsekorn@online.de>",
   "description": "Speaker which reacts to NFC tags and streams music",
+  "repository": "git@github.com:Kkoile/figure-speaker.git",
+  "license": "MIT",
   "scripts": {
     "install": "node install.js",
     "start": "cd server && npm start",

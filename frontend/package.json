@@ -4,6 +4,8 @@
   "version": "0.0.3",
   "description": "Speaker which reacts to NFC tags and streams music",
   "author": "Nils_Hirsekorn@online.de",
+  "repository": "git@github.com:Kkoile/figure-speaker.git",
+  "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
