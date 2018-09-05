@@ -157,6 +157,40 @@ Now, either start the service directly with `sudo systemctl start figure-speaker
  
 You can always see the current logs by executing `journalctl -u figure-speaker-update-manager -f`
 
+## Install WiFi Connector
+```
+sudo npm install -g figure-speaker-wifi-connector
+```
+Create a file `figure-speaker-wifi-connector.service`:
+ ```
+ sudo touch /etc/systemd/system/figure-speaker-wifi-connector.service
+ sudo chmod 664 /etc/systemd/system/figure-speaker-wifi-connector.service
+ ```
+And paste the following content in it.
+```
+[Service]
+WorkingDirectory=/home/pi/
+ExecStart=/home/pi/.npm-global/bin/figure-speaker-wifi-connector
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=figure-speaker-wifi-connector
+User=pi
+Group=pi
+Environment=NODE_ENV=production 
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Execute the following command:
+```
+sudo systemctl enable figure-speaker-wifi-connector
+```
+Now, either start the service directly with `sudo systemctl start figure-speaker-wifi-connector`, or reboot the raspberry pi.
+ 
+You can always see the current logs by executing `journalctl -u figure-speaker-wifi-connector -f`
+
 ## Configure Ad Hoc Wifi
 //TODO document how to configure ad hoc network and expose figure-speaker-wifi-connector
 
