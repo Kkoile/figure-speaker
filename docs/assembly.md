@@ -28,6 +28,8 @@ In order to setup the Raspberry Pi itself from a software point of view, see cha
 ## Build the Box
 I know that there are a lot of ways to build a simple box and I am not a carpenter. So this way to build a wooden box might not be the best, but it is simple and works. However, feel free to give feedback or adjust the instructions to your needs.
 
+Please Note: The wooden parts of the box don't need to be perfectly cut, because I wrap the whole box with foam plates, in order to make them "child safe" and robust against falling to the ground etc. 
+ 
 The sizes of this box depend on the power bank you use and the size of the speakers. 
 ### What you need
 - 4x square mouldings: 20mm * 20mm * 140mm
@@ -44,22 +46,35 @@ The sizes of this box depend on the power bank you use and the size of the speak
 - magnet
 
 ### Assemble
-1) Drill a 4mm hole about 10mm deep into one end of each square mouldings. Punch the captive nuts in these holes.
+1) Drill a 6mm hole about 10mm deep into one end of each square mouldings. Punch the captive nuts in these holes.
+![Hole in Square Mouldings](resources/assembly/assembly_01.JPG)
+![Captive Nuts in Square Mouldings](resources/assembly/assembly_01b.JPG)
+![Captive Nuts in Square Mouldings](resources/assembly/assembly_02.JPG)
 2) Drill a hole in the middle of two of the side plates. The speakers will be placed in these holes later on. In my case the diameter is 50mm, but it depends on the speakers you use.
 Drill four 3mm holes in the corners next to the holes to attach the speakers later.
 3) Drill four 2mm holes in another side plate (the back). These will be used to attach the Raspberry Pi to the box. Beware of the position of the Pi: The power bank has to be placed underneath.
 4) Drill a hole in the top plate for the cables of the RFID reader; about 20mm * 10mm. In addition to that, you need four 3mm holes to connect the RFID Reader to the box.
-5) Drill 4mm holes in the corners of the bottom plate. They are used to screw the bottom plate to the captive nuts in the square mouldings.
-6) Drill holes for the outlets of the powerbank: USB input and on / off button.
-7) Screw the side plates to the square mouldings. The captive nuts should be on the buttom. Make sure that the plates with the speaker holes are facing each other. Use the screw spax for this. Don't screw them to close to the edge of the square mouldings, because screws need to come from the top and they shouldn't conflict.
-8) Attach the Raspberry Pi to the back plate. Use 4x countersunk threaded screw: M2 * 10mm incl. nuts for this purpose.
-9) Attach the speakers to the side plates. Use 8x countersunk threaded screw: M3 * 10mm incl. nuts for this purpose.
-10) Attach the RFID Reader to the top plate. I used four countersunk threaded screw M3 * 16mm for this. Use three nuts for each screw in order to place the RFID Reader about 10mm above the box. This is done because the box will be wrapped with 10mm thick foam plates and the RFID Reader should be aligned with these plates.
-11) Glue a magnet beneath the RFID Reader.
-12) Screw the top plate to the square mouldings with four screw pax M4 * 12mm
-13) Wire the modules to the Raspberry Pi.
+5) Drill holes for the outlets of the powerbank: USB input and on / off button.
+![Plates](resources/assembly/assembly_03.JPG)
+6) Screw the side plates to the square mouldings. The captive nuts should be on the buttom. Make sure that the plates with the speaker holes are facing each other. Use the screw spax for this. Don't screw them to close to the edge of the square mouldings, because screws need to come from the top and they shouldn't conflict.
+![Plates](resources/assembly/assembly_04.JPG)
+![Plates](resources/assembly/assembly_05.JPG)
+7) Attach the Raspberry Pi to the back plate. Use 4x countersunk threaded screw: M2 * 10mm incl. nuts for this purpose.
+8) Attach the speakers to the side plates. Use 8x countersunk threaded screw: M3 * 10mm incl. nuts for this purpose.
+![Attach Raspberry Pi and Speakers](resources/assembly/assembly_06.JPG)
+![Attach Raspberry Pi and Speakers](resources/assembly/assembly_07.JPG)
+9) Attach the RFID Reader to the top plate. I used four countersunk threaded screw M3 * 16mm for this. Use three nuts for each screw in order to place the RFID Reader about 10mm above the box. This is done because the box will be wrapped with 10mm thick foam plates and the RFID Reader should be aligned with these plates.
+10) Glue a magnet beneath the RFID Reader.
+11) Screw the top plate to the square mouldings with four screw pax M4 * 12mm
+![RFID Reader](resources/assembly/assembly_08.JPG)
+![RFID Reader](resources/assembly/assembly_09.JPG)
+12) Wire the modules to the Raspberry Pi.
+![Wire Modules](resources/assembly/assembly_10.JPG)
+13) Drill 4mm holes in the corners of the bottom plate. They are used to screw the bottom plate to the captive nuts in the square mouldings.
 14) Attach the power bank to the bottom plate. I used metal perforated tapes to realize this. These are bent over the power bank and screws hold the tape to the bottom plate. I use four countersunk threaded screw: M3 * 10mm incl. nuts for this.
+![Bottom Plate](resources/assembly/assembly_11.JPG)
 15) Screw the bottom plate to the box with four countersunk threaded screws: M3 * 16mm.
+![Bottom Plate](resources/assembly/assembly_12.JPG)
 
 ## Build the Figures
 In order to build a figure you bascially only need an nfc tag and the figure. I also recommend to use a metal plate as well, so that the figure won't fall off, because there is a magnet underneath the RFID reader.
