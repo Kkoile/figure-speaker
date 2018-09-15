@@ -82,4 +82,4 @@ echo `ls ${mount}/tmp`
 
 
 # Run the setup script inside the chroot
-chroot ${mount} /bin/bash "/tmp/${script}"
+chroot ${mount} /tmp/bin/bash "/tmp/${script}"
