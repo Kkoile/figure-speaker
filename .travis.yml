@@ -37,7 +37,7 @@ jobs:
         - dosfstools
         - zip
     script:
-    - sudo ./create-image
+    - sudo bash ./create-image
     - xz -z figure-speaker.img -c > figure-speaker.img.xz
     - zip figure-speaker.img.zip figure-speaker.img
   - stage: "publish_image"
