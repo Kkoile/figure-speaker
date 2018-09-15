@@ -61,14 +61,6 @@ tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header
 
 # Copy our installation script to the mount so it can be run in the chroot
 install -Dm755 "${script}" "${mount}/tmp/${script}"
-echo "Files and directories"
-echo `ls`
-
-echo "Files and directories inside mount"
-echo `ls ${mount}`
-
-echo "Files and directories inside mount/tmp"
-echo `ls ${mount}/tmp`
 
 # Prep the chroot
 mount -t proc none ${mount}/proc
@@ -78,6 +70,15 @@ rm ${mount}/etc/resolv.conf
 cp /etc/resolv.conf ${mount}/etc/resolv.conf
 cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
 cp -r /bin /lib ${mount}/tmp
+
+echo "Files and directories"
+echo `ls`
+
+echo "Files and directories inside mount"
+echo `ls ${mount}`
+
+echo "Files and directories inside mount/tmp"
+echo `ls ${mount}/tmp`
 
 
 # Run the setup script inside the chroot
