@@ -56,7 +56,7 @@ mount "${bootdev}" "${mount}/boot"
 # Install archlinuxarm to the image
 tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
 
-# Copy our installtion script and other artifacts
+# Copy our installation script and other artifacts
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Prep the chroot
@@ -66,8 +66,6 @@ mount -o bind /dev "${mount}/dev"
 mount -o bind /dev/pts "${mount}/dev/pts"
 rm "${mount}/etc/resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
-cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
-
 
 # Run the setup script inside the chroot
-chroot ${mount} qemu-arm-static "/tmp/${script}"
+chroot ${mount} "/tmp/${script}"
