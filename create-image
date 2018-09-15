@@ -80,8 +80,14 @@ cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
 
 
 
-echo "Files and directories inside mount/tmp"
+echo "Files and directories inside mount/usr/bin"
 echo `ls ${mount}/usr/bin`
+
+echo "Files and directories inside mount/bin"
+echo `ls ${mount}/bin`
+
+echo "Echo SHELL"
+echo `${SHELL}`
 
 # Run the setup script inside the chroot
 chroot ${mount} "/tmp/${script}"
