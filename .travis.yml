@@ -32,6 +32,7 @@ jobs:
         - qemu
         - qemu-user-static
         - binfmt-support
+        - dpkg-cross
         - parted
         - wget
         - dosfstools
