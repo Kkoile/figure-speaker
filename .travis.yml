@@ -1,14 +1,57 @@
 language: node_js
 node_js:
-- node
-before_deploy:
-  - npm run build
-deploy:
-  provider: npm
-  email: Nils_Hirsekorn@online.de
-  api_key:
-    secure: DSPII0KKP9m8mgJlMiupqaVXKa30oQb5EzO4xwXA1GCa2s8GeRuuVWOUYDtuwClstvqhTQ8hvOGuNxBKwhhNisZ0VrPPwdL2fciH4qwet88TGtCdRKiLWiQZJfD1pRGoDeenlOZIwpb6vUUxAjJ8t+HzJJlhrWE+o3WZ91h5Eq8eWV2/dNAYuY9+qwC1gAQSFsO/LBviIuS6AEsUV8OVzvuLIm9U2NaJeKVhmytaCj464L1ftOdxVhsU9kcyawDb84VjzQuc8x1MA0XOU1jroqc/HiyfszWoUdKaxw6TRGvXFhkhxLJeyb5M24yARmboUQoS+H5j/GBxDoHDR3puv8ARcQoPeK7F3Wk9i5gDpB/Bw119Tg+QNicmtGC+pCDFCo9b4AAXGiLIA8Xi3Yd2dpniKnlENWwgN+q5WPS2c2oHraTPBEgZrGOIceYNxfBvQp6WzSsujnlpLzHwGJlX5KwgdbpdzFIwVTYIfDpEnE+yoFc5QSqzXHz+EXaffEl0gSU+bDdzTM3Y0hu1SbvEv9/ZJhevkjF7vFrev1i5FAUP4GZ+fzastLKuXXQwqBHN/HlQFBxkHbBCq/JmJL+iAfzzeWFteZMIZiKpwq2aHsPB6p0LP1UptxJvqM7QNrVVhoEAzdIa5vp0ksemyDeFEO1yFHSHU24a98U5tG5346Q=
-  on:
-    tags: true
-    repo: Kkoile/figure-speaker
-  skip_cleanup: true
+  - node
+
+stages:
+  - test
+  - name: publish_npm
+    if: branch = master
+  - create_image
+  - name: publish_image
+    if: branch = master
+
+jobs:
+  include:
+    - stage: publish_npm
+      before_deploy:
+        - npm run build
+      deploy:
+        provider: npm
+        email: Nils_Hirsekorn@online.de
+        api_key:
+          secure: DSPII0KKP9m8mgJlMiupqaVXKa30oQb5EzO4xwXA1GCa2s8GeRuuVWOUYDtuwClstvqhTQ8hvOGuNxBKwhhNisZ0VrPPwdL2fciH4qwet88TGtCdRKiLWiQZJfD1pRGoDeenlOZIwpb6vUUxAjJ8t+HzJJlhrWE+o3WZ91h5Eq8eWV2/dNAYuY9+qwC1gAQSFsO/LBviIuS6AEsUV8OVzvuLIm9U2NaJeKVhmytaCj464L1ftOdxVhsU9kcyawDb84VjzQuc8x1MA0XOU1jroqc/HiyfszWoUdKaxw6TRGvXFhkhxLJeyb5M24yARmboUQoS+H5j/GBxDoHDR3puv8ARcQoPeK7F3Wk9i5gDpB/Bw119Tg+QNicmtGC+pCDFCo9b4AAXGiLIA8Xi3Yd2dpniKnlENWwgN+q5WPS2c2oHraTPBEgZrGOIceYNxfBvQp6WzSsujnlpLzHwGJlX5KwgdbpdzFIwVTYIfDpEnE+yoFc5QSqzXHz+EXaffEl0gSU+bDdzTM3Y0hu1SbvEv9/ZJhevkjF7vFrev1i5FAUP4GZ+fzastLKuXXQwqBHN/HlQFBxkHbBCq/JmJL+iAfzzeWFteZMIZiKpwq2aHsPB6p0LP1UptxJvqM7QNrVVhoEAzdIa5vp0ksemyDeFEO1yFHSHU24a98U5tG5346Q=
+        on:
+          tags: true
+          repo: Kkoile/figure-speaker
+        skip_cleanup: true
+
+    - stage: create_image
+      dist: trusty
+      sudo: required
+      addons:
+        apt:
+          packages:
+          - qemu
+          - qemu-user-static
+          - binfmt-support
+          - parted
+          - wget
+          - dosfstools
+          - zip
+      script:
+        - sudo bash ./create-image
+        - xz -z figure-speaker.img -c > figure-speaker.img.xz
+        - zip figure-speaker.img.zip figure-speaker.img
+
+    - stage: publish_image
+      deploy:
+        provider: releases
+        api_key:
+          secure: TzZpsusZ/P/adlSUL1wonxAF6LvQ4j+JcKLTmr9bz3t7KLc7dY3E248EjEqMkTbB8+1SPrwaLbIPlc7ammsu+vRKelVJLNjIQrs2gZ1ZTBPxF9kZxvorpbM/dYrend+7ffNcfdej1Ef+jGD9Wpd5DG2qwPoDniNDVTkCVISJTCGBob/z7DMM9nf7NkY9Z+OhLrrBFi96P18NX8jqFhvvAtdnVk5tr6j7MCspCcqN31cwEOUzFuRtTqGthwDwY8gSo9TejDCw6Cf47MGYA7hxHKO20W9aqHyczoTy2/t6uiIKkYH7MymoREi7O6rgTBaUAybLmiqJ+g+cE8dHjnPDdvse96Rv0PLMTy+7aZLVjV7NNGKVrgKOWrCDXqwlH321YQc9UYraOvk3aJU3Q9+FHf7QO3D9JPOkICo5Yl7svAX4XHw+vQPa2em/PObmbUGvw+WMjhoqfYTBjLS/LCYMFU/foxxec5cB37fHXfzXgtdEHzq/FJ/2zSj0uJLc2FBejL/ukEHHaNWGQJuvPTNL47iYmTj4I1G954o9ThT21RjjqeDmY1+dAz3ztVapgQIgSijJQfZ/Qc4rW1VbPMuKF09MmkGMnwaThmFStdeSX3PrtMdB6zs+8W74TPOw5l7urOZSpWSq/eg7vT2Sp4y8PupthJnEJTPnJrLD/0AphDc=
+        file:
+          - figure-speaker.img.xz
+          - figure-speaker.img.zip
+        skip_cleanup: true
+        on:
+          repo: Kkoile/figure-speaker
+          tags: true
