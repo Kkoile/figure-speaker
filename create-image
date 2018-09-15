@@ -1,27 +1,23 @@
 #!/bin/bash
-
 set -uo pipefail
 trap 's=$?; echo "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 IFS=$'\n\t'
 
-# Ensure we are root
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root" 1>&2
     exit 1
 fi
 
-# Some useful constants
-mount="mnt" # Local directory to mount the image (automatically created/delete as needed)
-script="setup" # Local setup script to run inside the image
-rpi_tar="ArchLinuxARM-rpi-3-latest.tar.gz" 
-rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
-
-# Grab the first two arguments, using the defaults if not set
 size="${1:-2G}"
 image="${2:-figure-speaker.img}"
+mount="mnt"
+script="setup"
 
-# Tasks to run when the shell exits for any reason, unmount the image and
-# general cleanup
+rpi_tar="ArchLinuxARM-rpi-3-latest.tar.gz"
+rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
+
+# Unmount drives and general cleanup on exit, the trap ensures this will always
+# run execpt in the most extream cases.
 cleanup() {
     [[ -f "${mount}/tmp/${script}" ]] && rm "${mount}/tmp/${script}"
     if [[ -d "${mount}" ]]; then
@@ -29,7 +25,7 @@ cleanup() {
         umount "${mount}/proc" || true
         umount "${mount}/sys" || true
         umount "${mount}/boot" || true
-        umount "${mount}" || true
+	umount "${mount}" || true
         rmdir "${mount}" || true
     fi
     [ -n "${loopdev:-}" ] && losetup --detach "${loopdev}" || true
@@ -59,7 +55,7 @@ mount "${bootdev}" "${mount}/boot"
 # Install archlinuxarm to the image
 tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
 
-# Copy our installation script to the mount so it can be run in the chroot
+# Copy our installtion script and other artifacts
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Prep the chroot
