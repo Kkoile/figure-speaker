@@ -74,5 +74,11 @@ rm ${mount}/etc/resolv.conf
 cp /etc/resolv.conf ${mount}/etc/resolv.conf
 cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
 
+echo "Uname"
+echo `uname -m`
+
+echo "Arch"
+echo `arch`
+
 # Run the setup script inside the chroot
 chroot ${mount}  /bin/bash
