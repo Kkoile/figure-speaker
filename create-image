@@ -13,7 +13,7 @@ image="${2:-figure-speaker.img}"
 mount="mnt"
 script="setup"
 
-rpi_tar="ArchLinuxARM-rpi-latest.tar.gz"
+rpi_tar="ArchLinuxARM-rpi-3-latest.tar.gz"
 rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
 
 # Unmount drives and general cleanup on exit, the trap ensures this will always
@@ -21,6 +21,7 @@ rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
 cleanup() {
     [[ -f "${mount}/tmp/${script}" ]] && rm "${mount}/tmp/${script}"
     if [[ -d "${mount}" ]]; then
+        umount "${mount}/dev/pts" || true
         umount "${mount}/dev" || true
         umount "${mount}/proc" || true
         umount "${mount}/sys" || true
@@ -59,12 +60,15 @@ tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Prep the chroot
+cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
+echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register
 mount -t proc none "${mount}/proc"
 mount -t sysfs none "${mount}/sys"
 mount -o bind /dev "${mount}/dev"
+mount -o bind /dev/pts "${mount}/dev/pts"
 rm "${mount}/etc/resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
-cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
+
 
 # Run the setup script inside the chroot
 chroot ${mount} "/tmp/${script}"
