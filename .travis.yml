@@ -1,17 +1,17 @@
 stages:
-- test
-- name: publish_npm
+- name: "test"
+- name: "publish_npm"
   if: branch = master
-- create_image
-- name: publish_image
+- name: "create_image"
+- name: "publish_image"
   if: branch = master
 jobs:
   include:
-  - stage: test
+  - stage: "test"
     language: node_js
     node_js:
     - node
-  - stage: publish_npm
+  - stage: "publish_npm"
     before_deploy:
     - npm run build
     deploy:
@@ -23,7 +23,7 @@ jobs:
         tags: true
         repo: Kkoile/figure-speaker
       skip_cleanup: true
-  - stage: create_image
+  - stage: "create_image"
     dist: trusty
     sudo: required
     addons:
@@ -40,7 +40,7 @@ jobs:
     - sudo bash ./create-image
     - xz -z figure-speaker.img -c > figure-speaker.img.xz
     - zip figure-speaker.img.zip figure-speaker.img
-  - stage: publish_image
+  - stage: "publish_image"
     deploy:
       provider: releases
       api_key:
