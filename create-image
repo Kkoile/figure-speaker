@@ -13,7 +13,7 @@ image="${2:-figure-speaker.img}"
 mount="mnt"
 script="setup"
 
-rpi_tar="ArchLinuxARM-rpi-2-latest.tar.gz"
+rpi_tar="ArchLinuxARM-rpi-3-latest.tar.gz"
 rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
 
 # Unmount drives and general cleanup on exit, the trap ensures this will always
