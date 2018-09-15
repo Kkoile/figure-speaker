@@ -67,18 +67,13 @@ tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Prep the chroot
-mount -t proc none ${mount}/proc
-mount -t sysfs none ${mount}/sys
-mount -o bind /dev ${mount}/dev
-rm ${mount}/etc/resolv.conf
-cp /etc/resolv.conf ${mount}/etc/resolv.conf
-cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
-
-echo "Uname"
-echo `uname -m`
-
-echo "Arch"
-echo `arch`
+sudo cp /usr/bin/qemu-arm-static /${mount}/usr/bin/
+sudo cp /etc/resolv.conf /${mount}/etc/resolv.conf
+cd /${mount}
+sudo mount --bind /dev dev/
+sudo mount --bind /sys sys/
+sudo mount --bind /proc proc/
+sudo mount --bind /dev/pts dev/pts
 
 # Run the setup script inside the chroot
-chroot ${mount}  /bin/bash
+chroot . /tmp/{$script}
