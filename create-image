@@ -61,11 +61,9 @@ install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Prep the chroot
 mount -t proc none "${mount}/proc"
-mount -t sysfs none "${mount}/sys"
-mount -o bind /dev "${mount}/dev"
-mount -o bind /dev/pts "${mount}/dev/pts"
-rm "${mount}/etc/resolv.conf"
-cp /etc/resolv.conf "${mount}/etc/resolv.conf"
+mount --rbind /sys "${mount}/sys"
+mount --rbind /dev "${mount}/dev"
+ln -s /etc/resolv.conf /mnt/etc/resolv.conf
 
 # Run the setup script inside the chroot
 chroot ${mount} "/tmp/${script}"
