@@ -17,10 +17,6 @@ rpi_tar="ArchLinuxARM-rpi-3-latest.tar.gz"
 rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
 
 # Grab the first two arguments, using the defaults if not set
-# This allows running the command as any of
-#   ./create-image                 # to use the defaults
-#   ./create-image 4G              # create a 4 gig image instead of 2 gig
-#   ./create-image 4G myname.img   # create a 4 gig image called myname.img
 size="${1:-2G}"
 image="${2:-figure-speaker.img}"
 
@@ -65,6 +61,14 @@ tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header
 
 # Copy our installation script to the mount so it can be run in the chroot
 install -Dm755 "${script}" "${mount}/tmp/${script}"
+echo "Files and directories"
+echo `ls`
+
+echo "Files and directories inside mount"
+echo `ls ${mount}`
+
+echo "Files and directories inside mount/tmp"
+echo `ls ${mount}/tmp`
 
 # Prep the chroot
 mount -t proc none ${mount}/proc

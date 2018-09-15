@@ -1,6 +1,3 @@
-language: node_js
-node_js:
-- node
 stages:
 - test
 - name: publish_npm
@@ -10,6 +7,10 @@ stages:
   if: branch = master
 jobs:
   include:
+  - stage: test
+    language: node_js
+    node_js:
+    - node
   - stage: publish_npm
     before_deploy:
     - npm run build
