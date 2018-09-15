@@ -5,5 +5,5 @@ IFS=$'\n\t'
 
 # Install any packages we want
 echo "Hallo. Got till here"
-echo arch
+echo `arch`
 #touch ./image_test.bla
