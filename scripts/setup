@@ -1,8 +1,0 @@
-#!/bin/bash
-set -uo pipefail
-trap 's=$?; echo "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
-IFS=$'\n\t'
-
-# Install any packages we want
-echo "Hallo. Got till here"
-#touch ./image_test.bla
