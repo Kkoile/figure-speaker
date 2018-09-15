@@ -74,4 +74,5 @@ cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
 
 
 # Run the setup script inside the chroot
+chroot ${mount} "/bin/bash"
 chroot ${mount} "/tmp/${script}"
