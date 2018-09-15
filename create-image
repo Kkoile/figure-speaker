@@ -69,6 +69,7 @@ mount -o bind /dev ${mount}/dev
 rm ${mount}/etc/resolv.conf
 cp /etc/resolv.conf ${mount}/etc/resolv.conf
 cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
+cp /usr/bin/qemu-arm-static ${mount}/chroot/usr/bin/
 cp -r /bin /lib ${mount}/tmp
 
 echo "Files and directories"
@@ -82,4 +83,4 @@ echo `ls ${mount}/tmp`
 
 
 # Run the setup script inside the chroot
-chroot ${mount} "/tmp/${script}"
+chroot ${mount} /bin/bash "/tmp/${script}"
