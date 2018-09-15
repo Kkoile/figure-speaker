@@ -1,5 +1,5 @@
 stages:
-- name: "test"
+#- name: "test"
 - name: "publish_npm"
   if: branch = master
 - name: "create_image"
