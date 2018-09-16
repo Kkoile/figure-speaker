@@ -43,6 +43,7 @@ fdisk -lu ${image}
 
 dd if=/dev/zero bs=1M count=1024 >> ${image}
 loopdev=$(losetup --find --show "${image}")
+parted --script "${loopdev}" print
 bootdev=$(ls "${loopdev}"*1)
 rootdev=$(ls "${loopdev}"*2)
 
