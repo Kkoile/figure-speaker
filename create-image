@@ -25,7 +25,7 @@ cleanup() {
         umount "${mount}/proc" || true
         umount "${mount}/sys" || true
         umount "${mount}/boot" || true
-	umount "${mount}" || true
+	    umount "${mount}" || true
         rmdir "${mount}" || true
     fi
     [ -n "${loopdev:-}" ] && losetup --detach "${loopdev}" || true
