@@ -36,7 +36,7 @@ trap cleanup EXIT
 [ ! -f "${rpi_tar}" ] && wget -O ${rpi_tar} "${rpi_url}"
 
 unzip ${rpi_tar}
-mv "2018-06-27-raspbian-stretch.img" ${image}
+mv "2018-06-27-raspbian-stretch-lite.img" ${image}
 rm ${rpi_tar}
 
 fdisk -lu ${image}
