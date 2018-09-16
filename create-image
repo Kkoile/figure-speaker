@@ -56,11 +56,10 @@ mount ${rootdev} -o rw ${mount}
 mkdir ${mount}/boot
 mount ${bootdev} -o rw ${mount}/boot
 
-cd ${mount}
-mount --bind /dev dev/
-mount --bind /sys sys/
-mount --bind /proc proc/
-mount --bind /dev/pts dev/pts
+mount --bind /dev ${mount}/dev/
+mount --bind /sys ${mount}/sys/
+mount --bind /proc ${mount}/proc/
+mount --bind /dev/pts ${mount}/dev/pts
 
 mv ${mount}/etc/ld.so.preload ${mount}/etc/ld.so.preload2
 touch ${mount}/etc/ld.so.preload
