@@ -3,7 +3,97 @@ set -uo pipefail
 trap 's=$?; echo "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 IFS=$'\n\t'
 
-# Install any packages we want
-echo "Hallo. Got till here"
-echo `uname -m`
-#touch ./image_test.bla
+echo "--- Start setting up raspberry pi ---"
+
+echo "Setting audio volume to 100% ..."
+amixer set PCM -- 100%
+
+echo "Enabling SPI for RFID Reader ..."
+echo "dtparam=spi=on" | sudo tee -a /boot/config.txt >/dev/null
+
+echo "Installing Mopidy ..."
+wget -q -O - https://apt.mopidy.com/mopidy.gpg | sudo apt-key add -
+sudo wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/stretch.list
+sudo apt-get update
+sudo apt-get install mopidy
+
+echo "Installing Mopidy Spotify Extension ..."
+sudo apt-get install mopidy-spotify
+
+echo "Installing Node.js ..."
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+echo "Configuring NPM ..."
+mkdir ~/.npm-global
+npm config set prefix /home/pi/.npm-global"
+
+echo "Installing Figure Speaker ..."
+sudo npm install -g figure-speaker
+mkdir /home/pi/.config/figure-speaker && touch /home/pi/.config/figure-speaker/figures.conf
+
+echo "Create Service File for Figure Speaker ..."
+sudo touch /etc/systemd/system/figure-speaker.service
+sudo chmod 664 /etc/systemd/system/figure-speaker.service
+
+echo "[Service]" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "WorkingDirectory=/home/pi/" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "ExecStart=/home/pi/.npm-global/bin/figure-speaker" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "Restart=always" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "StandardOutput=syslog" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "StandardError=syslog" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "SyslogIdentifier=figure-speaker" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "User=pi" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "Group=pi" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "Environment=NODE_ENV=production SPOTIFY_CLIENT_ID=<SPOTIFY_CLIENT_ID> SPOTIFY_CLIENT_SECRET=<SPOTIFY_CLIENT_SECRET> GPIO_INCREASE_VOLUME_BUTTON=27 GPIO_DECREASE_VOLUME_BUTTON=22" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "[Install]" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+echo "WantedBy=multi-user.target" | sudo tee -a /etc/systemd/system/figure-speaker.service >/dev/null
+
+sudo systemctl enable figure-speaker
+
+
+
+echo "Installing Figure Speaker Update Manager ..."
+sudo npm install -g figure-speaker-update-manager
+
+echo "Create Service File for Figure Speaker Update Manager ..."
+sudo touch /etc/systemd/system/figure-speaker-update-manager.service
+sudo chmod 664 /etc/systemd/system/figure-speaker-update-manager.service
+
+echo "[Service]" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "WorkingDirectory=/home/pi/" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "ExecStart=/home/pi/.npm-global/bin/figure-speaker-update-manager" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "Restart=always" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "StandardOutput=syslog" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "StandardError=syslog" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "SyslogIdentifier=figure-speaker-update-manager" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "User=pi" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "Group=pi" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "Environment=NODE_ENV=production" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "[Install]" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+echo "WantedBy=multi-user.target" | sudo tee -a /etc/systemd/system/figure-speaker-update-manager.service >/dev/null
+
+sudo systemctl enable figure-speaker-update-manager
+
+
+echo "Installing Figure Speaker Wifi Connector ..."
+sudo npm install -g figure-speaker-wifi-connector
+
+echo "Create Service File for Figure Speaker Wifi Connector ..."
+sudo touch /etc/systemd/system/figure-speaker-wifi-connector.service
+sudo chmod 664 /etc/systemd/system/figure-speaker-wifi-connector.service
+
+echo "[Service]" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "WorkingDirectory=/home/pi/" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "ExecStart=/home/pi/.npm-global/bin/figure-speaker-wifi-connector" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "Restart=always" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "StandardOutput=syslog" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "StandardError=syslog" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "SyslogIdentifier=figure-speaker-wifi-connector" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "User=pi" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "Group=pi" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "Environment=NODE_ENV=production" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "[Install]" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+echo "WantedBy=multi-user.target" | sudo tee -a /etc/systemd/system/figure-speaker-wifi-connector.service >/dev/null
+
+sudo systemctl enable figure-speaker-wifi-connector

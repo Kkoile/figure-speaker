@@ -58,7 +58,7 @@ mount "${bootdev}" "${mount}/boot"
 # Install archlinuxarm to the image
 tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
 
-# Copy our installtion script and other artifacts
+# Copy our installation script and other artifacts
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Prep the chroot
