@@ -44,8 +44,10 @@ fdisk -lu ${image}
 dd if=/dev/zero bs=1M count=1024 >> ${image}
 loopdev=$(losetup --find --show "${image}")
 parted --script "${loopdev}" print
+parted --script "${loopdev}" rm 1
 parted --script "${loopdev}" rm 2
-parted --script "${loopdev}" mkpart primary 62.9 4351
+parted --script "${loopdev}" mkpart primary fat32 0% 100M
+parted --script "${loopdev}" mkpart primary ext4 100M 100%
 parted --script "${loopdev}" print
 bootdev=$(ls "${loopdev}"*1)
 rootdev=$(ls "${loopdev}"*2)
