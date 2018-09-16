@@ -51,15 +51,9 @@ rootdev=$(ls "${loopdev}"*2)
 mkfs.vfat -F32 ${bootdev}
 mkfs.ext4 -F ${rootdev}
 
-echo "loopdev"
-echo ${loopdev}
-echo "rootdev"
-echo ${rootdev}
-echo "bootdev"
-echo ${bootdev}
-
 mkdir ${mount}
 mount ${rootdev} -o rw ${mount}
+mkdir ${mount}/boot
 mount ${bootdev} -o rw ${mount}/boot
 
 cd ${mount}
