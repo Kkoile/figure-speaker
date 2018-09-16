@@ -60,7 +60,6 @@ parted --script "${loopdev}" print
 losetup -d ${loopdev}
 
 mkdir ${mount}
-losetup --show ${image}
 mount ${rootdev} -o rw ${mount}
 mkdir ${mount}/boot
 mount ${bootdev} -o rw ${mount}/boot
