@@ -13,8 +13,8 @@ image="${2:-figure-speaker.img}"
 mount="mnt"
 script="setup"
 
-rpi_tar="ArchLinuxARM-rpi-2-latest.tar.gz"
-rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
+rpi_tar="2015-11-21-raspbian-jessie.zip"
+rpi_url="wget https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-11-24/${rpi_tar}"
 
 # Unmount drives and general cleanup on exit, the trap ensures this will always
 # run execpt in the most extream cases.
@@ -35,36 +35,36 @@ trap cleanup EXIT
 # Download archlinux arm only if we have not already done so
 [ ! -f "${rpi_tar}" ] && wget "${rpi_url}"
 
-# Create and format the image
-fallocate -l "${size}" "${image}"
-loopdev=$(losetup --find --show "${image}")
-parted --script "${loopdev}" mklabel msdos
-parted --script "${loopdev}" mkpart primary fat32 0% 100M
-parted --script "${loopdev}" mkpart primary ext4 100M 100%
-bootdev=$(ls "${loopdev}"*1)
-rootdev=$(ls "${loopdev}"*2)
-mkfs.vfat -F32 ${bootdev}
-mkfs.ext4 -F ${rootdev}
+unzip ${rpi_tar}
+rm ${rpi_tar}
 
-# Mount the image
-[ ! -d "${mount}" ] && mkdir "${mount}"
-mount "${rootdev}" "${mount}"
-[ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
-mount "${bootdev}" "${mount}/boot"
+fdisk -lu ${rpi_tar}
 
-# Install archlinuxarm to the image
-tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
+dd if=/dev/zero bs=1M count=1024 >> ${rpi_tar}
+losetup -f -P --show ${rpi_tar}
+sudo parted /dev/loop0
+e2fsck -f /dev/loop0p2
+resize2fs /dev/loop0p2
+losetup -d /dev/loop0
+
+mkdir ${mount}
+losetup --show ${rpi_tar}
+mount /dev/loop0p2 -o rw ${mount}
+mount /dev/loop0p1 -o rw ${mount}/boot
+
+cd ${mount}
+mount --bind /dev dev/
+mount --bind /sys sys/
+mount --bind /proc proc/
+mount --bind /dev/pts dev/pts
+
+mv ${mount}/etc/ld.so.preload ${mount}/etc/ld.so.preload2
+touch ${mount}/etc/ld.so.preload
+
+cp /usr/bin/qemu-arm-static ${mount}/usr/bin
 
 # Copy our installation script and other artifacts
 install -Dm755 "${script}" "${mount}/tmp/${script}"
-
-# Prep the chroot
-mount -t proc none "${mount}/proc"
-mount -t sysfs none "${mount}/sys"
-mount -o bind /dev "${mount}/dev"
-rm "${mount}/etc/resolv.conf"
-cp /etc/resolv.conf "${mount}/etc/resolv.conf"
-cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
 
 # Run the setup script inside the chroot
 chroot ${mount} "/tmp/${script}"
