@@ -13,8 +13,8 @@ image="${2:-figure-speaker.img}"
 mount="mnt"
 script="setup"
 
-rpi_tar="2015-11-21-raspbian-jessie.zip"
-rpi_url="https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-11-24/${rpi_tar}"
+rpi_tar="image.zip"
+rpi_url="https://downloads.raspberrypi.org/raspbian_lite_latest"
 
 # Unmount drives and general cleanup on exit, the trap ensures this will always
 # run execpt in the most extream cases.
@@ -33,15 +33,15 @@ cleanup() {
 trap cleanup EXIT
 
 # Download archlinux arm only if we have not already done so
-[ ! -f "${rpi_tar}" ] && wget "${rpi_url}"
+[ ! -f "${rpi_tar}" ] && wget -O ${rpi_tar} "${rpi_url}"
 
-unzip ${rpi_tar}
+unzip ${rpi_tar} -d ${image}
 rm ${rpi_tar}
 
-fdisk -lu ${rpi_tar}
+fdisk -lu ${image}
 
-dd if=/dev/zero bs=1M count=1024 >> ${rpi_tar}
-sudo parted /dev/loop0
+dd if=/dev/zero bs=1M count=1024 >> ${image}
+parted /dev/loop0
 e2fsck -f /dev/loop0p2
 resize2fs /dev/loop0p2
 losetup -d /dev/loop0
