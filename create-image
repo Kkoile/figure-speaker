@@ -14,7 +14,7 @@ mount="mnt"
 script="setup"
 
 rpi_tar="2015-11-21-raspbian-jessie.zip"
-rpi_url="wget https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-11-24/${rpi_tar}"
+rpi_url="https://downloads.raspberrypi.org/raspbian/images/raspbian-2015-11-24/${rpi_tar}"
 
 # Unmount drives and general cleanup on exit, the trap ensures this will always
 # run execpt in the most extream cases.
