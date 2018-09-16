@@ -35,7 +35,8 @@ trap cleanup EXIT
 # Download archlinux arm only if we have not already done so
 [ ! -f "${rpi_tar}" ] && wget -O ${rpi_tar} "${rpi_url}"
 
-unzip ${rpi_tar} -d ${image}
+unzip ${rpi_tar}
+mv "2018-06-27-raspbian-stretch.img" ${image}
 rm ${rpi_tar}
 
 fdisk -lu ${image}
