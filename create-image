@@ -42,14 +42,25 @@ rm ${rpi_tar}
 fdisk -lu ${image}
 
 dd if=/dev/zero bs=1M count=1024 >> ${image}
-parted /dev/loop0
-e2fsck -f /dev/loop0p2
-resize2fs /dev/loop0p2
-losetup -d /dev/loop0
+loopdev=$(losetup --find --show "${image}")
+parted --script "${loopdev}" mklabel msdos
+parted --script "${loopdev}" mkpart primary fat32 0% 100M
+parted --script "${loopdev}" mkpart primary ext4 100M 100%
+bootdev=$(ls "${loopdev}"*1)
+rootdev=$(ls "${loopdev}"*2)
+mkfs.vfat -F32 ${bootdev}
+mkfs.ext4 -F ${rootdev}
+
+echo "loopdev"
+echo ${loopdev}
+echo "rootdev"
+echo ${rootdev}
+echo "bootdev"
+echo ${bootdev}
 
 mkdir ${mount}
-mount /dev/loop0p2 -o rw ${mount}
-mount /dev/loop0p1 -o rw ${mount}/boot
+mount ${rootdev} -o rw ${mount}
+mount ${bootdev} -o rw ${mount}/boot
 
 cd ${mount}
 mount --bind /dev dev/
