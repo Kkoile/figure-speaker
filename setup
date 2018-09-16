@@ -6,7 +6,8 @@ IFS=$'\n\t'
 echo "--- Start setting up raspberry pi ---"
 
 echo "Setting audio volume to 100% ..."
-amixer set PCM -- 100%
+#TODO
+#amixer set PCM -- 100%
 
 echo "Enabling SPI for RFID Reader ..."
 echo "dtparam=spi=on" | sudo tee -a /boot/config.txt >/dev/null
