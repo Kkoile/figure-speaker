@@ -46,6 +46,9 @@ rootdev=$(ls "${loopdev}"*2)
 mkfs.vfat -F32 ${bootdev}
 mkfs.ext4 -F ${rootdev}
 
+echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm:' > /proc/sys/fs/binfmt_misc/register
+echo ':aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:' > /proc/sys/fs/binfmt_misc/register
+
 # Mount the image
 [ ! -d "${mount}" ] && mkdir "${mount}"
 mount "${rootdev}" "${mount}"
@@ -58,13 +61,11 @@ tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header
 # Copy our installtion script and other artifacts
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
-echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm:' > /proc/sys/fs/binfmt_misc/register
-echo ':aarch64:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:' > /proc/sys/fs/binfmt_misc/register
-
 # Prep the chroot
 mount -o bind /dev "${mount}/dev"
 mount -o bind /proc "${mount}/proc"
 mount -o bind /sys "${mount}/sys"
+mount -o rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 devpts "${mount}/dev/pts" -t devpts
 rm "${mount}/etc/resolv.conf"
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
 cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
