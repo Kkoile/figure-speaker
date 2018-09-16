@@ -39,36 +39,27 @@ unzip ${rpi_tar}
 mv "2018-06-27-raspbian-stretch-lite.img" ${image}
 rm ${rpi_tar}
 
-# Create and format the image
-fallocate -l "${size}" "${image}"
-loopdev=$(losetup --find --show "${image}")
-parted --script "${loopdev}" mklabel msdos
-parted --script "${loopdev}" mkpart primary fat32 0% 100M
-parted --script "${loopdev}" mkpart primary ext4 100M 100%
-bootdev=$(ls "${loopdev}"*1)
-rootdev=$(ls "${loopdev}"*2)
-mkfs.vfat -F32 ${bootdev}
-mkfs.ext4 -F ${rootdev}
+mkdir ${mount}
+losetup -P /dev/loop0 ${image}
+mount /dev/loop0p2 -o rw /mnt
+mkdir ${mount}/boot
+mount /dev/loop0p1 -o rw /mnt/boot
 
-# Mount the image
-[ ! -d "${mount}" ] && mkdir "${mount}"
-mount "${rootdev}" "${mount}"
-[ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
-mount "${bootdev}" "${mount}/boot"
+cd ${mount}
+echo "ls in mount"
+echo `ls`
+mount --bind /dev dev/
+mount --bind /sys sys/
+mount --bind /proc proc/
+mount --bind /dev/pts dev/pts
 
-# Install archlinuxarm to the image
-tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
+mv etc/ld.so.preload etc/ld.so.preload2
+touch etc/ld.so.preload
+
+cp /usr/bin/qemu-arm-static usr/bin
 
 # Copy our installation script and other artifacts
-install -Dm755 "${script}" "${mount}/tmp/${script}"
-
-# Prep the chroot
-mount -t proc none "${mount}/proc"
-mount -t sysfs none "${mount}/sys"
-mount -o bind /dev "${mount}/dev"
-rm "${mount}/etc/resolv.conf"
-cp /etc/resolv.conf "${mount}/etc/resolv.conf"
-cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
+install -Dm755 "~/${script}" "tmp/${script}"
 
 # Run the setup script inside the chroot
-chroot ${mount} "/tmp/${script}"
+chroot . "/tmp/${script}"
