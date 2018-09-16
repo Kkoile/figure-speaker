@@ -39,8 +39,9 @@ unzip ${rpi_tar}
 mv "2018-06-27-raspbian-stretch-lite.img" ${image}
 rm ${rpi_tar}
 
-# Create and format the image
-fallocate -l "${size}" "${image}"
+fdisk -lu ${image}
+
+dd if=/dev/zero bs=1M count=1024 >> ${image}
 loopdev=$(losetup --find --show "${image}")
 parted --script "${loopdev}" mklabel msdos
 parted --script "${loopdev}" mkpart primary fat32 0% 100M
@@ -50,22 +51,26 @@ rootdev=$(ls "${loopdev}"*2)
 mkfs.vfat -F32 ${bootdev}
 mkfs.ext4 -F ${rootdev}
 
-# Mount the image
-[ ! -d "${mount}" ] && mkdir "${mount}"
-mount "${rootdev}" "${mount}"
-[ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
-mount "${bootdev}" "${mount}/boot"
-
-# Copy our installation script and other artifacts
-install -Dm755 "${script}" "${mount}/tmp/${script}"
+mkdir ${mount}
+mount ${rootdev} -o rw ${mount}
+mkdir ${mount}/boot
+mount ${bootdev} -o rw ${mount}/boot
 
 # Prep the chroot
 mount -t proc none "${mount}/proc"
 mount -t sysfs none "${mount}/sys"
 mount -o bind /dev "${mount}/dev"
+mount -o bind /dev/pts "${mount}/dev/pts"
 rm "${mount}/etc/resolv.conf"
+
+mv ${mount}/etc/ld.so.preload ${mount}/etc/ld.so.preload2
+touch ${mount}/etc/ld.so.preload
+
 cp /etc/resolv.conf "${mount}/etc/resolv.conf"
 cp /usr/bin/qemu-arm-static "${mount}/usr/bin/"
+
+# Copy our installation script and other artifacts
+install -Dm755 "${script}" "${mount}/tmp/${script}"
 
 # Run the setup script inside the chroot
 chroot ${mount} "/tmp/${script}"
