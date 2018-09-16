@@ -41,14 +41,12 @@ rm ${rpi_tar}
 fdisk -lu ${rpi_tar}
 
 dd if=/dev/zero bs=1M count=1024 >> ${rpi_tar}
-losetup -f -P --show ${rpi_tar}
 sudo parted /dev/loop0
 e2fsck -f /dev/loop0p2
 resize2fs /dev/loop0p2
 losetup -d /dev/loop0
 
 mkdir ${mount}
-losetup --show ${rpi_tar}
 mount /dev/loop0p2 -o rw ${mount}
 mount /dev/loop0p1 -o rw ${mount}/boot
 
