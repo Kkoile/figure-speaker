@@ -10,8 +10,8 @@ This section instructs you how to connect the Raspberry Pi to the different hard
 - [Power Bank](https://www.amazon.de/gp/product/B00FAU7ZB2)
 - [Micro USB Cable](https://www.amazon.de/gp/product/B01NAMTC5T)
 - [Jumper Cable](https://www.amazon.de/gp/product/B00OL6JZ3C)
-- [SMD Buttons](https://www.amazon.de/gp/product/B00QC2B1QM)
-- [Resistors](TODO)
+- [Buttons](https://www.amazon.de/gp/product/B0749KNQNH)
+- 2x 1 kΩ Resistor
 - [Speaker](https://www.amazon.de/gp/product/B073XH8KK8)
 - [Amplifier](https://www.amazon.de/gp/product/B06XCC4F4F)
 - [Aux Cable](https://www.amazon.de/gp/product/B00DRCTB58)
@@ -21,8 +21,16 @@ This section instructs you how to connect the Raspberry Pi to the different hard
 1) If not already done, you need to solder the pins to the Raspberry Pi and the RFID Reader.
 2) Connect the aux cable to the amplifier module. I cut of one end of the aux cable and strip of the isolation. Then the copper wire needs to be soldered to the amplifier.
 3) Solder the speakers to the amplifiers.
-4) Create a circuit board with resistors for the volume buttons.
-5) Wire everything and check that it works. This should be done for testing only. I advise you to do the final wiring while building the box (see below).
+4) Connect circuit bord to Raspberry Pi.
+![Speakers](resources/assembly/speakers_sketch.png)
+5) Create a circuit board with resistors for the volume buttons.
+6) Connect this circuit board to Raspberry Pi.
+![Buttons](resources/assembly/buttons_sketch.png)
+7) Connect RFID Reader to Raspberry Pi.
+![RFID Reader](resources/assembly/rfid_reader_sketch.png)
+Image is taken from "https://tutorials-raspberrypi.de/raspberry-pi-rfid-rc522-tueroeffner-nfc/"
+8) I advise you to do the final wiring while building the box (see below).
+ 
 In order to setup the Raspberry Pi itself from a software point of view, see chapter [Setup](./setup.md).
 
 ## Build the Box
