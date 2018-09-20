@@ -51,6 +51,19 @@ The sizes of this box depend on the power bank you use and the size of the speak
 - metal perforated tapes
 - foam plates: about 10mm thick
 
+### Blueprints
+Two bottom / top plates:
+![Bottom / Top Plates](resources/assembly/plate-02.pdf)
+Two side plates:
+![Side Plates](resources/assembly/side_plate-01.pdf)
+Front plate:
+![Front Plate](resources/assembly/side_plate_2-01.pdf)
+Back plate (notice the outlet for the power bank):
+![Back Plate](resources/assembly/side_plate_2-02.pdf)
+Four Struts:
+![Struts](resources/assembly/square_moulding.pdf)
+
+
 ### Assemble
 1) Drill a 6mm hole about 10mm deep into one end of each square mouldings. Punch the captive nuts in these holes.
 ![Hole in Square Mouldings](resources/assembly/assembly_01.JPG)
