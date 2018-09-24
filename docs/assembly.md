@@ -53,15 +53,15 @@ The sizes of this box depend on the power bank you use and the size of the speak
 
 ### Blueprints
 Two bottom / top plates:
-![Bottom / Top Plates](resources/assembly/plate-02.pdf)
+![Bottom / Top Plates](resources/assembly/plate-02.jpg)
 Two side plates:
-![Side Plates](resources/assembly/side_plate-01.pdf)
+![Side Plates](resources/assembly/side_plate-01.jpg)
 Front plate:
-![Front Plate](resources/assembly/side_plate_2-01.pdf)
+![Front Plate](resources/assembly/side_plate_2-01.jpg)
 Back plate (notice the outlet for the power bank):
-![Back Plate](resources/assembly/side_plate_2-02.pdf)
+![Back Plate](resources/assembly/side_plate_2-02.jpg)
 Four Struts:
-![Struts](resources/assembly/square_moulding.pdf)
+![Struts](resources/assembly/square_moulding.jpg)
 
 
 ### Assemble
