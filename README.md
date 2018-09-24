@@ -4,6 +4,7 @@ This project is a Raspberry Pi based audio player which plays songs or audiobook
 
 The main feature of this project is a Spotify integration which lets you access all your favourite songs and audio books you already pay for every month.
 By using the audio server [Mopidy](https://www.mopidy.com/) internally, further cloud services can be integrated really easily.
+![Box](docs/resources/box.png)
 
 ## Feature List
  - Spotify integration
@@ -34,10 +35,3 @@ See [Setup](docs/setup.md) for setting up the Raspberry Pi.
 
 ## Assembly
 In chapter [Assembly](docs/assembly.md) I documented instructions how to build the hardware of the figure speaker.
- 
-## TODOs
-- Pause support: Start from the beginning, if track is nearly at the end
-- Upload mp3 files through web app
-- Bluetooth speaker support 
-- Use Slip Ring to rotate figure while playing
-- Create Raspberry Image automatically with build and attach it to GitHub release
