@@ -70,7 +70,7 @@ Four Struts:
 ![Captive Nuts in Square Mouldings](resources/assembly/assembly_01b.JPG)
 ![Captive Nuts in Square Mouldings](resources/assembly/assembly_02.JPG)
 2) Drill a hole in the middle of two of the side plates. The speakers will be placed in these holes later on. In my case the diameter is 50mm, but it depends on the speakers you use.
-Drill four 3mm holes in the corners next to the holes to attach the speakers later.
+Drill four 3mm holes in the corners next to the holes to attach the speakers later. Because the position of these holes also depend on your speakers, I excluded them from the blueprints.
 3) Drill four 2mm holes in another side plate (the back). These will be used to attach the Raspberry Pi to the box. Beware of the position of the Pi: The power bank has to be placed underneath.
 4) Drill a hole in the top plate for the cables of the RFID reader; about 20mm * 10mm. In addition to that, you need four 3mm holes to connect the RFID Reader to the box.
 5) Drill holes for the outlets of the powerbank: USB input and on / off button.
@@ -86,19 +86,30 @@ Drill four 3mm holes in the corners next to the holes to attach the speakers lat
 10) Screw the top plate to the square mouldings with four screw pax M4 * 12mm
 ![RFID Reader](resources/assembly/assembly_08.JPG)
 ![RFID Reader](resources/assembly/assembly_09.JPG)
-11) Wire the modules to the Raspberry Pi.
+11) Form the ears of the figure speaker. I use copper wire which is thick enough so that you cannot bend it easily. At the bottom of the ears form a loop. The loop is used to screw the ears to the top of the box with a countersunk threaded screw, a nut and a washer. Drill another hole next directly next to it where the cables of the buttons can go into the inside of the box.
+Then attach the buttons to the ears.
+![RFID Reader](resources/assembly/assembly_09a.JPG)
+![RFID Reader](resources/assembly/assembly_09b.JPG)
+12) Wire the modules to the Raspberry Pi.
 ![Wire Modules](resources/assembly/assembly_10.JPG)
-12) Drill 4mm holes in the corners of the bottom plate. They are used to screw the bottom plate to the captive nuts in the square mouldings.
-13) Attach the power bank to the bottom plate. I used metal perforated tapes to realize this. These are bent over the power bank and screws hold the tape to the bottom plate. I use four countersunk threaded screw: M3 * 10mm incl. nuts for this.
+13) Drill 4mm holes in the corners of the bottom plate. They are used to screw the bottom plate to the captive nuts in the square mouldings.
+14) Attach the power bank to the bottom plate. I used metal perforated tapes to realize this. These are bent over the power bank and screws hold the tape to the bottom plate. I use two countersunk threaded screws: M3 * 10mm incl. nuts for this.
 ![Bottom Plate](resources/assembly/assembly_11.JPG)
-14) Screw the bottom plate to the box with four countersunk threaded screws: M3 * 16mm.
+15) Screw the bottom plate to the box with four countersunk threaded screws: M3 * 16mm.
 ![Bottom Plate](resources/assembly/assembly_12.JPG)
-15) Wrap everything with foam plates.
-16) Use fabric to sew a jacket for the box.
+16) Wrap everything with foam plates. Make sure that the plates align to each other and that there are no huge gaps. I used superglue to attach them to the box.
+![Foam Plates](resources/assembly/assembly_13.JPG)
+17) Use fabric to sew a jacket for the box. I cut six plates with enough additional space at each side to tailor those pieces together. Make sure to leave a hole for the power outlet. And you can also think of additional holes for air circulation so that it doesn't no get too hot inside the box.
+![Jacket](resources/assembly/assembly_14.JPG)
+![Jacket with Hole](resources/assembly/assembly_15.JPG)
 
 ## Build the Figures
-In order to build a figure you bascially only need an nfc tag and the figure. I also recommend to use a metal plate as well, so that the figure won't fall off, because there is a magnet underneath the RFID reader.
+In order to build a figure you bascially only need an nfc tag and the figure.
 ### What you need
 - [NFC Tags](https://www.amazon.de/gp/product/B01F02W45G)
-- [Metal Plates](https://www.amazon.de/gp/product/B01NBUPHH6)
 - A Figure
+- A Wooden Plate (optional)
+
+If your figure does not have a good area already, where you can stick an NFC tag on, you should use a wooden plate where you glue the figure on. Then you can simply attach the NFC tag to this plate with glue (depending on the tag, they already have a sticky side).
+![Foam Plates](resources/assembly/figure_01.JPG)
+![Foam Plates](resources/assembly/figure_02.JPG)
