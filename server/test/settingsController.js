@@ -153,16 +153,39 @@ describe('Settings Controller', function () {
         });
     });
 
+    describe('getConfigFile', function () {
+        it('should return an empty object if file does not exist', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').throws(new Error());
+
+            var oConfig = settingsController.getConfigFile();
+            assert(oFSReadFileStub.calledOnce);
+            assert(typeof oConfig === 'object');
+            done();
+        });
+        it('should parse the config file', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').returns(sConfigFile);
+
+            var oConfig = settingsController.getConfigFile();
+            assert(oFSReadFileStub.calledOnce);
+            assert(typeof oConfig === 'object');
+            assert(oConfig.general.play_mode === 'RESUME');
+            done();
+        });
+    });
+
     describe('saveFigure', function () {
         it('should create a new .conf file if it is not there', function (done) {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
+            var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({});
 
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').withArgs({'DUMMY_ID': {'uri': 'DUMMY_URI'}});
 
             settingsController.saveFigure('DUMMY_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oGetConfigFileStub.calledOnce);
                 assert(oSaveFigureStub.calledOnce);
 
                 done();
@@ -175,7 +198,6 @@ describe('Settings Controller', function () {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
 
-            var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
@@ -185,7 +207,6 @@ describe('Settings Controller', function () {
             settingsController.saveFigure('DUMMY_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
-                assert(oFSAccessStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oSaveFigureStub.calledOnce);
 
@@ -200,7 +221,6 @@ describe('Settings Controller', function () {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('EXISTING_ID');
 
-            var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
@@ -210,7 +230,6 @@ describe('Settings Controller', function () {
             settingsController.saveFigure('NEW_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
-                assert(oFSAccessStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oSaveFigureStub.calledOnce);
 

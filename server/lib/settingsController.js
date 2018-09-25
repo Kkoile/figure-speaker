@@ -31,6 +31,18 @@ exports.deleteAccount = function (sHostId) {
         .then(mopidy.restart.bind(mopidy));
 };
 
+exports.getConfigFile = function () {
+    winston.debug("get config file");
+    var oConfig;
+    try {
+        oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
+    } catch (err) {
+        winston.debug("Could not read config file.", err);
+        oConfig = {};
+    }
+    return oConfig;
+};
+
 exports.saveFigure = function (sStreamUri) {
     winston.info("saving figure");
     return new Promise(function (resolve) {
@@ -38,13 +50,7 @@ exports.saveFigure = function (sStreamUri) {
             throw new ApplicationError('No Card detected', 400);
         }
 
-        var oConfig;
-        try {
-            fs.accessSync(constants.Data.PathToFigures, fs.constants.R_OK);
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (err) {
-            oConfig = {};
-        }
+        var oConfig = this.getConfigFile();
         oConfig[rfidConnection.getCardId()] = {
             uri: sStreamUri
         };
@@ -55,12 +61,7 @@ exports.saveFigure = function (sStreamUri) {
 
 exports.setPlayMode = function (sPlayMode, iResetAfterDays) {
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading figure', 500);
-        }
+        var oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -77,12 +78,7 @@ exports.setPlayMode = function (sPlayMode, iResetAfterDays) {
 
 exports.getPlayMode = function () {
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading figure', 500);
-        }
+        var oConfig = this.getConfigFile();
         var oPlayMode = {
             playMode: constants.Player.DefaultPlayMode,
             resetAfterDays: constants.Player.DefaultResetAfterDays
@@ -119,12 +115,7 @@ exports.getFigurePlayInformation = function () {
     if (!rfidConnection.isCardDetected()) {
         return Promise.reject(new ApplicationError('No Card detected', 400));
     }
-    var oConfig;
-    try {
-        oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-    } catch (oError) {
-        return Promise.reject(new ApplicationError('Error while reading figure', 500));
-    }
+    var oConfig = this.getConfigFile();
 
     var sCardId = rfidConnection.getCardId();
     if (oConfig[sCardId]) {
@@ -145,12 +136,7 @@ exports.getFigurePlayInformation = function () {
 exports.saveFigurePlayInformation = function (sCardId, iProgress) {
     winston.info("save figure play information");
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading figure', 500);
-        }
+        var oConfig = this.getConfigFile();
         oConfig[sCardId].progress = iProgress;
         oConfig[sCardId].last_played = new Date().toISOString();
         this._saveFiguresFile(oConfig);
@@ -186,12 +172,7 @@ exports.getFigureWithInformation = function () {
 exports.getLanguage = function () {
     winston.debug("get language");
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading language', 500);
-        }
+        var oConfig = this.getConfigFile();
         var sLanguage = constants.General.Language;
         if (oConfig.general && oConfig.general.language) {
             sLanguage = oConfig.general.language;
@@ -203,12 +184,7 @@ exports.getLanguage = function () {
 exports.setLanguage = function (sLanguage) {
     winston.info("set language:", sLanguage);
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading language', 500);
-        }
+        var oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -221,12 +197,7 @@ exports.setLanguage = function (sLanguage) {
 exports.getMaxVolume = function () {
     winston.debug("get max volume");
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading max volume', 500);
-        }
+        var oConfig = this.getConfigFile();
         var iMaxVolume = constants.General.MaxVolume;
         if (oConfig.general && oConfig.general.max_volume) {
             iMaxVolume = parseInt(oConfig.general.max_volume);
@@ -238,12 +209,7 @@ exports.getMaxVolume = function () {
 exports.setMaxVolume = function (iMaxVolume) {
     winston.info("set max volume:", iMaxVolume);
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading max volume', 500);
-        }
+        var oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -256,12 +222,7 @@ exports.setMaxVolume = function (iMaxVolume) {
 exports.getCurrentVolume = function () {
     winston.debug("get current volume");
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading current volume', 500);
-        }
+        var oConfig = this.getConfigFile();
         var iCurrentVolume = constants.General.CurrentVolume;
         if (oConfig.general && oConfig.general.current_volume) {
             iCurrentVolume = parseInt(oConfig.general.current_volume);
@@ -273,12 +234,7 @@ exports.getCurrentVolume = function () {
 exports.setCurrentVolume = function (iCurrentVolume) {
     winston.debug("set current volume:", iCurrentVolume);
     return new Promise(function (resolve) {
-        var oConfig;
-        try {
-            oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
-        } catch (oError) {
-            throw new ApplicationError('Error while reading current volume', 500);
-        }
+        var oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }

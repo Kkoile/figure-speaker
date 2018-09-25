@@ -85,10 +85,6 @@ sudo npm install -g figure-speaker
 ```
 Don't mind the vast amount of error logs...
 
-Create a configuration file figure-speaker will use to save the configuration in:
-```
-mkdir ~/.config/figure-speaker && touch ~/.config/figure-speaker/figures.conf
-```
 You can test the installation by typing `figure-speaker` in the command line. This should start the server. The frontend should now be available at `http://raspberrypi.local:3000`.
 
 We want our application to always start when booting raspberry pi. To achieve this, we create a service file which we can then manage with `systemctl`.
