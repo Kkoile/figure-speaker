@@ -310,6 +310,7 @@ echo "              createAdHocNetwork" | sudo tee -a /usr/bin/autohotspot >/dev
 echo "       fi" | sudo tee -a /usr/bin/autohotspot >/dev/null
 echo "fi" | sudo tee -a /usr/bin/autohotspot >/dev/null
 
+# TODO: does not work properly. Has to be executed again
 sudo chmod +x /usr/bin/autohotspot
 
 echo "Create Service File for Autohotspot ..."
