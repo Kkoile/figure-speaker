@@ -28,7 +28,7 @@ describe('Mopidy', function () {
                     }
                 }
             };
-            sandbox.stub(oProcess.stderr, 'on').yields('server running');
+            sandbox.stub(oProcess.stderr, 'on').yields('HTTP server running');
             var oChildProcessStub = sandbox.stub(child_process, 'spawn').withArgs('mopidy').returns(oProcess);
 
             mopidy.start().then(function () {
@@ -46,7 +46,7 @@ describe('Mopidy', function () {
                     }
                 }
             };
-            sandbox.stub(oProcess.stderr, 'on').yields('server running');
+            sandbox.stub(oProcess.stderr, 'on').yields('HTTP server running');
             var oChildProcessStub = sandbox.stub(child_process, 'spawn').withArgs('mopidy').returns(oProcess);
 
             mopidy.start().then(function () {
@@ -95,6 +95,127 @@ describe('Mopidy', function () {
             mopidy.restart().then(function () {
                 assert(oStopStub.calledOnce);
                 assert(oStartStub.calledOnce);
+                done();
+            });
+        });
+    });
+
+    describe('_playItem', function () {
+        it('should not do anything if no figure data is given', function (done) {
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        assert(false);
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        assert(false);
+                        return Promise.resolve();
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        assert(false);
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        assert(false);
+                        return Promise.resolve();
+                    },
+                    play: function() {
+                        assert(false);
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        assert(false);
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy._playItem(null).then(function() {
+                done();
+            });
+        });
+        it('should seek if position > 0', function (done) {
+            var iSeekPosition = null,
+                bSeekCalled = false;
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        return Promise.resolve();
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function() {
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        bSeekCalled = true;
+                        iSeekPosition = iPosition;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy._playItem({progress: 10}).then(function() {
+                assert(bSeekCalled);
+                assert(iSeekPosition == 10);
+                done();
+            });
+        });
+        it('should not seek if not position > 0', function (done) {
+            var iSeekPosition = null,
+                bSeekCalled = false;
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        return Promise.resolve();
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function() {
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        bSeekCalled = true;
+                        iSeekPosition = iPosition;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy._playItem({progress: 0}).then(function() {
+                assert(!bSeekCalled);
+                done();
+            });
+
+            mopidy._playItem({progress: null}).then(function() {
+                assert(!bSeekCalled);
                 done();
             });
         });

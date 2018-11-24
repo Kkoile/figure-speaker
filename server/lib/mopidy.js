@@ -29,7 +29,8 @@ exports.start = function () {
         }
         this.mopidyProcess = child_process.spawn('mopidy');
         this.mopidyProcess.stderr.on('data', function (data) {
-            if (data.toString().includes('server running')) {
+            winston.debug(data.toString());
+            if (data.toString().includes('HTTP server running')) {
                 winston.info("Mopidy started");
                 return resolve();
             }
@@ -63,7 +64,7 @@ exports.restart = function () {
 exports._playItem = function (oData) {
     if (oData) {
         this._sCurrentFigureId = oData.cardId;
-        this.mopidy.tracklist.clear()
+        return this.mopidy.tracklist.clear()
             .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
             .then(this.mopidy.tracklist.add.bind(this.mopidy))
             .then(function() {
@@ -74,11 +75,17 @@ exports._playItem = function (oData) {
             }.bind(this))
             .then(function () {
                 return new Promise(function (resolve) {
-                    setTimeout(function () {
-                        this.mopidy.playback.seek(oData.progress || 0).then(resolve);
-                    }.bind(this), 10);
+                    if (oData.progress > 0) {
+                        setTimeout(function () {
+                            this.mopidy.playback.seek(oData.progress).then(resolve);
+                        }.bind(this), 10);
+                    } else {
+                        resolve();
+                    }
                 }.bind(this));
             }.bind(this));
+    } else {
+        return Promise.resolve();
     }
 };
 
