@@ -179,6 +179,7 @@ describe('Settings Controller', function () {
             var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
             var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
             var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({});
+            var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
 
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').withArgs({'DUMMY_ID': {'uri': 'DUMMY_URI'}});
 
@@ -187,6 +188,7 @@ describe('Settings Controller', function () {
                 assert(oRfidConnectionGetIdStub.calledOnce);
                 assert(oGetConfigFileStub.calledOnce);
                 assert(oSaveFigureStub.calledOnce);
+                assert(oMopidyStub.calledOnce);
 
                 done();
             });
@@ -203,12 +205,14 @@ describe('Settings Controller', function () {
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
                 oSavedObject = oConfig;
             });
+            var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
 
             settingsController.saveFigure('DUMMY_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oSaveFigureStub.calledOnce);
+                assert(oMopidyStub.calledOnce);
 
                 assert(oSavedObject['DUMMY_ID']['uri'] === 'DUMMY_URI');
                 done();
@@ -226,12 +230,14 @@ describe('Settings Controller', function () {
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
                 oSavedObject = oConfig;
             });
+            var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
 
             settingsController.saveFigure('NEW_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oSaveFigureStub.calledOnce);
+                assert(oMopidyStub.calledOnce);
 
                 assert(oSavedObject['EXISTING_ID']['uri'] === 'NEW_URI');
                 done();
@@ -245,6 +251,7 @@ describe('Settings Controller', function () {
             var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf');
             var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile');
+            var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
 
             settingsController.saveFigure('DUMMY_URI').catch(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
@@ -252,6 +259,7 @@ describe('Settings Controller', function () {
                 assert(oFSAccessStub.notCalled);
                 assert(oFSReadFileStub.notCalled);
                 assert(oSaveFigureStub.notCalled);
+                assert(oMopidyStub.notCalled);
 
                 done();
             });

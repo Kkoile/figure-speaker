@@ -50,12 +50,15 @@ exports.saveFigure = function (sStreamUri) {
             throw new ApplicationError('No Card detected', 400);
         }
 
-        var oConfig = this.getConfigFile();
-        oConfig[rfidConnection.getCardId()] = {
-            uri: sStreamUri
-        };
-        this._saveFiguresFile(oConfig);
-        resolve();
+        mopidy.onCardRemoved().then(function() {
+            var oConfig = this.getConfigFile();
+            oConfig[rfidConnection.getCardId()] = {
+                uri: sStreamUri
+            };
+            this._saveFiguresFile(oConfig);
+            resolve();
+
+        }.bind(this));
     }.bind(this));
 };
 
