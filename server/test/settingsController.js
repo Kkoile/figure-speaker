@@ -390,8 +390,9 @@ describe('Settings Controller', function () {
 
             var oLastPlayed = new Date();
             oLastPlayed.setDate(oLastPlayed.getDate() - 1);
-            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
-                assert(iProgress === 200);
+            settingsController._getProgressOfSong({progress: 200, last_played: oLastPlayed, track_index: 1}).then(function (oProgress) {
+                assert(oProgress.position === 200);
+                assert(oProgress.track === 1);
 
                 assert(oGetPlayModeStub.calledOnce);
                 done();
@@ -407,8 +408,9 @@ describe('Settings Controller', function () {
 
             var oLastPlayed = new Date();
             oLastPlayed.setDate(oLastPlayed.getDate() - 10);
-            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
-                assert(iProgress === 0);
+            settingsController._getProgressOfSong({progress: 200, last_played: oLastPlayed, track_index: 1}).then(function (oProgress) {
+                assert(oProgress.position === 0);
+                assert(oProgress.track === 0);
 
                 assert(oGetPlayModeStub.calledOnce);
                 done();
@@ -423,8 +425,9 @@ describe('Settings Controller', function () {
 
             var oLastPlayed = new Date();
             oLastPlayed.setDate(oLastPlayed.getDate() - 1);
-            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
-                assert(iProgress === 0);
+            settingsController._getProgressOfSong({progress: 200, last_played: oLastPlayed, track_index: 1}).then(function (oProgress) {
+                assert(oProgress.position === 0);
+                assert(oProgress.track === 0);
 
                 assert(oGetPlayModeStub.calledOnce);
                 done();
@@ -440,8 +443,9 @@ describe('Settings Controller', function () {
 
             var oLastPlayed = new Date();
             oLastPlayed.setDate(oLastPlayed.getDate() - 1);
-            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
-                assert(iProgress === 200);
+            settingsController._getProgressOfSong({progress: 200, last_played: oLastPlayed, track_index: 1}).then(function (oProgress) {
+                assert(oProgress.position === 200);
+                assert(oProgress.track === 1);
 
                 assert(oGetPlayModeStub.calledOnce);
                 done();
@@ -457,8 +461,9 @@ describe('Settings Controller', function () {
 
             var oLastPlayed = new Date();
             oLastPlayed.setDate(oLastPlayed.getDate() - 1);
-            settingsController._getProgressOfSong(200, oLastPlayed).then(function (iProgress) {
-                assert(iProgress === 200);
+            settingsController._getProgressOfSong({progress: 200, last_played: oLastPlayed, track_index: 1}).then(function (oProgress) {
+                assert(oProgress.position === 200);
+                assert(oProgress.track === 1);
 
                 assert(oGetPlayModeStub.calledOnce);
                 done();

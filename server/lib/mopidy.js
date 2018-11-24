@@ -68,16 +68,22 @@ exports._playItem = function (oData) {
             .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
             .then(this.mopidy.tracklist.add.bind(this.mopidy))
             .then(function() {
+                return this.mopidy.tracklist.getTlTracks();
+            }.bind(this))
+            .then(function (aItems) {
+                return oData.progress.track < aItems.length ? aItems[oData.progress.track] : aItems[0];
+            }.bind(this))
+            .then(function (oItem) {
+                return this.mopidy.playback.play(oItem);
+            }.bind(this))
+            .then(function() {
                 return this.mopidy.playback.setVolume(oData.volume);
             }.bind(this))
             .then(function () {
-                return this.mopidy.playback.play();
-            }.bind(this))
-            .then(function () {
                 return new Promise(function (resolve) {
-                    if (oData.progress > 0) {
+                    if (oData.progress.position > 0) {
                         setTimeout(function () {
-                            this.mopidy.playback.seek(oData.progress).then(resolve);
+                            this.mopidy.playback.seek(oData.progress.position).then(resolve);
                         }.bind(this), 10);
                     } else {
                         resolve();
@@ -111,6 +117,26 @@ exports.onCardRemoved = function () {
     return this.mopidy.playback.pause()
         .then(function () {
             return this.mopidy.playback.getTimePosition();
+        }.bind(this))
+        .then(function (iTimePosition) {
+            return this.mopidy.tracklist.index()
+                .then(function (iIndex) {
+                    return {timePosition: iTimePosition, trackIndex: iIndex};
+                });
+        }.bind(this))
+        .then(function (oTrackInfo) {
+            return this.mopidy.tracklist.getLength()
+                .then(function (iLength) {
+                    oTrackInfo.tracklistLength = iLength;
+                    return oTrackInfo;
+                });
+        }.bind(this))
+        .then(function (oTrackInfo) {
+            return this.mopidy.playback.getCurrentTrack()
+                .then(function (oTrack) {
+                    oTrackInfo.trackLength = oTrack.length;
+                    return oTrackInfo;
+                });
         }.bind(this))
         .then(settingsController.saveFigurePlayInformation.bind(settingsController, this._sCurrentFigureId))
         .catch(function (oError) {
