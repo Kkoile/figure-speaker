@@ -20,21 +20,28 @@ var volumeController = require('./volumeController');
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
+exports.isSpotifyReady = undefined;
 
 exports.start = function () {
     winston.info("starting mopidy");
-    this.mopidyStarted = new Promise(function (resolve) {
+    this.mopidyStarted = new Promise(function (resolveMopidyStarted) {
         if (this.mopidyProcess) {
             throw new ApplicationError('Mopidy is already running', 500);
         }
         this.mopidyProcess = child_process.spawn('mopidy');
-        this.mopidyProcess.stderr.on('data', function (data) {
-            winston.debug(data.toString());
-            if (data.toString().includes('HTTP server running')) {
-                winston.info("Mopidy started");
-                return resolve();
-            }
-        });
+        this.isSpotifyReady = new Promise(function (resolveSpotifyLoggedIn) {
+            this.mopidyProcess.stderr.on('data', function (data) {
+                winston.debug(data.toString());
+                if (data.toString().includes('HTTP server running')) {
+                    winston.info("Mopidy started");
+                    resolveMopidyStarted();
+                }
+                if (data.toString().includes('Logged in to Spotify in online mode')) {
+                    winston.info("Logged in to Spotify");
+                    resolveSpotifyLoggedIn();
+                }
+            }.bind(this));
+        }.bind(this));
     }.bind(this));
     return this.mopidyStarted;
 };
@@ -61,10 +68,23 @@ exports.restart = function () {
         .then(this.start.bind(this));
 };
 
+exports._waitForMopidyToPlayThisTrack = function(sUri) {
+    return new Promise(function(resolve) {
+        if (sUri.indexOf("spotify") === 0) {
+            this.isSpotifyReady.then(resolve);
+        } else {
+            resolve();
+        }
+    }.bind(this));
+};
+
 exports._playItem = function (oData) {
     if (oData) {
         this._sCurrentFigureId = oData.cardId;
-        return this.mopidy.tracklist.clear()
+        return this._waitForMopidyToPlayThisTrack(oData.uri)
+            .then(function() {
+                return this.mopidy.tracklist.clear();
+            }.bind(this))
             .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
             .then(this.mopidy.tracklist.add.bind(this.mopidy))
             .then(function() {

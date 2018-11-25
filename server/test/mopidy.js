@@ -17,6 +17,7 @@ describe('Mopidy', function () {
     afterEach(function () {
         sandbox.restore();
         mopidy.mopidyProcess = undefined;
+        mopidy.isSpotifyReady = undefined;
     });
 
     describe('start', function () {
@@ -39,7 +40,6 @@ describe('Mopidy', function () {
         });
         it('should fail when trying to start two processes', function (done) {
 
-
             var oProcess = {
                 stderr: {
                     on: function () {
@@ -56,6 +56,23 @@ describe('Mopidy', function () {
                         assert(oError.status === 500);
                         done();
                     });
+            });
+        });
+        it('should resolve spotify logged on promise', function (done) {
+
+            var oProcess = {
+                stderr: {
+                    on: function () {
+                    }
+                }
+            };
+            sandbox.stub(oProcess.stderr, 'on').yields('HTTP server running Logged in to Spotify in online mode');
+            var oChildProcessStub = sandbox.stub(child_process, 'spawn').withArgs('mopidy').returns(oProcess);
+
+            mopidy.start().then(function () {
+                mopidy.isSpotifyReady.then(function() {
+                    done();
+                });
             });
         });
     });
@@ -100,8 +117,30 @@ describe('Mopidy', function () {
         });
     });
 
+    describe('_waitForMopidyToPlayThisTrack', function () {
+        it('should resolve directly if uri does not start with `spotify`', function (done) {
+            mopidy._waitForMopidyToPlayThisTrack('local:file').then(function () {
+                done();
+            });
+        });
+        it('should wait for spotify to be logged on if uri starts with `spotify`', function (done) {
+            var bSpotifyResolve = false;
+            mopidy.isSpotifyReady = new Promise(function(resolve) {
+                setTimeout(function() {
+                    bSpotifyResolve = true;
+                    resolve();
+                }, 10);
+            });
+            mopidy._waitForMopidyToPlayThisTrack('spotify').then(function () {
+                assert(bSpotifyResolve);
+                done();
+            });
+        });
+    });
+
     describe('_playItem', function () {
         it('should not do anything if no figure data is given', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack');
             mopidy.mopidy =  {
                 tracklist: {
                     clear: function() {
@@ -140,10 +179,49 @@ describe('Mopidy', function () {
             };
 
             mopidy._playItem(null).then(function() {
+                assert(oMopidyWaitForTrackStub.notCalled);
+                done();
+            });
+        });
+        it('should pass uri to _waitForMopidyToPlayThisTrack', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').withArgs("DUMMY_URI").resolves();
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        return Promise.resolve();
+                    },
+                    getTlTracks: function() {
+                        return Promise.resolve([]);
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function(oItem) {
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy._playItem({uri: "DUMMY_URI", progress: {}}).then(function() {
+                assert(oMopidyWaitForTrackStub.calledOnce);
                 done();
             });
         });
         it('should seek if position > 0', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var iSeekPosition = null,
                 bSeekCalled = false;
             mopidy.mopidy =  {
@@ -185,6 +263,7 @@ describe('Mopidy', function () {
             });
         });
         it('should not seek if not position > 0', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var iSeekPosition = null,
                 bSeekCalled = false;
             mopidy.mopidy =  {
@@ -230,6 +309,7 @@ describe('Mopidy', function () {
             });
         });
         it('should play the nth item from position', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var aItems = [{item: 0}, {item: 1}, {item: 2}],
                 oItemToPlay = null;
 
