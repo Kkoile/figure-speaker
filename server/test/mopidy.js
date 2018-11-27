@@ -262,7 +262,7 @@ describe('Mopidy', function () {
                 done();
             });
         });
-        it('should not seek if not position > 0', function (done) {
+        it('should not seek if position is 0', function (done) {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var iSeekPosition = null,
                 bSeekCalled = false;
@@ -302,13 +302,49 @@ describe('Mopidy', function () {
                 assert(!bSeekCalled);
                 done();
             });
+        });
+        it('should not seek if not position is `null`', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
+            var iSeekPosition = null,
+                bSeekCalled = false;
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        return Promise.resolve();
+                    },
+                    getTlTracks: function() {
+                        return Promise.resolve([]);
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function(oItem) {
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        bSeekCalled = true;
+                        iSeekPosition = iPosition;
+                        return Promise.resolve();
+                    }
+                }
+            };
 
             mopidy._playItem({progress: {position: null}}).then(function() {
                 assert(!bSeekCalled);
                 done();
             });
         });
-        it('should play the nth item from position', function (done) {
+        it('should play the first item from position if track is 0', function (done) {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var aItems = [{item: 0}, {item: 1}, {item: 2}],
                 oItemToPlay = null;
@@ -348,11 +384,83 @@ describe('Mopidy', function () {
                 assert(oItemToPlay === aItems[0]);
                 done();
             });
+        });
+        it('should play the nth item from position', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
+            var aItems = [{item: 0}, {item: 1}, {item: 2}],
+                oItemToPlay = null;
+
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        return Promise.resolve();
+                    },
+                    getTlTracks: function() {
+                        return Promise.resolve(aItems);
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function(oItem) {
+                        oItemToPlay = oItem;
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        return Promise.resolve();
+                    }
+                }
+            };
 
             mopidy._playItem({progress: {track: 1}}).then(function() {
                 assert(oItemToPlay === aItems[1]);
                 done();
             });
+        });
+        it('should play the first item if track is greater than items', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
+            var aItems = [{item: 0}, {item: 1}, {item: 2}],
+                oItemToPlay = null;
+
+            mopidy.mopidy =  {
+                tracklist: {
+                    clear: function() {
+                        return Promise.resolve();
+                    },
+                    add: function(oItem) {
+                        return Promise.resolve();
+                    },
+                    getTlTracks: function() {
+                        return Promise.resolve(aItems);
+                    }
+                },
+                library: {
+                    lookup: function(sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function(iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function(oItem) {
+                        oItemToPlay = oItem;
+                        return Promise.resolve();
+                    },
+                    seek: function(iPosition) {
+                        return Promise.resolve();
+                    }
+                }
+            };
 
             //should return the first item, if index is greater than length of items
             mopidy._playItem({progress: {track: 5}}).then(function() {
