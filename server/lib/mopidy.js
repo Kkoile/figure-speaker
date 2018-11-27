@@ -20,20 +20,28 @@ var volumeController = require('./volumeController');
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
+exports.isSpotifyReady = undefined;
 
 exports.start = function () {
     winston.info("starting mopidy");
-    this.mopidyStarted = new Promise(function (resolve) {
+    this.mopidyStarted = new Promise(function (resolveMopidyStarted) {
         if (this.mopidyProcess) {
             throw new ApplicationError('Mopidy is already running', 500);
         }
         this.mopidyProcess = child_process.spawn('mopidy');
-        this.mopidyProcess.stderr.on('data', function (data) {
-            if (data.toString().includes('server running')) {
-                winston.info("Mopidy started");
-                return resolve();
-            }
-        });
+        this.isSpotifyReady = new Promise(function (resolveSpotifyLoggedIn) {
+            this.mopidyProcess.stderr.on('data', function (data) {
+                winston.debug(data.toString());
+                if (data.toString().includes('HTTP server running')) {
+                    winston.info("Mopidy started");
+                    resolveMopidyStarted();
+                }
+                if (data.toString().includes('Logged in to Spotify in online mode')) {
+                    winston.info("Logged in to Spotify");
+                    resolveSpotifyLoggedIn();
+                }
+            }.bind(this));
+        }.bind(this));
     }.bind(this));
     return this.mopidyStarted;
 };
@@ -60,25 +68,50 @@ exports.restart = function () {
         .then(this.start.bind(this));
 };
 
+exports._waitForMopidyToPlayThisTrack = function(sUri) {
+    return new Promise(function(resolve) {
+        if (sUri.indexOf("spotify") === 0) {
+            this.isSpotifyReady.then(resolve);
+        } else {
+            resolve();
+        }
+    }.bind(this));
+};
+
 exports._playItem = function (oData) {
     if (oData) {
         this._sCurrentFigureId = oData.cardId;
-        this.mopidy.tracklist.clear()
+        return this._waitForMopidyToPlayThisTrack(oData.uri)
+            .then(function() {
+                return this.mopidy.tracklist.clear();
+            }.bind(this))
             .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
             .then(this.mopidy.tracklist.add.bind(this.mopidy))
+            .then(function() {
+                return this.mopidy.tracklist.getTlTracks();
+            }.bind(this))
+            .then(function (aItems) {
+                return oData.progress.track < aItems.length ? aItems[oData.progress.track] : aItems[0];
+            }.bind(this))
+            .then(function (oItem) {
+                return this.mopidy.playback.play(oItem);
+            }.bind(this))
             .then(function() {
                 return this.mopidy.playback.setVolume(oData.volume);
             }.bind(this))
             .then(function () {
-                return this.mopidy.playback.play();
-            }.bind(this))
-            .then(function () {
                 return new Promise(function (resolve) {
-                    setTimeout(function () {
-                        this.mopidy.playback.seek(oData.progress || 0).then(resolve);
-                    }.bind(this), 10);
+                    if (oData.progress.position > 0) {
+                        setTimeout(function () {
+                            this.mopidy.playback.seek(oData.progress.position).then(resolve);
+                        }.bind(this), 10);
+                    } else {
+                        resolve();
+                    }
                 }.bind(this));
             }.bind(this));
+    } else {
+        return Promise.resolve();
     }
 };
 
@@ -104,6 +137,26 @@ exports.onCardRemoved = function () {
     return this.mopidy.playback.pause()
         .then(function () {
             return this.mopidy.playback.getTimePosition();
+        }.bind(this))
+        .then(function (iTimePosition) {
+            return this.mopidy.tracklist.index()
+                .then(function (iIndex) {
+                    return {timePosition: iTimePosition, trackIndex: iIndex};
+                });
+        }.bind(this))
+        .then(function (oTrackInfo) {
+            return this.mopidy.tracklist.getLength()
+                .then(function (iLength) {
+                    oTrackInfo.tracklistLength = iLength;
+                    return oTrackInfo;
+                });
+        }.bind(this))
+        .then(function (oTrackInfo) {
+            return this.mopidy.playback.getCurrentTrack()
+                .then(function (oTrack) {
+                    oTrackInfo.trackLength = oTrack.length;
+                    return oTrackInfo;
+                });
         }.bind(this))
         .then(settingsController.saveFigurePlayInformation.bind(settingsController, this._sCurrentFigureId))
         .catch(function (oError) {

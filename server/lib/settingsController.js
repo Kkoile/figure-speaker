@@ -50,12 +50,15 @@ exports.saveFigure = function (sStreamUri) {
             throw new ApplicationError('No Card detected', 400);
         }
 
-        var oConfig = this.getConfigFile();
-        oConfig[rfidConnection.getCardId()] = {
-            uri: sStreamUri
-        };
-        this._saveFiguresFile(oConfig);
-        resolve();
+        mopidy.onCardRemoved().then(function() {
+            var oConfig = this.getConfigFile();
+            oConfig[rfidConnection.getCardId()] = {
+                uri: sStreamUri
+            };
+            this._saveFiguresFile(oConfig);
+            resolve();
+
+        }.bind(this));
     }.bind(this));
 };
 
@@ -93,20 +96,21 @@ exports.getPlayMode = function () {
     }.bind(this));
 };
 
-exports._getProgressOfSong = function (vProgress, vLastPlayed) {
+exports._getProgressOfSong = function (oTrackInfo) {
     return this.getPlayMode().then(function (oPlayMode) {
-        var iProgress = parseInt(vProgress),
-            oLastPlayed = new Date(vLastPlayed);
+        var oProgress = {track: 0, position: 0},
+            iProgress = parseInt(oTrackInfo.progress),
+            iTrackIndex = parseInt(oTrackInfo.track_index),
+            oLastPlayed = new Date(oTrackInfo.last_played);
         if (oPlayMode.playMode === constants.PlayMode.Resume) {
             var oReferenceDate = new Date();
             oReferenceDate.setDate(oReferenceDate.getDate() - oPlayMode.resetAfterDays);
-            if (oReferenceDate > oLastPlayed) {
-                return 0;
-            } else {
-                return iProgress;
+            if (oReferenceDate < oLastPlayed) {
+                oProgress.track = iTrackIndex;
+                oProgress.position = iProgress;
             }
         }
-        return 0;
+        return oProgress;
     });
 };
 
@@ -118,12 +122,13 @@ exports.getFigurePlayInformation = function () {
     var oConfig = this.getConfigFile();
 
     var sCardId = rfidConnection.getCardId();
-    if (oConfig[sCardId]) {
-        return this._getProgressOfSong(oConfig[sCardId].progress, oConfig[sCardId].last_played).then(function (iProgress) {
+    var oFigure = oConfig[sCardId];
+    if (oFigure) {
+        return this._getProgressOfSong(oFigure).then(function (oProgress) {
             return this.getCurrentVolume().then(function(iCurrentVolume) {
-                var oData = oConfig[sCardId];
+                var oData = oFigure;
                 oData.cardId = sCardId;
-                oData.progress = iProgress;
+                oData.progress = oProgress;
                 oData.volume = iCurrentVolume;
                 winston.info('Found the following figure:', JSON.stringify(oData));
                 return oData;
@@ -133,11 +138,14 @@ exports.getFigurePlayInformation = function () {
     return Promise.resolve(null);
 };
 
-exports.saveFigurePlayInformation = function (sCardId, iProgress) {
+exports.saveFigurePlayInformation = function (sCardId, oTrackInfo) {
     winston.info("save figure play information");
     return new Promise(function (resolve) {
         var oConfig = this.getConfigFile();
-        oConfig[sCardId].progress = iProgress;
+        oConfig[sCardId].progress = oTrackInfo.timePosition;
+        oConfig[sCardId].track_index = oTrackInfo.trackIndex;
+        oConfig[sCardId].track_length = oTrackInfo.trackLength;
+        oConfig[sCardId].tracklist_length = oTrackInfo.tracklistLength;
         oConfig[sCardId].last_played = new Date().toISOString();
         this._saveFiguresFile(oConfig);
         resolve();
