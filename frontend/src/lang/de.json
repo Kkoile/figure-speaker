@@ -63,6 +63,21 @@
     },
     "languageDe": {
       "text": "Deutsch"
+    },
+    "updates": {
+      "title": "Updates"
+    },
+    "currentVersion": {
+      "label": "Aktuelle Version"
+    },
+    "latestVersion": {
+      "label": "Neueste Version"
+    },
+    "noUpdateAvailable": {
+      "label": "Kein Update Verfügbar"
+    },
+    "installUpdate": {
+      "button": "Installiere Update"
     }
   },
   "mp3": {

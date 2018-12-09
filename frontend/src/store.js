@@ -25,7 +25,10 @@ const state = {
       text: 'settings.languageDe.text'
     }
   ],
-  maxVolume: 100
+  maxVolume: 100,
+  currentVersion: null,
+  latestVersion: null,
+  updateAvailable: false
 };
 
 const mutations = {
@@ -42,6 +45,13 @@ const mutations = {
   },
   setMaxVolume (state, iMaxVolume) {
     state.maxVolume = iMaxVolume;
+  },
+  setCurrentVersion (state, sCurrentVersion) {
+    state.currentVersion = sCurrentVersion;
+  },
+  setUpdateAvailable (state, oData) {
+    state.updateAvailable = oData.higherVersionAvailable;
+    state.latestVersion = oData.latestVersion;
   }
 };
 
@@ -104,6 +114,22 @@ const settingsActions = {
     return axios.post('/settings/maxVolume', {maxVolume: iMaxVolume})
       .then(function (oData) {
         commit('setMaxVolume', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  checkForUpdate ({commit}) {
+    return axios.get('/settings/currentVersion')
+      .then(function (oData) {
+        commit('setCurrentVersion', oData.data);
+        return oData.data;
+      })
+      .then(function (sCurrentVersion) {
+        return axios.get('http://localhost:3001/updates/checkForUpdate?version=' + sCurrentVersion)
+          .then(function (oData) {
+            commit('setUpdateAvailable', oData.data);
+          });
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));

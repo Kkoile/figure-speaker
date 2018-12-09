@@ -121,4 +121,12 @@ settingsApi.route('/maxVolume').post(function (req, res, next) {
         .catch(next);
 });
 
+settingsApi.route('/currentVersion').get(function (req, res, next) {
+    settingsController.getCurrentVersion()
+        .then(function (sCurrentVersion) {
+            res.send(sCurrentVersion);
+        })
+        .catch(next);
+});
+
 module.exports = settingsApi;

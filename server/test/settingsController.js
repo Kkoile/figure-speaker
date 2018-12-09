@@ -9,8 +9,7 @@ var hostController = require('../lib/hostController');
 var constants = require('../lib/constants.js');
 var ApplicationError = require('../lib/ApplicationError.js');
 var settingsController = require('../lib/settingsController.js');
-
-var sHomePath = require("os").homedir();
+var packageJson = require('../package.json');
 
 describe('Settings Controller', function () {
 
@@ -828,6 +827,26 @@ describe('Settings Controller', function () {
                 assert(oSaveFiguresStub.calledOnce);
                 done();
             });
+
+        });
+    });
+
+    describe('getCurrentVersion', function () {
+        it('should return the version of package.json', function (done) {
+            var sOldVersion = packageJson.version;
+            packageJson.version = '1.0.0';
+
+            settingsController.getCurrentVersion()
+                .then(function (sCurrentVersion) {
+                    assert(sCurrentVersion === '1.0.0');
+                    done();
+                })
+                .catch(function() {
+
+                })
+                .then(function() {
+                    packageJson.version = sOldVersion;
+                });
 
         });
     });
