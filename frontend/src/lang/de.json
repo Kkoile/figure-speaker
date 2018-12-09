@@ -70,8 +70,11 @@
     "currentVersion": {
       "label": "Aktuelle Version"
     },
-    "checkForUpdate": {
-      "button": "Prüfe nach Update"
+    "latestVersion": {
+      "label": "Neueste Version"
+    },
+    "noUpdateAvailable": {
+      "label": "Kein Update Verfügbar"
     },
     "installUpdate": {
       "button": "Installiere Update"

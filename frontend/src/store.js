@@ -26,7 +26,9 @@ const state = {
     }
   ],
   maxVolume: 100,
-  currentVersion: null
+  currentVersion: null,
+  latestVersion: null,
+  updateAvailable: false
 };
 
 const mutations = {
@@ -46,6 +48,10 @@ const mutations = {
   },
   setCurrentVersion (state, sCurrentVersion) {
     state.currentVersion = sCurrentVersion;
+  },
+  setUpdateAvailable (state, oData) {
+    state.updateAvailable = oData.higherVersionAvailable;
+    state.latestVersion = oData.latestVersion;
   }
 };
 
@@ -113,19 +119,17 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadCurrentVersion ({commit}) {
+  checkForUpdate ({commit}) {
     return axios.get('/settings/currentVersion')
       .then(function (oData) {
         commit('setCurrentVersion', oData.data);
+        return oData.data;
       })
-      .catch(function (err) {
-        alert(JSON.stringify(err.response.data));
-      });
-  },
-  checkForUpdate ({commit}, sCurrentVersion) {
-    return axios.get('http://localhost:3001/updates/checkForUpdate?version=' + sCurrentVersion)
-      .then(function (oData) {
-        alert(JSON.stringify(oData.data));
+      .then(function (sCurrentVersion) {
+        return axios.get('http://localhost:3001/updates/checkForUpdate?version=' + sCurrentVersion)
+          .then(function (oData) {
+            commit('setUpdateAvailable', oData.data);
+          });
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));

@@ -57,6 +57,7 @@ export default {
   },
   beforeMount: function () {
     this.$store.dispatch('loadLanguage');
+    this.$store.dispatch('checkForUpdate');
   }
 };
 </script>
