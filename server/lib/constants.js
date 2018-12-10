@@ -3,6 +3,7 @@
 var sPathToGeneralConfig = require("os").homedir() + '/.config';
 var sPathToAppConfig = sPathToGeneralConfig + '/figure-speaker';
 var sPathToConfigFile = sPathToAppConfig + '/figures.conf';
+var sPathToMp3Files = sPathToAppConfig + '/files';
 
 
 module.exports = {
@@ -15,7 +16,8 @@ module.exports = {
     Data: {
         PathToGeneralConfig: sPathToGeneralConfig,
         PathToAppConfig: sPathToAppConfig,
-        PathToFigures: sPathToConfigFile
+        PathToFigures: sPathToConfigFile,
+        PathToMp3Files: sPathToMp3Files
     },
     Mopidy: {
         PathToConfig: require("os").homedir() + '/.config/mopidy/mopidy.conf',

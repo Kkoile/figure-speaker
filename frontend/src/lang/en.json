@@ -83,6 +83,24 @@
   "mp3": {
     "url": {
       "placeholder": "MP3 URL"
+    },
+    "list": {
+      "title": "Available Mp3 Files"
+    },
+    "fileName": {
+      "label": "File Name:"
+    },
+    "noData": {
+      "text": "No MP3 Files Uploaded Yet"
+    },
+    "openFileChoser": {
+      "button": "Choose File"
+    },
+    "uploadFirstFileNow": {
+      "button": "Upload First File Now"
+    },
+    "upload": {
+      "button": "Upload"
     }
   },
   "youtube": {
