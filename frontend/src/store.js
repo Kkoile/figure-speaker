@@ -126,7 +126,7 @@ const settingsActions = {
         return oData.data;
       })
       .then(function (sCurrentVersion) {
-        return axios.get('http://localhost:3001/updates/checkForUpdate?version=' + sCurrentVersion)
+        return axios.get('http://' + window.location.host + ':3001/updates/checkForUpdate?version=' + sCurrentVersion)
           .then(function (oData) {
             commit('setUpdateAvailable', oData.data);
           });

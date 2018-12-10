@@ -114,7 +114,7 @@ export default {
       this.$store.dispatch('saveMaxVolume', this.$store.state.settings.maxVolume);
     },
     installUpdate: function () {
-      window.location.href = 'http://localhost:3001';
+      window.location.href = 'http://' + window.location.host + ':3001';
     }
   },
   beforeMount: function () {
