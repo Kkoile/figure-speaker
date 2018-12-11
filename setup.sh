@@ -332,3 +332,7 @@ echo "[Install]" | sudo tee -a /etc/systemd/system/autohotspot.service >/dev/nul
 echo "WantedBy=multi-user.target" | sudo tee -a /etc/systemd/system/autohotspot.service >/dev/null
 
 sudo systemctl enable autohotspot.service
+
+sudo sed -i 's/.*/figure-speaker/g' /etc/hostname
+
+sudo sed -i 's/\(127\.0\.0\.1\s*\).*$/\1figure-speaker/g' /etc/hosts
