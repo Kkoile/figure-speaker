@@ -17,6 +17,10 @@ sudo apt-get install -y mopidy
 echo "Installing Mopidy Spotify Extension ..."
 sudo apt-get install -y mopidy-spotify
 
+echo "[local]" | sudo tee -a ~/.config/mopidy/mopidy.conf >/dev/null
+echo "media_dir = ~/.config/figure-speaker/files" | sudo tee -a ~/.config/mopidy/mopidy.conf >/dev/null
+mopidy local scan
+
 echo "Installing Node.js ..."
 sudo curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
