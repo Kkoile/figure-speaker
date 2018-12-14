@@ -335,4 +335,4 @@ sudo systemctl enable autohotspot.service
 
 sudo sed -i 's/.*/figure-speaker/g' /etc/hostname
 
-sudo sed -i 's/\(127\.0\.0\.1\s*\).*$/\1figure-speaker/g' /etc/hosts
+sudo sed -i 's/\(127\.0\.0\.1\s*\).*$/\1figure-speaker localhost/g' /etc/hosts
