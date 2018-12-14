@@ -7,7 +7,7 @@ var ApplicationError = require('./ApplicationError.js');
 exports.getAccountInfo = function () {
     return {
         name: 'Youtube',
-        enabled: true,
+        enabled: false,
         configurable: false
     };
 };
