@@ -4,6 +4,9 @@
       <md-card>
         <md-card-header>
           <div class="md-title">{{ $t("spotify.manageAccount.title") }}</div>
+          <div class="md-card-header-text" v-html="$t('spotify.credentials.text', {
+            'url': mopidyUrl
+            })"/>
         </md-card-header>
 
         <md-card-content>
