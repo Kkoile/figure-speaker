@@ -1,7 +1,7 @@
 {
   "preferGlobal": true,
   "name": "figure-speaker-frontend",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Speaker which reacts to NFC tags and streams music",
   "author": "Nils_Hirsekorn@online.de",
   "repository": "git@github.com:Kkoile/figure-speaker.git",

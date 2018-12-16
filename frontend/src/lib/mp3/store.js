@@ -22,7 +22,8 @@ const mutations = {
 
 const actions = {
   saveItem ({dispatch}, sUri) {
-    dispatch('saveItem', sUri, { root: true });
+    var sEncodedUri = encodeURI(sUri).replace(/\(/g, '%28').replace(/\)/g, '%29');
+    dispatch('saveItem', sEncodedUri, { root: true });
   },
   loadAvailable ({commit}) {
     axios.get('/data/mp3')

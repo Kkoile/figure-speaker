@@ -2,6 +2,7 @@
 
 var winston = require('winston');
 var constants = require('./constants.js');
+var mopidy = require('./mopidy.js');
 var ApplicationError = require('./ApplicationError.js');
 var fs = require('fs');
 
@@ -56,5 +57,7 @@ exports.upload = function (oFile) {
             }
             resolve();
         });
-    });
+    })
+        .then(mopidy.scanMp3Files.bind(mopidy))
+        .then(mopidy.restart.bind(mopidy));
 };

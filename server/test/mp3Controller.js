@@ -5,6 +5,7 @@ var constants = require('../lib/constants.js');
 
 var mp3Controller = require('../lib/mp3Controller');
 
+var mopidy= require('../lib/mopidy');
 var fs = require('fs');
 
 describe('MP3 Controller', function () {
@@ -70,6 +71,9 @@ describe('MP3 Controller', function () {
             var oFsMkDirStub2 = oFsMkDirStub.withArgs(constants.Data.PathToAppConfig);
             var oFsMkDirStub3 = oFsMkDirStub.withArgs(constants.Data.PathToMp3Files);
 
+            var oMp3ScanStub = sandbox.stub(mopidy, 'scanMp3Files').resolves();
+            var oMopidyRestartStub = sandbox.stub(mopidy, 'restart').resolves();
+
             var sCalledPath;
             var oFile = {
                 name: 'DUMMY_FILE.mp3',
@@ -100,6 +104,9 @@ describe('MP3 Controller', function () {
             var oFsMkDirStub1 = oFsMkDirStub.withArgs(constants.Data.PathToGeneralConfig);
             var oFsMkDirStub2 = oFsMkDirStub.withArgs(constants.Data.PathToAppConfig);
             var oFsMkDirStub3 = oFsMkDirStub.withArgs(constants.Data.PathToMp3Files);
+
+            var oMp3ScanStub = sandbox.stub(mopidy, 'scanMp3Files').resolves();
+            var oMopidyRestartStub = sandbox.stub(mopidy, 'restart').resolves();
 
 
             var sCalledPath;
@@ -133,6 +140,9 @@ describe('MP3 Controller', function () {
             var oFsMkDirStub2 = oFsMkDirStub.withArgs(constants.Data.PathToAppConfig);
             var oFsMkDirStub3 = oFsMkDirStub.withArgs(constants.Data.PathToMp3Files);
 
+            var oMp3ScanStub = sandbox.stub(mopidy, 'scanMp3Files').resolves();
+            var oMopidyRestartStub = sandbox.stub(mopidy, 'restart').resolves();
+
 
             var sCalledPath;
             var oFile = {
@@ -165,6 +175,9 @@ describe('MP3 Controller', function () {
             var oFsMkDirStub2 = oFsMkDirStub.withArgs(constants.Data.PathToAppConfig);
             var oFsMkDirStub3 = oFsMkDirStub.withArgs(constants.Data.PathToMp3Files);
 
+            var oMp3ScanStub = sandbox.stub(mopidy, 'scanMp3Files').resolves();
+            var oMopidyRestartStub = sandbox.stub(mopidy, 'restart').resolves();
+
 
             var sCalledPath;
             var oFile = {
@@ -182,6 +195,26 @@ describe('MP3 Controller', function () {
                 assert(oFsMkDirStub1.notCalled);
                 assert(oFsMkDirStub2.notCalled);
                 assert(oFsMkDirStub3.calledOnce);
+                done();
+            });
+        });
+        it('should scan for mp3 files and restart mopidy', function (done) {
+
+            var oFsExistsStub = sandbox.stub(fs, 'existsSync').returns(true);
+            var oMp3ScanStub = sandbox.stub(mopidy, 'scanMp3Files').resolves();
+            var oMopidyRestartStub = sandbox.stub(mopidy, 'restart').resolves();
+
+            var sCalledPath;
+            var oFile = {
+                name: 'DUMMY_FILE.mp3',
+                mv: function(sPath, cb) {
+                    sCalledPath = sPath;
+                    cb(null);
+                }
+            };
+            mp3Controller.upload(oFile).then(function () {
+                assert(oMp3ScanStub.calledOnce);
+                assert(oMopidyRestartStub.calledOnce);
                 done();
             });
         });
