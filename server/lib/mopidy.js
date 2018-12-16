@@ -68,6 +68,21 @@ exports.restart = function () {
         .then(this.start.bind(this));
 };
 
+exports.scanMp3Files = function () {
+    winston.info("scanning mp3 files");
+    return new Promise(function(resolve, reject) {
+        var oProcess = child_process.spawn('mopidy', ['local', 'scan']);
+        oProcess.on('close', function (iCode) {
+            if (iCode !== 0) {
+                winston.error("Scanning mp3 files return error code: " + iCode);
+                reject(new Error("Scanning mp3 files return error code: " + iCode));
+            }
+            resolve();
+        });
+    });
+
+};
+
 exports._waitForMopidyToPlayThisTrack = function(sUri) {
     return new Promise(function(resolve) {
         if (sUri.indexOf("spotify") === 0) {

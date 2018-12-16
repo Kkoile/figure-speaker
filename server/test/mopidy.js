@@ -117,6 +117,39 @@ describe('Mopidy', function () {
         });
     });
 
+    describe('scanMp3Files', function () {
+        it('should spawn the child process `mopidy local scan`', function (done) {
+            var oProcess = {
+                on: function (sEvent, cb) {
+                    if (sEvent === 'close') {
+                        return cb(0);
+                    }
+                }
+            };
+            var oChildProcessStub = sandbox.stub(child_process, 'spawn').withArgs('mopidy', ['local', 'scan']).returns(oProcess);
+
+            mopidy.scanMp3Files().then(function () {
+                assert(oChildProcessStub.calledOnce);
+                done();
+            });
+        });
+        it('should reject if exit code is not 0', function (done) {
+            var oProcess = {
+                on: function (sEvent, cb) {
+                    if (sEvent === 'close') {
+                        return cb(1);
+                    }
+                }
+            };
+            var oChildProcessStub = sandbox.stub(child_process, 'spawn').withArgs('mopidy', ['local', 'scan']).returns(oProcess);
+
+            mopidy.scanMp3Files().catch(function () {
+                assert(oChildProcessStub.calledOnce);
+                done();
+            });
+        });
+    });
+
     describe('_waitForMopidyToPlayThisTrack', function () {
         it('should resolve directly if uri does not start with `spotify`', function (done) {
             mopidy._waitForMopidyToPlayThisTrack('local:file').then(function () {
