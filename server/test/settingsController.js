@@ -850,4 +850,64 @@ describe('Settings Controller', function () {
 
         });
     });
+
+    describe('checkIfUriIsInUse', function () {
+        it('should get figures file and check if one uri is equal to the given URI', function (done) {
+
+            var oGetConfigStub = sandbox.stub(settingsController, 'getConfigFile').returns({
+                'SOME_ID': {
+                    uri: 'DUMMY_URI'
+                },
+                'OTHER_ID': {
+                    uri: 'DUMMY_URI_2'
+                }
+            });
+
+            settingsController.checkIfUriIsInUse('DUMMY_URI')
+                .then(function (bIsInUse) {
+                    assert(bIsInUse === true);
+                    assert(oGetConfigStub.calledOnce);
+                    done();
+                });
+
+        });
+        it('should return true if an uri is used by two figures', function (done) {
+
+            var oGetConfigStub = sandbox.stub(settingsController, 'getConfigFile').returns({
+                'SOME_ID': {
+                    uri: 'DUMMY_URI'
+                },
+                'OTHER_ID': {
+                    uri: 'DUMMY_URI'
+                }
+            });
+
+            settingsController.checkIfUriIsInUse('DUMMY_URI')
+                .then(function (bIsInUse) {
+                    assert(bIsInUse === true);
+                    assert(oGetConfigStub.calledOnce);
+                    done();
+                });
+
+        });
+        it('should return false if an uri is not used', function (done) {
+
+            var oGetConfigStub = sandbox.stub(settingsController, 'getConfigFile').returns({
+                'SOME_ID': {
+                    uri: 'DUMMY_URI'
+                },
+                'OTHER_ID': {
+                    uri: 'DUMMY_URI_2'
+                }
+            });
+
+            settingsController.checkIfUriIsInUse('DUMMY_URI_3')
+                .then(function (bIsInUse) {
+                    assert(bIsInUse === false);
+                    assert(oGetConfigStub.calledOnce);
+                    done();
+                });
+
+        });
+    });
 });

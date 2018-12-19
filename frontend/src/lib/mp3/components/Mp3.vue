@@ -15,6 +15,9 @@
           v-bind:item="file"
           v-bind:key="file" />
     </md-list>
+
+    <md-progress-bar md-mode="indeterminate" v-if="$store.state.mp3.uploadStatus === 'PENDING'" />
+
     <input class="invisible" type="file" visible="false" id="file" ref="file" v-on:change="handleFileUpload()"/>
     <div class="upload" v-if="$store.state.mp3.files.length > 0">
       <md-button v-on:click="openFileChoser()">{{ $t("mp3.openFileChoser.button") }}</md-button>

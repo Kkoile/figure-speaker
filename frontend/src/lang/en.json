@@ -101,6 +101,9 @@
     },
     "upload": {
       "button": "Upload"
+    },
+    "deleteFileInUse": {
+      "text": "This File is in use by a Figure. Do you still want to delete it?"
     }
   },
   "youtube": {
@@ -149,6 +152,9 @@
     },
     "delete": {
       "button": "Delete"
+    },
+    "cancel": {
+      "button": "Cancel"
     },
     "search": {
       "button": "Search"

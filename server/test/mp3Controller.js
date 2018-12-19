@@ -219,4 +219,26 @@ describe('MP3 Controller', function () {
             });
         });
     });
+
+    describe('deleteFile', function () {
+        it('should delete the file', function (done) {
+            var oFsStub = sandbox.stub(fs, 'unlink').withArgs(constants.Data.PathToMp3Files + '/' + 'DUMMY_FILE.mp3').callsFake(function(sArgument, cb) {
+                cb();
+            });
+            mp3Controller.deleteFile('DUMMY_FILE.mp3')
+                .then(function() {
+                    assert(oFsStub.calledOnce);
+                    done();
+                });
+        });
+
+        it('should throw an error if no file name is provided', function (done) {
+            var oFsStub = sandbox.stub(fs, 'unlink');
+            mp3Controller.deleteFile(null)
+                .catch(function(oError) {
+                    assert(oFsStub.notCalled);
+                    done();
+                });
+        });
+    });
 });
