@@ -61,3 +61,17 @@ exports.upload = function (oFile) {
         .then(mopidy.scanMp3Files.bind(mopidy))
         .then(mopidy.restart.bind(mopidy));
 };
+
+exports.deleteFile = function (sFilename) {
+    return new Promise(function (resolve, reject) {
+        if (!sFilename) {
+            return reject(new ApplicationError(400, "No File provided"));
+        }
+        fs.unlink(constants.Data.PathToMp3Files + '/' + sFilename, function(oError) {
+            if (oError) {
+                return reject(oError);
+            }
+            resolve();
+        });
+    });
+};

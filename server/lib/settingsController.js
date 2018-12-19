@@ -259,3 +259,13 @@ exports.getCurrentVersion = function () {
         resolve(packageJson.version);
     }.bind(this));
 };
+
+exports.checkIfUriIsInUse = function(sUri) {
+    return new Promise(function(resolve) {
+        var oConfig = this.getConfigFile();
+        var bUriIsInUse = Object.keys(oConfig).some(function(sKey) {
+            return oConfig[sKey] && oConfig[sKey].uri === sUri;
+        });
+        resolve(bUriIsInUse);
+    }.bind(this));
+};
