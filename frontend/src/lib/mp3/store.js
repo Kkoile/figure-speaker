@@ -56,8 +56,8 @@ const actions = {
   deleteFile ({commit, dispatch}, sFilename) {
     axios.delete('/data/mp3/deleteFile', {params: {filename: getEncodedUri(sFilename)}})
       .then(function () {
-      dispatch('loadAvailable');
-    })
+        dispatch('loadAvailable');
+      })
       .catch(function (oError) {
         alert(oError);
       })
