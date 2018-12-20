@@ -2,8 +2,8 @@
 
 echo "--- Start setting up raspberry pi ---"
 
-echo "Setting audio volume to 100% ..."
-amixer set PCM -- 100%
+echo "Setting audio volume to 85% ..."
+amixer set PCM -- 85%
 
 echo "Enabling SPI for RFID Reader ..."
 echo "dtparam=spi=on" | sudo tee -a /boot/config.txt >/dev/null
@@ -336,3 +336,8 @@ sudo systemctl enable autohotspot.service
 sudo sed -i 's/.*/figure-speaker/g' /etc/hostname
 
 sudo sed -i 's/\(127\.0\.0\.1\s*\).*$/\1figure-speaker localhost/g' /etc/hosts
+
+sudo apt-get install -y iptables-persistent
+sudo iptables -A PREROUTING -t nat -p tcp --dport 80 -j REDIRECT --to-port 3000
+iptables-save > /etc/iptables/rules.v4
+sudo sed -i 's/exit 0$/iptables-restore \< \/etc\/iptables\/rules\.v4\nexit 0/g' /etc/rc.local
