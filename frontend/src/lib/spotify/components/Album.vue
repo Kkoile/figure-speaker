@@ -3,7 +3,7 @@
     <h1>{{ $store.state.spotify.albumArtistName }}</h1>
     <h2>{{ $store.state.spotify.albumName }}</h2>
     <div class="albumOverview">
-      <md-button @click="saveItem">{{ $t("spotify.saveAlbum.button") }}</md-button>
+      <md-button class="md-primary md-raised" @click="saveItem">{{ $t("spotify.saveAlbum.button") }}</md-button>
       <h2>{{ $t("spotify.tracks.title") }}</h2>
       <div class="trackList">
         <AlbumTrackItem
@@ -44,10 +44,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .trackList {
+    max-width: 100%;
     width: 30rem;
   }
 
   .albumOverview {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

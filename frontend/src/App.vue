@@ -63,11 +63,19 @@ export default {
 </script>
 
 <style>
+  h1, h2 {
+    line-height: 1.2;
+  }
   .md-app {
     height: 100vh;
   }
   .md-drawer {
     width: 230px;
     max-width: calc(100vw - 125px);
+  }
+  .md-card {
+    width: calc(100% - 2rem);
+    max-width: 320px;
+    margin: 1rem;
   }
 </style>

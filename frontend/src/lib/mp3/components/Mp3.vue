@@ -20,7 +20,7 @@
 
     <input class="invisible" type="file" visible="false" id="file" ref="file" v-on:change="handleFileUpload()"/>
     <div class="upload" v-if="$store.state.mp3.files.length > 0">
-      <md-button v-on:click="openFileChoser()">{{ $t("mp3.openFileChoser.button") }}</md-button>
+      <md-button class="md-raised" v-on:click="openFileChoser()">{{ $t("mp3.openFileChoser.button") }}</md-button>
       <div class="md-list-item-text">{{ file.name }}</div>
       <md-button v-bind:disabled="!file" v-on:click="submitFile()">{{ $t("mp3.upload.button") }}</md-button>
     </div>
@@ -28,11 +28,17 @@
 </template>
 
 <style scoped>
+  .md-list-item-text {
+    flex: 0 1 auto;
+    margin: 6px 8px;
+    padding: 0 8px;
+  }
   .upload {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
   }
   .invisible {
     display: none;

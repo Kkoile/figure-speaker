@@ -4,13 +4,14 @@
       <md-card-media-cover md-solid>
         <md-card-media md-ratio="4:3">
           <img v-if="item.images && item.images.length > 0" :src="item.images[0].url">
+          <div class="placeholder-background" v-else ></div>
         </md-card-media>
         <md-card-area>
           <md-card-header>
             <div class="md-title">{{ item.name }}</div>
           </md-card-header>
 
-          <md-card-actions md-alignment="space-between">
+          <md-card-actions md-alignment="flex-start">
             <md-button v-if="item.type==='track'" v-on:click="saveItem">{{ $t("common.save.button") }}</md-button>
             <md-button v-else v-on:click="openItem">{{ $t("common.open.button") }}</md-button>
           </md-card-actions>
@@ -21,11 +22,28 @@
 </template>
 
 <style scoped>
+  .searchItem {
+    max-width: calc(100% - 3rem);
+    margin-right: 5px;
+  }
   .md-card {
+    max-width: 100%;
     width: 320px;
-    margin: 4px;
-    display: inline-block;
-    vertical-align: top;
+  }
+  .md-card-header {
+    padding: 0 1rem;
+  }
+  .md-title {
+    font-size: 1rem;
+  }
+  .placeholder-background {
+    width: 100%;
+    height: 100%;
+    background-color: #448aff;
+    position: absolute;
+    top: 0;
+    left: 0;
+
   }
 </style>
 

@@ -25,8 +25,8 @@ export default {
 
 <style scoped>
   .md-card {
-    width: 320px;
-    margin: 4px;
+    width: calc(100% - 2rem);
+    max-width: 320px;
     display: inline-block;
     vertical-align: top;
   }

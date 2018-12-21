@@ -24,6 +24,8 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0;
   }
 
   .itemButton {
