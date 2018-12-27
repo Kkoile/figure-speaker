@@ -26,7 +26,8 @@ const state = {
   albumTracks: [],
   albumTracksOffset: 0,
   moreAlbumTracks: false,
-  account: {}
+  account: {},
+  countryCodes: []
 };
 
 const mutations = {
@@ -40,6 +41,7 @@ const mutations = {
     state.tracks = [];
     state.tracksOffset = 0;
     state.moreTracks = false;
+    state.countryCodes = [];
   },
   appendArtists (state, artists) {
     state.artists = state.artists.concat(artists.items);
@@ -96,6 +98,9 @@ const mutations = {
   },
   setAccountInfo (state, account) {
     state.account = account;
+  },
+  setCountryCodes (state, countryCodes) {
+    state.countryCodes = countryCodes;
   }
 };
 
@@ -105,7 +110,7 @@ const actions = {
   search ({commit}) {
     commit('resetData');
     if (state.query) {
-      return Spotify.search(state.query, 'artist,album,track', state.artistsOffset)
+      return Spotify.search(state.query, state.account.country, 'artist,album,track', state.artistsOffset)
         .then(function (oData) {
           commit('appendArtists', oData.data.artists);
           commit('appendAlbums', oData.data.albums);
@@ -117,7 +122,7 @@ const actions = {
     }
   },
   loadMoreArtists ({commit}) {
-    return Spotify.search(state.query, 'artist', state.artistsOffset)
+    return Spotify.search(state.query, state.account.country, 'artist', state.artistsOffset)
       .then(function (oData) {
         commit('appendArtists', oData.data.artists);
       })
@@ -126,7 +131,7 @@ const actions = {
       });
   },
   loadMoreAlbums ({commit}) {
-    return Spotify.search(state.query, 'album', state.albumsOffset)
+    return Spotify.search(state.query, state.account.country, 'album', state.albumsOffset)
       .then(function (oData) {
         commit('appendAlbums', oData.data.albums);
       })
@@ -135,7 +140,7 @@ const actions = {
       });
   },
   loadMoreTracks ({commit}) {
-    return Spotify.search(state.query, 'track', state.tracksOffset)
+    return Spotify.search(state.query, state.account.country, 'track', state.tracksOffset)
       .then(function (oData) {
         commit('appendTracks', oData.data.tracks);
       })
@@ -227,7 +232,8 @@ const actions = {
       username: state.account.username,
       password: state.account.password,
       'client_id': state.account.client_id,
-      'client_secret': state.account.client_secret
+      'client_secret': state.account.client_secret,
+      country: state.account.country
     })
       .then(function () {
         dispatch('loadAccountInfo');
@@ -240,6 +246,15 @@ const actions = {
     return axios.delete('/settings/accounts/spotify')
       .then(function () {
         dispatch('loadAccountInfo');
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  loadCountryCodes ({commit}) {
+    return axios.get('https://restcountries.eu/rest/v2/all')
+      .then(function (oData) {
+        commit('setCountryCodes', oData.data);
       })
       .catch(function (err) {
         alert(JSON.stringify(err.response.data));
