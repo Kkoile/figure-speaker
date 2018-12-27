@@ -36,6 +36,7 @@ describe('Spotify Controller', function () {
             var oAccount = spotifyController.getAccountInfo();
             assert(oAccount.enabled === true);
             assert(oAccount.username === 'DUMMY_USERNAME');
+            assert(oAccount.country === 'US');
             done();
         });
         it('should set account to enabled, if section is commented out', function (done) {
@@ -99,7 +100,8 @@ describe('Spotify Controller', function () {
                 username: 'DUMMY_EMAIL',
                 password: 'DUMMY_PASSWORD',
                 client_id: 'DUMMY_CLIENT_ID',
-                client_secret: 'DUMMY_CLIENT_SECRET'
+                client_secret: 'DUMMY_CLIENT_SECRET',
+                country: 'US'
             }).then(function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
@@ -109,6 +111,7 @@ describe('Spotify Controller', function () {
                 assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
                 assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
                 assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
+                assert(sSavedFile.includes('country = US'));
                 done();
             });
 
@@ -127,7 +130,8 @@ describe('Spotify Controller', function () {
                 username: 'DUMMY_EMAIL',
                 password: 'DUMMY_PASSWORD',
                 client_id: 'DUMMY_CLIENT_ID',
-                client_secret: 'DUMMY_CLIENT_SECRET'
+                client_secret: 'DUMMY_CLIENT_SECRET',
+                country: 'US'
             }).then(function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
@@ -137,6 +141,7 @@ describe('Spotify Controller', function () {
                 assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
                 assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
                 assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
+                assert(sSavedFile.includes('country = US'));
                 done();
             });
         });
@@ -155,7 +160,8 @@ describe('Spotify Controller', function () {
                 username: 'DUMMY_EMAIL',
                 password: 'DUMMY_PASSWORD',
                 client_id: 'DUMMY_CLIENT_ID',
-                client_secret: 'DUMMY_CLIENT_SECRET'
+                client_secret: 'DUMMY_CLIENT_SECRET',
+                country: 'US'
             }).then(function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
@@ -165,6 +171,7 @@ describe('Spotify Controller', function () {
                 assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
                 assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
                 assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
+                assert(sSavedFile.includes('country = US'));
                 done();
             });
         });
@@ -183,7 +190,8 @@ describe('Spotify Controller', function () {
                 username: 'DUMMY_EMAIL',
                 password: 'DUMMY_PASSWORD',
                 client_id: 'DUMMY_CLIENT_ID',
-                client_secret: 'DUMMY_CLIENT_SECRET'
+                client_secret: 'DUMMY_CLIENT_SECRET',
+                country: 'US'
             }).then(function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);

@@ -71,7 +71,10 @@ export default {
     'loadMoreArtists',
     'loadMoreAlbums',
     'loadMoreTracks'
-  ])
+  ]),
+  beforeMount: function () {
+    this.$store.dispatch('spotify/loadAccountInfo');
+  }
 };
 </script>
 

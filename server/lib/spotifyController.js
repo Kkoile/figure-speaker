@@ -26,8 +26,9 @@ exports.getAccountInfo = function () {
     return {
         name: 'Spotify',
         enabled: bEnabled,
-        username: !!oConfig.spotify.username ? oConfig.spotify.username : null,
-        client_id: !!oConfig.spotify.client_id ? oConfig.spotify.client_id : null,
+        username: oConfig.spotify.username ? oConfig.spotify.username : null,
+        client_id: oConfig.spotify.client_id ? oConfig.spotify.client_id : null,
+        country: oConfig.spotify.country,
         configurable: true
     };
 };
@@ -48,6 +49,7 @@ exports.saveAccount = function (oAccount) {
             oConfig.spotify.password = oAccount.password;
             oConfig.spotify.client_id = oAccount.client_id;
             oConfig.spotify.client_secret = oAccount.client_secret;
+            oConfig.spotify.country = oAccount.country;
 
             fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
         } catch (oError) {

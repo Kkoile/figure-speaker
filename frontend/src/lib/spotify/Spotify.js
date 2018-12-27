@@ -13,9 +13,13 @@ export default {
         }.bind(this));
     }.bind(this));
   },
-  search: function (sQuery, sTypes, iOffset) {
+  search: function (sQuery, sCountry, sTypes, iOffset) {
     return this._getAuthToken().then(function (sAuthToken) {
-      return axios.get('https://api.spotify.com/v1/search?type=' + sTypes + '&q=' + sQuery + '&offset=' + iOffset, {
+      var sMarketQuery = '';
+      if (sCountry) {
+        sMarketQuery = '&market=' + sCountry;
+      }
+      return axios.get('https://api.spotify.com/v1/search?&type=' + sTypes + '&q=' + sQuery + '&offset=' + iOffset + sMarketQuery, {
         headers: {
           'Authorization': 'Bearer ' + sAuthToken,
           'Accept': 'application/json'

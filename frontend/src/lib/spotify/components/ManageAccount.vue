@@ -26,6 +26,11 @@
             <label for="client_secret">{{ $t("spotify.clientSecret.label") }}</label>
             <md-input name="client_secret" id="client_secret" type="password" v-model="$store.state.spotify.account.client_secret" />
           </md-field>
+          <md-field>
+            <md-select name="country" id="country" v-model="$store.state.spotify.account.country" options="$store.state.spotify.countryCodes">
+              <md-option v-for="item in $store.state.spotify.countryCodes" v-bind:key="item.alpha2Code" :value="item.alpha2Code">{{ item.name }}</md-option>
+            </md-select>
+          </md-field>
         </md-card-content>
 
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
@@ -64,6 +69,7 @@ export default {
   },
   beforeMount: function () {
     this.$store.dispatch('spotify/loadAccountInfo');
+    this.$store.dispatch('spotify/loadCountryCodes');
   }
 };
 </script>
