@@ -23,7 +23,11 @@ describe('VolumeController', function () {
             delete process.env.GPIO_INCREASE_VOLUME_BUTTON;
             delete process.env.GPIO_DECREASE_VOLUME_BUTTON;
             VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
             VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
 
             VolumeController.init();
             assert(VolumeController.increaseVolumeButton === undefined);
@@ -38,7 +42,11 @@ describe('VolumeController', function () {
             delete process.env.GPIO_INCREASE_VOLUME_BUTTON;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 1;
             VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
             VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
 
             VolumeController.init();
             assert(VolumeController.increaseVolumeButton === undefined);
@@ -53,7 +61,11 @@ describe('VolumeController', function () {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             delete process.env.GPIO_DECREASE_VOLUME_BUTTON;
             VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
             VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
 
             VolumeController.init();
             assert(VolumeController.increaseVolumeButton === undefined);
@@ -64,7 +76,11 @@ describe('VolumeController', function () {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
             VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
             VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
 
             var bIncreaseWatchCalled = false;
             var oIncreaseButton = {
@@ -100,7 +116,11 @@ describe('VolumeController', function () {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
             VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
             VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
 
             var fnIncreaseWatchCallback;
             var oIncreaseButton = {
@@ -131,13 +151,13 @@ describe('VolumeController', function () {
 
             VolumeController.init();
             fnIncreaseWatchCallback(null, 1);
-            assert(oIncreaseNotifyListenersStub.calledOnce);
+            assert(oIncreaseNotifyListenersStub.notCalled);
             fnIncreaseWatchCallback(null, 0);
             assert(oIncreaseNotifyListenersStub.calledOnce);
             assert(oDecreaseNotifyListenersStub.notCalled);
             fnDecreaseWatchCallback(null, 1);
             assert(oIncreaseNotifyListenersStub.calledOnce);
-            assert(oDecreaseNotifyListenersStub.calledOnce);
+            assert(oDecreaseNotifyListenersStub.notCalled);
             fnDecreaseWatchCallback(null, 0);
             assert(oIncreaseNotifyListenersStub.calledOnce);
             assert(oDecreaseNotifyListenersStub.calledOnce);
@@ -147,7 +167,11 @@ describe('VolumeController', function () {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
             VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
             VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
 
             var fnIncreaseWatchCallback;
             var oIncreaseButton = {
@@ -184,11 +208,107 @@ describe('VolumeController', function () {
             assert(oDecreaseNotifyListenersStub.notCalled);
             fnDecreaseWatchCallback(null, 1);
             assert(oIncreaseNotifyListenersStub.notCalled);
-            assert(oDecreaseNotifyListenersStub.calledOnce);
+            assert(oDecreaseNotifyListenersStub.notCalled);
             fnDecreaseWatchCallback(new Error(), 0);
             assert(oIncreaseNotifyListenersStub.notCalled);
-            assert(oDecreaseNotifyListenersStub.calledOnce);
+            assert(oDecreaseNotifyListenersStub.notCalled);
             done();
+        });
+        it('should notify listeners for wind action if button is pressed long enough', function (done) {
+            process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
+            process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
+            VolumeController.increaseVolumeButton = undefined;
+            VolumeController._increaseVolumeButtonPressed = false;
+            VolumeController._increaseVolumeButtonPressedSince = null;
+            VolumeController.decreaseVolumeButton = undefined;
+            VolumeController._decreaseVolumeButtonPressed = false;
+            VolumeController._decreaseVolumeButtonPressedSince = null;
+
+            var fnIncreaseWatchCallback;
+            var oIncreaseButton = {
+                watch: function(fnCallback) {
+                    fnIncreaseWatchCallback = fnCallback;
+                }
+            };
+            var fnDecreaseWatchCallback;
+            var oDecreaseButton = {
+                watch: function(fnCallback) {
+                    fnDecreaseWatchCallback = fnCallback;
+                }
+            };
+            function Gpio(iPin) {
+                if (iPin == 1) {
+                    return oIncreaseButton;
+                }
+                if (iPin == 2) {
+                    return oDecreaseButton;
+                }
+            }
+            Gpio.prototype.constructor = Gpio;
+            VolumeController.Gpio = Gpio;
+
+            var oStub = sandbox.stub(VolumeController, '_notifyListeners');
+            var oWindForwardsNotifyListenersStub = oStub.withArgs("WIND_FORWARDS");
+            var oRewindNotifyListenersStub = oStub.withArgs("REWIND");
+            var oIncreaseNotifyListenersStub = oStub.withArgs("INCREASE");
+            var oDecreaseNotifyListenersStub = oStub.withArgs("DECREASE");
+
+            VolumeController.init();
+            fnIncreaseWatchCallback(null, 1);
+            setTimeout(function() {
+                fnIncreaseWatchCallback(null, 0);
+                assert(oWindForwardsNotifyListenersStub.calledOnce);
+                assert(oIncreaseNotifyListenersStub.notCalled);
+                assert(oRewindNotifyListenersStub.notCalled);
+                assert(oDecreaseNotifyListenersStub.notCalled);
+
+                fnIncreaseWatchCallback(null, 1);
+                setTimeout(function() {
+                    fnIncreaseWatchCallback(null, 0);
+                    assert(oWindForwardsNotifyListenersStub.calledTwice);
+                    assert(oIncreaseNotifyListenersStub.notCalled);
+                    assert(oRewindNotifyListenersStub.notCalled);
+                    assert(oDecreaseNotifyListenersStub.notCalled);
+
+                    fnDecreaseWatchCallback(null, 1);
+                    setTimeout(function() {
+                        fnDecreaseWatchCallback(null, 0);
+                        assert(oWindForwardsNotifyListenersStub.calledTwice);
+                        assert(oIncreaseNotifyListenersStub.notCalled);
+                        assert(oRewindNotifyListenersStub.calledOnce);
+                        assert(oDecreaseNotifyListenersStub.notCalled);
+
+                        fnDecreaseWatchCallback(null, 1);
+                        setTimeout(function() {
+                            fnDecreaseWatchCallback(null, 0);
+                            assert(oWindForwardsNotifyListenersStub.calledTwice);
+                            assert(oIncreaseNotifyListenersStub.notCalled);
+                            assert(oRewindNotifyListenersStub.calledTwice);
+                            assert(oDecreaseNotifyListenersStub.notCalled);
+
+                            fnIncreaseWatchCallback(null, 1);
+                            setTimeout(function() {
+                                fnIncreaseWatchCallback(null, 0);
+                                assert(oWindForwardsNotifyListenersStub.calledTwice);
+                                assert(oIncreaseNotifyListenersStub.calledOnce);
+                                assert(oRewindNotifyListenersStub.calledTwice);
+                                assert(oDecreaseNotifyListenersStub.notCalled);
+
+                                fnDecreaseWatchCallback(null, 1);
+                                setTimeout(function() {
+                                    fnDecreaseWatchCallback(null, 0);
+                                    assert(oWindForwardsNotifyListenersStub.calledTwice);
+                                    assert(oIncreaseNotifyListenersStub.calledOnce);
+                                    assert(oRewindNotifyListenersStub.calledTwice);
+                                    assert(oDecreaseNotifyListenersStub.calledOnce);
+                                    done();
+                                }, 90);
+                            }, 90);
+                        }, 110);
+                    }, 100);
+                }, 110);
+
+            }, 100);
         });
     });
 

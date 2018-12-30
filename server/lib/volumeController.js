@@ -12,7 +12,11 @@ if (onoff) {
 }
 
 exports.increaseVolumeButton = undefined;
+exports._increaseVolumeButtonPressed = false;
+exports._increaseVolumeButtonPressedSince = null;
 exports.decreaseVolumeButton = undefined;
+exports._decreaseVolumeButtonPressed = false;
+exports._decreaseVolumeButtonPressedSince = null;
 
 exports.listeners = [];
 
@@ -21,7 +25,7 @@ exports._notifyListeners = function(sVolumeChange) {
         try {
             oListener.onVolumeChange(sVolumeChange);
         } catch (oError) {
-            console.error("Could not notify listener for volume change", oError);
+            winston.error("Could not notify listener for volume change", oError);
         }
     });
 };
@@ -46,28 +50,48 @@ exports.init = function () {
 
     this.increaseVolumeButton.watch(function (err, iValue) {
         if (err) {
-            console.error('There was an error while watching increase volume button ', err);
+            winston.error('There was an error while watching increase volume button ', err);
             return;
         }
         if (iValue === constants.VolumeChange.Push) {
-            this._notifyListeners(constants.VolumeChange.Increase);
+            this._increaseVolumeButtonPressed = true;
+            this._increaseVolumeButtonPressedSince = new Date().getTime();
+        }
+        if (iValue === constants.VolumeChange.Release && !!this._increaseVolumeButtonPressed) {
+            this._increaseVolumeButtonPressed = false;
+            if (new Date().getTime() - this._increaseVolumeButtonPressedSince >= constants.VolumeChange.WindInterval) {
+                this._notifyListeners(constants.VolumeChange.WindForwards);
+            } else {
+                this._notifyListeners(constants.VolumeChange.Increase);
+            }
+            this._increaseVolumeButtonPressedSince = null;
         }
     }.bind(this));
 
     this.decreaseVolumeButton.watch(function (err, iValue) {
         if (err) {
-            console.error('There was an error while watching decrease volume button ', err);
+            winston.error('There was an error while watching decrease volume button ', err);
             return;
         }
         if (iValue === constants.VolumeChange.Push) {
-            this._notifyListeners(constants.VolumeChange.Decrease);
+            this._decreaseVolumeButtonPressed = true;
+            this._decreaseVolumeButtonPressedSince = new Date().getTime();
+        }
+        if (iValue === constants.VolumeChange.Release && !!this._decreaseVolumeButtonPressed) {
+            this._decreaseVolumeButtonPressed = false;
+            if (new Date().getTime() - this._decreaseVolumeButtonPressedSince >= constants.VolumeChange.WindInterval) {
+                this._notifyListeners(constants.VolumeChange.ReWind);
+            } else {
+                this._notifyListeners(constants.VolumeChange.Decrease);
+            }
+            this._decreaseVolumeButtonPressedSince = null;
         }
     }.bind(this));
 };
 
 exports.stop = function() {
-  this.increaseVolumeButton && this.increaseVolumeButton.unexport();
-  this.decreaseVolumeButton && this.decreaseVolumeButton.unexport();
+    this.increaseVolumeButton && this.increaseVolumeButton.unexport();
+    this.decreaseVolumeButton && this.decreaseVolumeButton.unexport();
 };
 
 exports.listen = function (oListener) {

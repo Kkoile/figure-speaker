@@ -30,9 +30,12 @@ module.exports = {
     VolumeChange: {
         Increase: "INCREASE",
         Decrease: "DECREASE",
+        WindForwards: "WIND_FORWARDS",
+        ReWind: "REWIND",
         Push: 1,
         Release: 0,
-        Interval: 5
+        Interval: 5,
+        WindInterval: 100
     },
     Player: {
         DefaultPlayMode: 'RESUME',
