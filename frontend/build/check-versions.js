@@ -19,7 +19,7 @@ const versionRequirements = [
 if (shell.which('npm')) {
   versionRequirements.push({
     name: 'npm',
-    currentVersion: exec('npm --version'),
+    currentVersion: semver.clean(exec('npm --version')),
     versionRequirement: packageConfig.engines.npm
   })
 }
