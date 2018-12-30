@@ -521,9 +521,9 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
-                assert(iNewCurrentVolume === 70 + constants.VolumeChange.Interval);
-                assert(iCurrentVolumeToSet === 70 + constants.VolumeChange.Interval);
+            mopidy.onVolumeChange(constants.Buttons.Increase).then(function () {
+                assert(iNewCurrentVolume === 70 + constants.Buttons.WatchInterval);
+                assert(iCurrentVolumeToSet === 70 + constants.Buttons.WatchInterval);
 
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
@@ -548,9 +548,9 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Decrease).then(function () {
-                assert(iNewCurrentVolume === 70 - constants.VolumeChange.Interval);
-                assert(iCurrentVolumeToSet === 70 - constants.VolumeChange.Interval);
+            mopidy.onVolumeChange(constants.Buttons.Decrease).then(function () {
+                assert(iNewCurrentVolume === 70 - constants.Buttons.WatchInterval);
+                assert(iCurrentVolumeToSet === 70 - constants.Buttons.WatchInterval);
 
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
@@ -570,7 +570,7 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+            mopidy.onVolumeChange(constants.Buttons.Increase).then(function () {
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
                 assert(oSetCurrentVolumeStub.notCalled);
@@ -589,7 +589,7 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Decrease).then(function () {
+            mopidy.onVolumeChange(constants.Buttons.Decrease).then(function () {
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
                 assert(oSetCurrentVolumeStub.notCalled);
@@ -602,10 +602,64 @@ describe('Mopidy', function () {
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
             mopidy.mopidy = undefined;
 
-            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+            mopidy.onVolumeChange(constants.Buttons.Increase).then(function () {
                 assert(oGetCurrentVolumeStub.notCalled);
                 assert(oMaxVolumeStub.notCalled);
                 assert(oSetCurrentVolumeStub.notCalled);
+                done();
+            });
+        });
+    });
+
+    describe('onWindAction', function () {
+        it('should seek to next track', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.WindForwards).then(function () {
+                assert(bNextCalled);
+                assert(!bPreviousCalled);
+                done();
+            });
+        });
+        it('should play previous track', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.ReWind).then(function () {
+                assert(!bNextCalled);
+                assert(bPreviousCalled);
+                done();
+            });
+        });
+        it('should not do anything if mopidy is not initialized', function (done) {
+            mopidy.mopidy = null;
+
+            mopidy.onWindAction(constants.Buttons.ReWind).then(function () {
                 done();
             });
         });

@@ -1,86 +1,91 @@
 var assert = require('assert');
 var sinon = require('sinon');
 
-var VolumeController = require('../lib/volumeController');
+var constants = require('../lib/constants');
 
-describe('VolumeController', function () {
+var ButtonController = require('../lib/buttonController');
+
+describe('ButtonController', function () {
 
     var sandbox;
+    var iActualWindInterval = constants.Buttons.WindInterval;
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
+        constants.Buttons.WindInterval = 10;
     });
 
     afterEach(function () {
         sandbox.restore();
+        constants.Buttons.WindInterval = iActualWindInterval;
     });
 
     describe('init', function () {
         it('should return if environment variables for GPIOs are not set', function (done) {
             function Gpio(iPin) {}
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
             delete process.env.GPIO_INCREASE_VOLUME_BUTTON;
             delete process.env.GPIO_DECREASE_VOLUME_BUTTON;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
-            VolumeController.init();
-            assert(VolumeController.increaseVolumeButton === undefined);
-            assert(VolumeController.decreaseVolumeButton === undefined);
+            ButtonController.init();
+            assert(ButtonController.increaseVolumeButton === undefined);
+            assert(ButtonController.decreaseVolumeButton === undefined);
             done();
         });
         it('should return if one environment variable for GPIOs is not set', function (done) {
             function Gpio(iPin) {}
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
             delete process.env.GPIO_INCREASE_VOLUME_BUTTON;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 1;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
-            VolumeController.init();
-            assert(VolumeController.increaseVolumeButton === undefined);
-            assert(VolumeController.decreaseVolumeButton === undefined);
+            ButtonController.init();
+            assert(ButtonController.increaseVolumeButton === undefined);
+            assert(ButtonController.decreaseVolumeButton === undefined);
             done();
         });
         it('should return if one environment variable for GPIOs is not set', function (done) {
             function Gpio(iPin) {}
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             delete process.env.GPIO_DECREASE_VOLUME_BUTTON;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
-            VolumeController.init();
-            assert(VolumeController.increaseVolumeButton === undefined);
-            assert(VolumeController.decreaseVolumeButton === undefined);
+            ButtonController.init();
+            assert(ButtonController.increaseVolumeButton === undefined);
+            assert(ButtonController.decreaseVolumeButton === undefined);
             done();
         });
         it('should initialize buttons if environment variables for GPIOs are set', function (done) {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
             var bIncreaseWatchCalled = false;
             var oIncreaseButton = {
@@ -103,11 +108,11 @@ describe('VolumeController', function () {
                 }
             }
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
-            VolumeController.init();
-            assert(VolumeController.increaseVolumeButton === oIncreaseButton);
-            assert(VolumeController.decreaseVolumeButton === oDecreaseButton);
+            ButtonController.init();
+            assert(ButtonController.increaseVolumeButton === oIncreaseButton);
+            assert(ButtonController.decreaseVolumeButton === oDecreaseButton);
             assert(bIncreaseWatchCalled);
             assert(bDecreaseWatchCalled);
             done();
@@ -115,12 +120,12 @@ describe('VolumeController', function () {
         it('should notify listeners if button is pressed', function (done) {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
             var fnIncreaseWatchCallback;
             var oIncreaseButton = {
@@ -143,13 +148,13 @@ describe('VolumeController', function () {
                 }
             }
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
-            var oStub = sandbox.stub(VolumeController, '_notifyListeners');
+            var oStub = sandbox.stub(ButtonController, '_notifyListenersOnVolumeChange');
             var oIncreaseNotifyListenersStub = oStub.withArgs("INCREASE");
             var oDecreaseNotifyListenersStub = oStub.withArgs("DECREASE");
 
-            VolumeController.init();
+            ButtonController.init();
             fnIncreaseWatchCallback(null, 1);
             assert(oIncreaseNotifyListenersStub.notCalled);
             fnIncreaseWatchCallback(null, 0);
@@ -166,12 +171,12 @@ describe('VolumeController', function () {
         it('should not notify listeners if an error occurred when pressing a button', function (done) {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
             var fnIncreaseWatchCallback;
             var oIncreaseButton = {
@@ -194,13 +199,13 @@ describe('VolumeController', function () {
                 }
             }
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
-            var oStub = sandbox.stub(VolumeController, '_notifyListeners');
+            var oStub = sandbox.stub(ButtonController, '_notifyListenersOnVolumeChange');
             var oIncreaseNotifyListenersStub = oStub.withArgs("INCREASE");
             var oDecreaseNotifyListenersStub = oStub.withArgs("DECREASE");
 
-            VolumeController.init();
+            ButtonController.init();
             fnIncreaseWatchCallback(new Error(), 1);
             assert(oIncreaseNotifyListenersStub.notCalled);
             fnIncreaseWatchCallback(null, 0);
@@ -217,12 +222,12 @@ describe('VolumeController', function () {
         it('should notify listeners for wind action if button is pressed long enough', function (done) {
             process.env.GPIO_INCREASE_VOLUME_BUTTON = 1;
             process.env.GPIO_DECREASE_VOLUME_BUTTON = 2;
-            VolumeController.increaseVolumeButton = undefined;
-            VolumeController._increaseVolumeButtonPressed = false;
-            VolumeController._increaseVolumeButtonPressedSince = null;
-            VolumeController.decreaseVolumeButton = undefined;
-            VolumeController._decreaseVolumeButtonPressed = false;
-            VolumeController._decreaseVolumeButtonPressedSince = null;
+            ButtonController.increaseVolumeButton = undefined;
+            ButtonController._increaseVolumeButtonPressed = false;
+            ButtonController._increaseVolumeButtonPressedSince = null;
+            ButtonController.decreaseVolumeButton = undefined;
+            ButtonController._decreaseVolumeButtonPressed = false;
+            ButtonController._decreaseVolumeButtonPressedSince = null;
 
             var fnIncreaseWatchCallback;
             var oIncreaseButton = {
@@ -245,15 +250,16 @@ describe('VolumeController', function () {
                 }
             }
             Gpio.prototype.constructor = Gpio;
-            VolumeController.Gpio = Gpio;
+            ButtonController.Gpio = Gpio;
 
-            var oStub = sandbox.stub(VolumeController, '_notifyListeners');
-            var oWindForwardsNotifyListenersStub = oStub.withArgs("WIND_FORWARDS");
-            var oRewindNotifyListenersStub = oStub.withArgs("REWIND");
-            var oIncreaseNotifyListenersStub = oStub.withArgs("INCREASE");
-            var oDecreaseNotifyListenersStub = oStub.withArgs("DECREASE");
+            var oWindStub = sandbox.stub(ButtonController, '_notifyListenersOnWindAction');
+            var oWindForwardsNotifyListenersStub = oWindStub.withArgs("WIND_FORWARDS");
+            var oRewindNotifyListenersStub = oWindStub.withArgs("REWIND");
+            var oVolumeChangeStub = sandbox.stub(ButtonController, '_notifyListenersOnVolumeChange');
+            var oIncreaseNotifyListenersStub = oVolumeChangeStub.withArgs("INCREASE");
+            var oDecreaseNotifyListenersStub = oVolumeChangeStub.withArgs("DECREASE");
 
-            VolumeController.init();
+            ButtonController.init();
             fnIncreaseWatchCallback(null, 1);
             setTimeout(function() {
                 fnIncreaseWatchCallback(null, 0);
@@ -302,13 +308,12 @@ describe('VolumeController', function () {
                                     assert(oRewindNotifyListenersStub.calledTwice);
                                     assert(oDecreaseNotifyListenersStub.calledOnce);
                                     done();
-                                }, 90);
-                            }, 90);
-                        }, 110);
-                    }, 100);
-                }, 110);
-
-            }, 100);
+                                }, constants.Buttons.WindInterval - 5);
+                            }, constants.Buttons.WindInterval - 5);
+                        }, constants.Buttons.WindInterval + 1);
+                    }, constants.Buttons.WindInterval);
+                }, constants.Buttons.WindInterval + 1);
+            }, constants.Buttons.WindInterval);
         });
     });
 
@@ -320,16 +325,16 @@ describe('VolumeController', function () {
                     bCalled1 = true;
                 }
             };
-            VolumeController.increaseVolumeButton = oButton1;
+            ButtonController.increaseVolumeButton = oButton1;
             var bCalled2 = false;
             var oButton2 = {
                 unexport: function() {
                     bCalled2 = true;
                 }
             };
-            VolumeController.decreaseVolumeButton = oButton2;
+            ButtonController.decreaseVolumeButton = oButton2;
 
-            VolumeController.stop();
+            ButtonController.stop();
             assert(bCalled1);
             assert(bCalled2);
             done();
@@ -338,29 +343,47 @@ describe('VolumeController', function () {
 
     describe('listen', function () {
         it('should add a listener', function (done) {
-            VolumeController.listeners = [];
+            ButtonController.listeners = [];
 
-            var oListener = {onVolumeChange: function() {}};
-            VolumeController.listen(oListener);
-            assert(VolumeController.listeners.length === 1);
-            assert(VolumeController.listeners[0] === oListener);
+            var oListener = {onVolumeChange: function() {}, onWindAction: function() {}};
+            ButtonController.listen(oListener);
+            assert(ButtonController.listeners.length === 1);
+            assert(ButtonController.listeners[0] === oListener);
             done();
         });
-        it('should not add a listener if it does not implement onVolumeChange', function (done) {
-            VolumeController.listeners = [];
+        it('should add a listener if it does implement onVolumeChange but not onWindAction', function (done) {
+            ButtonController.listeners = [];
+
+            var oListener = {onVolumeChange: function() {}};
+            ButtonController.listen(oListener);
+            assert(ButtonController.listeners.length === 1);
+            assert(ButtonController.listeners[0] === oListener);
+            done();
+        });
+        it('should add a listener if it does not implement onVolumeChange but onWindAction', function (done) {
+            ButtonController.listeners = [];
+
+            var oListener = {onWindAction: function() {}};
+            ButtonController.listen(oListener);
+            assert(ButtonController.listeners.length === 1);
+            assert(ButtonController.listeners[0] === oListener);
+            done();
+        });
+        it('should not add a listener if it does not implement onVolumeChange or onWindAction', function (done) {
+            ButtonController.listeners = [];
 
             var oListener = {};
-            VolumeController.listen(oListener);
-            assert(VolumeController.listeners.length === 0);
+            ButtonController.listen(oListener);
+            assert(ButtonController.listeners.length === 0);
             done();
         });
     });
 
-    describe('_notifyListeners', function () {
+    describe('_notifyListenersOnVolumeChange', function () {
         it('should notify no one if there are no listeners', function (done) {
-            VolumeController.listeners = [];
+            ButtonController.listeners = [];
 
-            VolumeController._notifyListeners("INCREASE");
+            ButtonController._notifyListenersOnVolumeChange("INCREASE");
             assert(true);
             done();
         });
@@ -373,14 +396,14 @@ describe('VolumeController', function () {
                     sVolumeChange = sVolumeChangeToSet;
                 }
             };
-            VolumeController.listeners = [oListener];
+            ButtonController.listeners = [oListener];
 
-            VolumeController._notifyListeners("INCREASE");
+            ButtonController._notifyListenersOnVolumeChange("INCREASE");
             assert(bCalled);
             assert(sVolumeChange === "INCREASE");
             done();
         });
-        it('should notify notify the second listener, even if the first one failed', function (done) {
+        it('should notify the second listener, even if the first one failed', function (done) {
             var oListener1 = {
                 onVolumeChange: function() {
                     throw Error();
@@ -394,11 +417,58 @@ describe('VolumeController', function () {
                     sVolumeChange2 = sVolumeChangeToSet;
                 }
             };
-            VolumeController.listeners = [oListener1, oListener2];
+            ButtonController.listeners = [oListener1, oListener2];
 
-            VolumeController._notifyListeners("INCREASE");
+            ButtonController._notifyListenersOnVolumeChange("INCREASE");
             assert(bCalled2);
             assert(sVolumeChange2 === "INCREASE");
+            done();
+        });
+    });
+
+    describe('_notifyListenersOnWindAction', function () {
+        it('should notify no one if there are no listeners', function (done) {
+            ButtonController.listeners = [];
+
+            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS");
+            assert(true);
+            done();
+        });
+        it('should notify all listeners', function (done) {
+            var bCalled = false;
+            var sWindAction;
+            var oListener = {
+                onWindAction: function(sWindActionToSet) {
+                    bCalled = true;
+                    sWindAction = sWindActionToSet;
+                }
+            };
+            ButtonController.listeners = [oListener];
+
+            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS");
+            assert(bCalled);
+            assert(sWindAction === "WIND_FORWARDS");
+            done();
+        });
+        it('should notify the second listener, even if the first one failed', function (done) {
+            var oListener1 = {
+                onWindAction: function() {
+                    throw Error();
+                }
+            };
+            var bCalled2 = false;
+            var sWindAction2;
+            var oListener2 = {
+                onWindAction: function(sWindActionToSet) {
+                    bCalled2 = true;
+                    sWindAction2 = sWindActionToSet;
+                }
+            };
+            ButtonController.listeners = [oListener1, oListener2];
+
+            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS");
+            assert(bCalled2);
+            assert(sWindAction2 === "WIND_FORWARDS");
             done();
         });
     });

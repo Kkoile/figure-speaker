@@ -16,7 +16,7 @@ try {
     winston.error("Could not listen for RFID Scans.", oError);
 }
 
-var volumeController = require('./volumeController');
+var buttonController = require('./buttonController');
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
@@ -193,11 +193,11 @@ exports.onVolumeChange = function (sVolumeChange) {
             return settingsController.getMaxVolume()
                 .then(function(iMaxVolume) {
                     var iNewVolume = iCurrentVolume;
-                    if (sVolumeChange === constants.VolumeChange.Increase) {
-                        iNewVolume += constants.VolumeChange.Interval;
+                    if (sVolumeChange === constants.Buttons.Increase) {
+                        iNewVolume += constants.Buttons.WatchInterval;
                     }
-                    if (sVolumeChange === constants.VolumeChange.Decrease) {
-                        iNewVolume -= constants.VolumeChange.Interval;
+                    if (sVolumeChange === constants.Buttons.Decrease) {
+                        iNewVolume -= constants.Buttons.WatchInterval;
                     }
                     if (iNewVolume === iCurrentVolume || iNewVolume > iMaxVolume || iNewVolume < constants.General.MinVolume) {
                         return;
@@ -208,4 +208,15 @@ exports.onVolumeChange = function (sVolumeChange) {
         }.bind(this));
 };
 
-volumeController.listen(this);
+exports.onWindAction = function (sWindAction) {
+    if (!this.mopidy) {
+        return Promise.resolve();
+    }
+    if (sWindAction === constants.Buttons.WindForwards) {
+        return this.mopidy.playback.next();
+    } else if (sWindAction === constants.Buttons.ReWind) {
+        return this.mopidy.playback.previous();
+    }
+};
+
+buttonController.listen(this);

@@ -20,12 +20,22 @@ exports._decreaseVolumeButtonPressedSince = null;
 
 exports.listeners = [];
 
-exports._notifyListeners = function(sVolumeChange) {
+exports._notifyListenersOnVolumeChange = function(sVolumeChange) {
     this.listeners.forEach(function(oListener) {
         try {
-            oListener.onVolumeChange(sVolumeChange);
+            oListener.onVolumeChange && oListener.onVolumeChange(sVolumeChange);
         } catch (oError) {
             winston.error("Could not notify listener for volume change", oError);
+        }
+    });
+};
+
+exports._notifyListenersOnWindAction = function(sWindAction) {
+    this.listeners.forEach(function(oListener) {
+        try {
+            oListener.onWindAction && oListener.onWindAction(sWindAction);
+        } catch (oError) {
+            winston.error("Could not notify listener for wind action", oError);
         }
     });
 };
@@ -53,16 +63,16 @@ exports.init = function () {
             winston.error('There was an error while watching increase volume button ', err);
             return;
         }
-        if (iValue === constants.VolumeChange.Push) {
+        if (iValue === constants.Buttons.Push) {
             this._increaseVolumeButtonPressed = true;
             this._increaseVolumeButtonPressedSince = new Date().getTime();
         }
-        if (iValue === constants.VolumeChange.Release && !!this._increaseVolumeButtonPressed) {
+        if (iValue === constants.Buttons.Release && !!this._increaseVolumeButtonPressed) {
             this._increaseVolumeButtonPressed = false;
-            if (new Date().getTime() - this._increaseVolumeButtonPressedSince >= constants.VolumeChange.WindInterval) {
-                this._notifyListeners(constants.VolumeChange.WindForwards);
+            if (new Date().getTime() - this._increaseVolumeButtonPressedSince >= constants.Buttons.WindInterval) {
+                this._notifyListenersOnWindAction(constants.Buttons.WindForwards);
             } else {
-                this._notifyListeners(constants.VolumeChange.Increase);
+                this._notifyListenersOnVolumeChange(constants.Buttons.Increase);
             }
             this._increaseVolumeButtonPressedSince = null;
         }
@@ -73,16 +83,16 @@ exports.init = function () {
             winston.error('There was an error while watching decrease volume button ', err);
             return;
         }
-        if (iValue === constants.VolumeChange.Push) {
+        if (iValue === constants.Buttons.Push) {
             this._decreaseVolumeButtonPressed = true;
             this._decreaseVolumeButtonPressedSince = new Date().getTime();
         }
-        if (iValue === constants.VolumeChange.Release && !!this._decreaseVolumeButtonPressed) {
+        if (iValue === constants.Buttons.Release && !!this._decreaseVolumeButtonPressed) {
             this._decreaseVolumeButtonPressed = false;
-            if (new Date().getTime() - this._decreaseVolumeButtonPressedSince >= constants.VolumeChange.WindInterval) {
-                this._notifyListeners(constants.VolumeChange.ReWind);
+            if (new Date().getTime() - this._decreaseVolumeButtonPressedSince >= constants.Buttons.WindInterval) {
+                this._notifyListenersOnWindAction(constants.Buttons.ReWind);
             } else {
-                this._notifyListeners(constants.VolumeChange.Decrease);
+                this._notifyListenersOnVolumeChange(constants.Buttons.Decrease);
             }
             this._decreaseVolumeButtonPressedSince = null;
         }
@@ -95,8 +105,8 @@ exports.stop = function() {
 };
 
 exports.listen = function (oListener) {
-    if (!oListener.onVolumeChange) {
-        winston.error("Could not add volume listener, because it does not implement `onVolumeChange` method");
+    if (!oListener.onVolumeChange && !oListener.onWindAction) {
+        winston.error("Could not add volume listener, because it does not implement `onVolumeChange` or `onWindAction` method");
         return;
     }
     this.listeners.push(oListener);

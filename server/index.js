@@ -58,8 +58,8 @@ try {
     winston.error("Could not initialized RFID Connection.", oError);
 }
 
-var volumeController = require('./lib/volumeController');
-volumeController.init();
+var buttonController = require('./lib/buttonController');
+buttonController.init();
 
 var mopidy = require('./lib/mopidy');
 mopidy.start();
@@ -68,7 +68,7 @@ var signals = ['SIGINT', 'SIGTERM', 'SIGQUIT'];
 signals.forEach(function (sSignal) {
     process.on(sSignal, function () {
         rfidConnection && rfidConnection.stop();
-        volumeController.stop();
+        buttonController.stop();
         mopidy.stop().then(function () {
             process.exit(0);
         });
