@@ -44,8 +44,9 @@ exports.getConfigFile = function () {
     return oConfig;
 };
 
-exports.saveFigure = function (sStreamUri) {
+exports.saveFigure = function (sStreamUri, oPlayMode) {
     winston.info("saving figure");
+    winston.debug("playmode: " + JSON.stringify(oPlayMode));
     return new Promise(function (resolve) {
         if (!rfidConnection.isCardDetected()) {
             throw new ApplicationError('No Card detected', 400);
@@ -53,9 +54,16 @@ exports.saveFigure = function (sStreamUri) {
 
         mopidy.onCardRemoved().then(function() {
             var oConfig = this.getConfigFile();
-            oConfig[rfidConnection.getCardId()] = {
+            var sId = rfidConnection.getCardId();
+            oConfig[sId] = {
                 uri: sStreamUri
             };
+            if (oPlayMode && oPlayMode.mode) {
+                oConfig[sId].play_mode = oPlayMode.mode;
+                if (oPlayMode.mode === constants.PlayMode.Resume) {
+                    oConfig[sId].reset_after_days = oPlayMode.resetAfterDays;
+                }
+            }
             this._saveFiguresFile(oConfig);
             resolve();
 
@@ -80,18 +88,25 @@ exports.setPlayMode = function (sPlayMode, iResetAfterDays) {
     }.bind(this));
 };
 
-exports.getPlayMode = function () {
+exports.getPlayMode = function (oFigureConfig) {
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
         var oPlayMode = {
             playMode: constants.Player.DefaultPlayMode,
             resetAfterDays: constants.Player.DefaultResetAfterDays
         };
-        if (oConfig.general && oConfig.general.play_mode) {
-            oPlayMode.playMode = oConfig.general.play_mode;
-        }
-        if (oConfig.general && oConfig.general.reset_after_days) {
-            oPlayMode.resetAfterDays = parseInt(oConfig.general.reset_after_days);
+        if (oFigureConfig && oFigureConfig.play_mode) {
+            oPlayMode.playMode = oFigureConfig.play_mode;
+            if (oFigureConfig.reset_after_days) {
+                oPlayMode.resetAfterDays = oFigureConfig.reset_after_days;
+            }
+        } else {
+            var oConfig = this.getConfigFile();
+            if (oConfig.general && oConfig.general.play_mode) {
+                oPlayMode.playMode = oConfig.general.play_mode;
+            }
+            if (oConfig.general && oConfig.general.reset_after_days) {
+                oPlayMode.resetAfterDays = parseInt(oConfig.general.reset_after_days);
+            }
         }
         resolve(oPlayMode);
     }.bind(this));

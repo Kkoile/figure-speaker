@@ -264,6 +264,57 @@ describe('Settings Controller', function () {
             });
 
         });
+        it('should set the play mode to a figure', function (done) {
+            var oSavedObject;
+
+            var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
+            var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
+            var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
+                oSavedObject = oConfig;
+            });
+            var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
+
+            settingsController.saveFigure('DUMMY_URI', {mode: constants.PlayMode.Reset}).then(function () {
+                assert(oSavedObject['DUMMY_ID']['play_mode'] === 'RESET');
+
+                assert(oRfidConnectionIsConnectedStub.calledOnce);
+                assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFigureStub.calledOnce);
+                assert(oMopidyStub.calledOnce);
+
+                done();
+            });
+        });
+        it('should set the play mode and reset after days to a figure', function (done) {
+            var oSavedObject;
+
+            var oRfidConnectionIsConnectedStub = sandbox.stub(rfidConnection, 'isCardDetected').returns(true);
+            var oRfidConnectionGetIdStub = sandbox.stub(rfidConnection, 'getCardId').returns('DUMMY_ID');
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
+            var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
+                oSavedObject = oConfig;
+            });
+            var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
+
+            settingsController.saveFigure('DUMMY_URI', {mode: constants.PlayMode.Resume, resetAfterDays: 7}).then(function () {
+                assert(oSavedObject['DUMMY_ID']['play_mode'] === 'RESUME');
+                assert(oSavedObject['DUMMY_ID']['reset_after_days'] === 7);
+
+                assert(oRfidConnectionIsConnectedStub.calledOnce);
+                assert(oRfidConnectionGetIdStub.calledOnce);
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFigureStub.calledOnce);
+                assert(oMopidyStub.calledOnce);
+
+                done();
+            });
+        });
     });
     describe('getFigureWithInformation', function () {
         it('should get data of a connected figure', function (done) {
@@ -516,6 +567,34 @@ describe('Settings Controller', function () {
                 assert(oPlayMode.resetAfterDays === 7);
 
                 assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return figure playmode if set', function (done) {
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
+
+            settingsController.getPlayMode({play_mode: constants.PlayMode.Reset}).then(function (oPlayMode) {
+                assert(oPlayMode.playMode === 'RESET');
+                assert(oPlayMode.resetAfterDays === 7);
+
+                assert(oFSReadFileStub.notCalled);
+                done();
+            });
+
+        });
+        it('should return figure reset after days if set', function (done) {
+
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
+
+            settingsController.getPlayMode({play_mode: constants.PlayMode.Resume, reset_after_days: 8}).then(function (oPlayMode) {
+                assert(oPlayMode.playMode === 'RESUME');
+                assert(oPlayMode.resetAfterDays === 8);
+
+                assert(oFSReadFileStub.notCalled);
                 done();
             });
 

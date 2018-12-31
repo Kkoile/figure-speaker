@@ -66,7 +66,7 @@ settingsApi.route('/saveFigure').post(function (req, res, next) {
         res.status(400).send("StreamUri is missing in body!");
         return;
     }
-    settingsController.saveFigure(req.body.streamUri)
+    settingsController.saveFigure(req.body.streamUri, req.body.playMode)
         .then(function (oData) {
             res.send(oData);
         })
