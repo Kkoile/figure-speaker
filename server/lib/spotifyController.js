@@ -6,6 +6,7 @@ var ini = require('ini');
 var ApplicationError = require('./ApplicationError.js');
 var constants = require('./constants.js');
 var SpotifyWebApi = require('spotify-web-api-node');
+var settingsController = require('./settingsController');
 
 var spotifyApi = new SpotifyWebApi({
     clientId: constants.Spotify.ClientId,
@@ -23,12 +24,13 @@ exports.getAccountInfo = function () {
     if (oConfig.spotify.enabled !== null && oConfig.spotify.enabled !== undefined) {
         bEnabled = !!oConfig.spotify.enabled;
     }
+    var oGeneralConfig = settingsController.getConfigFile().general;
     return {
         name: 'Spotify',
         enabled: bEnabled,
         username: oConfig.spotify.username ? oConfig.spotify.username : null,
         client_id: oConfig.spotify.client_id ? oConfig.spotify.client_id : null,
-        country: oConfig.spotify.country,
+        country: oGeneralConfig.spotify_country,
         configurable: true
     };
 };
@@ -49,14 +51,22 @@ exports.saveAccount = function (oAccount) {
             oConfig.spotify.password = oAccount.password;
             oConfig.spotify.client_id = oAccount.client_id;
             oConfig.spotify.client_secret = oAccount.client_secret;
-            oConfig.spotify.country = oAccount.country;
 
             fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
         } catch (oError) {
             throw new ApplicationError('Error while saving credentials', 500);
         }
         resolve();
-    });
+    })
+        .then(function() {
+            var oConfig = settingsController.getConfigFile();
+            if (oAccount.country) {
+                oConfig.general.spotify_country = oAccount.country;
+            } else {
+                delete oConfig.general.spotify_country;
+            }
+            settingsController.saveConfigFile(oConfig);
+        });
 };
 
 exports.deleteAccount = function () {
@@ -77,7 +87,7 @@ exports.getAuthToken = function () {
             spotifyApi.setAccessToken(data.body['access_token']);
             return data.body['access_token'];
         }, function (err) {
-            console.log('Something went wrong when retrieving an access token for Spotify', err.message);
+            winston.log('Something went wrong when retrieving an access token for Spotify', err.message);
         });
 };
 

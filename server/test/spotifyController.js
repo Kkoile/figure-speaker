@@ -3,6 +3,7 @@ var sinon = require('sinon');
 var fs = require('fs');
 
 var constants = require('../lib/constants.js');
+var settingsController = require('../lib/settingsController');
 var spotifyController = require('../lib/spotifyController');
 
 var sHomePath = require("os").homedir();
@@ -24,14 +25,17 @@ describe('Spotify Controller', function () {
         it('should read account info from config', function (done) {
             var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+            var oConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
 
             spotifyController.getAccountInfo();
             assert(oFSReadFileStub.calledOnce);
+            assert(oConfigFileStub.calledOnce);
             done();
         });
         it('should transform account info correctly', function (done) {
             var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
             sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+            sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
 
             var oAccount = spotifyController.getAccountInfo();
             assert(oAccount.enabled === true);
@@ -42,6 +46,7 @@ describe('Spotify Controller', function () {
         it('should set account to enabled, if section is commented out', function (done) {
             var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_COMMENTED_SPOTIFY_SECTION.conf', 'utf8');
             sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+            sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
 
             var oAccount = spotifyController.getAccountInfo();
             assert(oAccount.enabled === true);
@@ -51,6 +56,7 @@ describe('Spotify Controller', function () {
         it('should put own host name into info', function (done) {
             var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
             sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+            sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
 
             var oAccount = spotifyController.getAccountInfo();
             assert(oAccount.name === 'Spotify');
@@ -95,6 +101,9 @@ describe('Spotify Controller', function () {
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
+            var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
+            var oSaveConfigFileStub = sandbox.stub(settingsController, 'saveConfigFile');
+
 
             spotifyController.saveAccount({
                 username: 'DUMMY_EMAIL',
@@ -105,13 +114,14 @@ describe('Spotify Controller', function () {
             }).then(function () {
                 assert(oFSReadFileStub.calledOnce);
                 assert(oFSWriteFileStub.calledOnce);
+                assert(oGetConfigFileStub.calledOnce);
+                assert(oSaveConfigFileStub.calledOnce);
 
                 assert(sSavedFile.includes('[spotify]'));
                 assert(sSavedFile.includes('username = DUMMY_EMAIL'));
                 assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
                 assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
                 assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
-                assert(sSavedFile.includes('country = US'));
                 done();
             });
 
@@ -125,6 +135,8 @@ describe('Spotify Controller', function () {
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
+            var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
+            var oSaveConfigFileStub = sandbox.stub(settingsController, 'saveConfigFile');
 
             spotifyController.saveAccount({
                 username: 'DUMMY_EMAIL',
@@ -141,7 +153,6 @@ describe('Spotify Controller', function () {
                 assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
                 assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
                 assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
-                assert(sSavedFile.includes('country = US'));
                 done();
             });
         });
@@ -155,6 +166,8 @@ describe('Spotify Controller', function () {
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
+            var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
+            var oSaveConfigFileStub = sandbox.stub(settingsController, 'saveConfigFile');
 
             spotifyController.saveAccount({
                 username: 'DUMMY_EMAIL',
@@ -171,7 +184,6 @@ describe('Spotify Controller', function () {
                 assert(sSavedFile.includes('password = DUMMY_PASSWORD'));
                 assert(sSavedFile.includes('client_id = DUMMY_CLIENT_ID'));
                 assert(sSavedFile.includes('client_secret = DUMMY_CLIENT_SECRET'));
-                assert(sSavedFile.includes('country = US'));
                 done();
             });
         });
@@ -185,6 +197,8 @@ describe('Spotify Controller', function () {
                 .callsFake(function (sPath, sFile) {
                     sSavedFile = sFile;
                 });
+            var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
+            var oSaveConfigFileStub = sandbox.stub(settingsController, 'saveConfigFile');
 
             spotifyController.saveAccount({
                 username: 'DUMMY_EMAIL',
@@ -197,6 +211,32 @@ describe('Spotify Controller', function () {
                 assert(oFSWriteFileStub.calledOnce);
 
                 assert(sSavedFile.includes('color = true'));
+                done();
+            });
+        });
+
+        it('should delete existing country information if not provided as parameter', function (done) {
+            var oSavedConfig;
+
+            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_OLD_SPOTIFY_SECTION.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+            var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf');
+            var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({general: {spotify_country: 'US'}});
+            var oSaveConfigFileStub = sandbox.stub(settingsController, 'saveConfigFile')
+                .callsFake(function (oConfig) {
+                    oSavedConfig = oConfig;
+                });
+
+            spotifyController.saveAccount({
+                username: 'DUMMY_EMAIL',
+                password: 'DUMMY_PASSWORD',
+                client_id: 'DUMMY_CLIENT_ID',
+                client_secret: 'DUMMY_CLIENT_SECRET'
+            }).then(function () {
+                assert(oFSReadFileStub.calledOnce);
+                assert(oFSWriteFileStub.calledOnce);
+
+                assert(!oSavedConfig.general.spotify_country);
                 done();
             });
         });

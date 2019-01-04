@@ -56,7 +56,7 @@ exports.saveFigure = function (sStreamUri) {
             oConfig[rfidConnection.getCardId()] = {
                 uri: sStreamUri
             };
-            this._saveFiguresFile(oConfig);
+            this.saveConfigFile(oConfig);
             resolve();
 
         }.bind(this));
@@ -75,7 +75,7 @@ exports.setPlayMode = function (sPlayMode, iResetAfterDays) {
         } else {
             delete oConfig.general.reset_after_days;
         }
-        this._saveFiguresFile(oConfig);
+        this.saveConfigFile(oConfig);
         resolve();
     }.bind(this));
 };
@@ -148,12 +148,12 @@ exports.saveFigurePlayInformation = function (sCardId, oTrackInfo) {
         oConfig[sCardId].track_length = oTrackInfo.trackLength;
         oConfig[sCardId].tracklist_length = oTrackInfo.tracklistLength;
         oConfig[sCardId].last_played = new Date().toISOString();
-        this._saveFiguresFile(oConfig);
+        this.saveConfigFile(oConfig);
         resolve();
     }.bind(this));
 };
 
-exports._saveFiguresFile = function (oConfig) {
+exports.saveConfigFile = function (oConfig) {
     if (!fs.existsSync(constants.Data.PathToGeneralConfig)){
         fs.mkdirSync(constants.Data.PathToGeneralConfig);
     }
@@ -164,7 +164,7 @@ exports._saveFiguresFile = function (oConfig) {
         fs.writeFileSync(constants.Data.PathToFigures, ini.stringify(oConfig, {whitespace: true}));
     } catch (oError) {
         winston.error(oError);
-        throw new ApplicationError('Error while saving figure', 500);
+        throw new ApplicationError('Error while saving config file', 500);
     }
 };
 
@@ -198,7 +198,7 @@ exports.setLanguage = function (sLanguage) {
             oConfig.general = {};
         }
         oConfig.general.language = sLanguage;
-        this._saveFiguresFile(oConfig);
+        this.saveConfigFile(oConfig);
         resolve(oConfig.general.language);
     }.bind(this));
 };
@@ -223,7 +223,7 @@ exports.setMaxVolume = function (iMaxVolume) {
             oConfig.general = {};
         }
         oConfig.general.max_volume = iMaxVolume;
-        this._saveFiguresFile(oConfig);
+        this.saveConfigFile(oConfig);
         resolve(oConfig.general.max_volume);
     }.bind(this));
 };
@@ -248,7 +248,7 @@ exports.setCurrentVolume = function (iCurrentVolume) {
             oConfig.general = {};
         }
         oConfig.general.current_volume = iCurrentVolume;
-        this._saveFiguresFile(oConfig);
+        this.saveConfigFile(oConfig);
         resolve(oConfig.general.current_volume);
     }.bind(this));
 };

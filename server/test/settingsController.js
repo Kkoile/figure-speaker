@@ -66,7 +66,7 @@ describe('Settings Controller', function () {
         });
     });
 
-    describe('_saveFiguresFile', function () {
+    describe('saveConfigFile', function () {
         it('should create a new .config directory if it does not exist', function (done) {
             var oFSExistsStub = sandbox.stub(fs, 'existsSync');
             var oFSCreateStub = sandbox.stub(fs, 'mkdirSync');
@@ -76,7 +76,7 @@ describe('Settings Controller', function () {
             var oFSCreateAppDirStub = oFSCreateStub.withArgs(require("os").homedir() + '/.config/figure-speaker');
             var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf');
 
-            settingsController._saveFiguresFile('DUMMY_URI');
+            settingsController.saveConfigFile('DUMMY_URI');
 
             assert(oFSExistsConfigDirStub.calledOnce);
             assert(oFSCreateConfigDirStub.calledOnce);
@@ -95,7 +95,7 @@ describe('Settings Controller', function () {
             var oFSCreateAppDirStub = oFSCreateStub.withArgs(require("os").homedir() + '/.config/figure-speaker');
             var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf');
 
-            settingsController._saveFiguresFile('DUMMY_URI');
+            settingsController.saveConfigFile('DUMMY_URI');
 
             assert(oFSExistsConfigDirStub.calledOnce);
             assert(oFSCreateConfigDirStub.notCalled);
@@ -114,7 +114,7 @@ describe('Settings Controller', function () {
             var oFSCreateAppDirStub = oFSCreateStub.withArgs(require("os").homedir() + '/.config/figure-speaker');
             var oFSWriteFileStub = sandbox.stub(fs, 'writeFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf');
 
-            settingsController._saveFiguresFile('DUMMY_URI');
+            settingsController.saveConfigFile('DUMMY_URI');
 
             assert(oFSExistsConfigDirStub.calledOnce);
             assert(oFSCreateConfigDirStub.notCalled);
@@ -138,7 +138,7 @@ describe('Settings Controller', function () {
                     sSavedFile = sFile;
                 });
 
-            settingsController._saveFiguresFile({'DUMMY_ID': {'uri': 'DUMMY_URI'}});
+            settingsController.saveConfigFile({'DUMMY_ID': {'uri': 'DUMMY_URI'}});
 
             assert(oFSExistsConfigDirStub.calledOnce);
             assert(oFSCreateConfigDirStub.notCalled);
@@ -180,7 +180,7 @@ describe('Settings Controller', function () {
             var oGetConfigFileStub = sandbox.stub(settingsController, 'getConfigFile').returns({});
             var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
 
-            var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').withArgs({'DUMMY_ID': {'uri': 'DUMMY_URI'}});
+            var oSaveFigureStub = sandbox.stub(settingsController, 'saveConfigFile').withArgs({'DUMMY_ID': {'uri': 'DUMMY_URI'}});
 
             settingsController.saveFigure('DUMMY_URI').then(function () {
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
@@ -201,7 +201,7 @@ describe('Settings Controller', function () {
 
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
-            var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
+            var oSaveFigureStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function(oConfig) {
                 oSavedObject = oConfig;
             });
             var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
@@ -226,7 +226,7 @@ describe('Settings Controller', function () {
 
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
-            var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function(oConfig) {
+            var oSaveFigureStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function(oConfig) {
                 oSavedObject = oConfig;
             });
             var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
@@ -249,7 +249,7 @@ describe('Settings Controller', function () {
 
             var oFSAccessStub = sandbox.stub(fs, 'accessSync');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf');
-            var oSaveFigureStub = sandbox.stub(settingsController, '_saveFiguresFile');
+            var oSaveFigureStub = sandbox.stub(settingsController, 'saveConfigFile');
             var oMopidyStub = sandbox.stub(mopidy, 'onCardRemoved').resolves();
 
             settingsController.saveFigure('DUMMY_URI').catch(function () {
@@ -526,7 +526,7 @@ describe('Settings Controller', function () {
         it('should create a section "general" if it does not exist', function (done) {
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns('');
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -545,7 +545,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -563,7 +563,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -581,7 +581,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -599,7 +599,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -617,7 +617,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE_RESET.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -663,7 +663,7 @@ describe('Settings Controller', function () {
         it('should set the language', function (done) {
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns('');
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -682,7 +682,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -729,7 +729,7 @@ describe('Settings Controller', function () {
         it('should set the max volume', function (done) {
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns('');
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -748,7 +748,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -795,7 +795,7 @@ describe('Settings Controller', function () {
         it('should set the current volume', function (done) {
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns('');
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
@@ -814,7 +814,7 @@ describe('Settings Controller', function () {
             var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
             var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
             var oSavedConfig;
-            var oSaveFiguresStub = sandbox.stub(settingsController, '_saveFiguresFile').callsFake(function (oConfig) {
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
                 oSavedConfig = oConfig;
             });
 
