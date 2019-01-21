@@ -54,6 +54,22 @@
         {{ $t("common.noData.text") }}
       </div>
     </div>
+    <div class="searchResult">
+      <h2>{{ $t("spotify.playlists.title") }}</h2>
+      <li class="searchList">
+        <SearchItem
+          v-for="playlist in $store.state.spotify.playlists"
+          v-bind:item="playlist"
+          v-bind:key="playlist.uri">
+        </SearchItem>
+        <div class="loadMoreButton">
+          <md-button v-if="$store.state.spotify.morePlaylists" @click="loadMorePlaylists">{{ $t("common.more.button") }}</md-button>
+        </div>
+      </li>
+      <div v-if="$store.state.spotify.playlists.length === 0">
+        {{ $t("common.noData.text") }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,7 +86,8 @@ export default {
     'search',
     'loadMoreArtists',
     'loadMoreAlbums',
-    'loadMoreTracks'
+    'loadMoreTracks',
+    'loadMorePlaylists'
   ]),
   beforeMount: function () {
     this.$store.dispatch('spotify/loadAccountInfo');

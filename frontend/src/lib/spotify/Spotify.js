@@ -76,5 +76,25 @@ export default {
         }
       });
     });
+  },
+  loadPlaylist: function (sPlaylistId) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/playlists/' + sPlaylistId, {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
+  },
+  loadPlaylistTracks: function (sPlaylistId, iOffset) {
+    return this._getAuthToken().then(function (sAuthToken) {
+      return axios.get('https://api.spotify.com/v1/playlists/' + sPlaylistId + '/tracks?offset=' + iOffset, {
+        headers: {
+          'Authorization': 'Bearer ' + sAuthToken,
+          'Accept': 'application/json'
+        }
+      });
+    });
   }
 };

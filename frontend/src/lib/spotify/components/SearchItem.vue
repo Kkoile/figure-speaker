@@ -55,8 +55,10 @@ export default {
     openItem: function () {
       if (this.item.type === 'artist') {
         this.$router.push('/spotify/artist/' + this.item.id);
-      } else {
+      } else if (this.item.type === 'album') {
         this.$router.push('/spotify/album/' + this.item.id);
+      } else if (this.item.type === 'playlist') {
+        this.$router.push('/spotify/playlist/' + this.item.id);
       }
     },
     saveItem: function () {

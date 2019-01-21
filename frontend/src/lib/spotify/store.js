@@ -12,6 +12,15 @@ const state = {
   tracks: [],
   tracksOffset: 0,
   moreTracks: false,
+  playlists: [],
+  playlistsOffset: 0,
+  morePlaylists: false,
+  playlistUri: null,
+  playlistName: null,
+  playlistImage: null,
+  playlistTracks: [],
+  playlistTracksOffset: 0,
+  morePlaylistTracks: false,
   selectedArtistId: null,
   artistName: null,
   artistAlbums: [],
@@ -41,6 +50,9 @@ const mutations = {
     state.tracks = [];
     state.tracksOffset = 0;
     state.moreTracks = false;
+    state.playlists = [];
+    state.playlistsOffset = 0;
+    state.morePlaylists = false;
     state.countryCodes = [];
   },
   appendArtists (state, artists) {
@@ -57,6 +69,11 @@ const mutations = {
     state.tracks = state.tracks.concat(tracks.items);
     state.tracksOffset += tracks.limit;
     state.moreTracks = tracks.total > state.tracksOffset;
+  },
+  appendPlaylists (state, playlists) {
+    state.playlists = state.playlists.concat(playlists.items);
+    state.playlistsOffset += playlists.limit;
+    state.morePlaylists = playlists.total > state.playlistsOffset;
   },
   resetArtistData (state) {
     state.artistName = null;
@@ -96,6 +113,24 @@ const mutations = {
     state.albumTracksOffset += tracks.limit;
     state.moreAlbumTracks = tracks.total > state.albumTracksOffset;
   },
+  resetPlaylistData (state) {
+    state.playlistUri = null;
+    state.playlistName = null;
+    state.playlistImage = null;
+    state.playlistTracks = [];
+    state.playlistTracksOffset = 0;
+    state.morePlaylistTracks = false;
+  },
+  setPlaylist (state, data) {
+    state.playlistUri = data.uri;
+    state.playlistName = data.name;
+    state.playlistImage = data.images && data.images.length > 0 ? data.images[0] : null;
+  },
+  appendPlaylistTracks (state, tracks) {
+    state.playlistTracks = state.playlistTracks.concat(tracks.items);
+    state.playlistTracksOffset += tracks.limit;
+    state.morePlaylistTracks = tracks.total > state.playlistTracksOffset;
+  },
   setAccountInfo (state, account) {
     state.account = account;
   },
@@ -110,11 +145,12 @@ const actions = {
   search ({commit}) {
     commit('resetData');
     if (state.query) {
-      return Spotify.search(state.query, state.account.country, 'artist,album,track', state.artistsOffset)
+      return Spotify.search(state.query, state.account.country, 'artist,album,track,playlist', state.artistsOffset)
         .then(function (oData) {
           commit('appendArtists', oData.data.artists);
           commit('appendAlbums', oData.data.albums);
           commit('appendTracks', oData.data.tracks);
+          commit('appendPlaylists', oData.data.playlists);
         })
         .catch(function (err) {
           alert(err);
@@ -143,6 +179,15 @@ const actions = {
     return Spotify.search(state.query, state.account.country, 'track', state.tracksOffset)
       .then(function (oData) {
         commit('appendTracks', oData.data.tracks);
+      })
+      .catch(function (err) {
+        alert(err);
+      });
+  },
+  loadMorePlaylists ({commit}) {
+    return Spotify.search(state.query, state.account.country, 'playlist', state.playlistsOffset)
+      .then(function (oData) {
+        commit('appendPlaylists', oData.data.playlists);
       })
       .catch(function (err) {
         alert(err);
@@ -210,6 +255,36 @@ const actions = {
     return Spotify.loadAlbumTracks(state.selectedAlbumId, state.albumTracksOffset)
       .then(function (oData) {
         commit('appendAlbumTracks', oData.data);
+      })
+      .catch(function (err) {
+        alert(err);
+      });
+  },
+  loadPlaylist ({commit}, id) {
+    state.selectedPlaylistId = id;
+    commit('resetPlaylistData');
+    var aPromises = [
+      Spotify.loadPlaylist(state.selectedPlaylistId)
+        .then(function (oData) {
+          commit('setPlaylist', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        }),
+      Spotify.loadPlaylistTracks(state.selectedPlaylistId, state.playlistTracksOffset)
+        .then(function (oData) {
+          commit('appendPlaylistTracks', oData.data);
+        })
+        .catch(function (err) {
+          alert(err);
+        })
+    ];
+    return aPromises;
+  },
+  loadMorePlaylistTracks ({commit}) {
+    return Spotify.loadPlaylistTracks(state.selectedPlaylistId, state.playlistTracksOffset)
+      .then(function (oData) {
+        commit('appendPlaylistTracks', oData.data);
       })
       .catch(function (err) {
         alert(err);

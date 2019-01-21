@@ -15,6 +15,9 @@
     "SpotifyAlbum": {
       "title": "Spotify"
     },
+    "SpotifyPlaylist": {
+      "title": "Spotify"
+    },
     "SpotifyManageAccount": {
       "title": "Spotify - Manage Account"
     },
@@ -130,11 +133,17 @@
     "tracks": {
       "title": "Tracks"
     },
+    "playlists": {
+      "title": "Playlists"
+    },
     "saveAlbum": {
       "button": "Save Album"
     },
     "topTracks": {
       "title": "Top Tracks"
+    },
+    "savePlaylist": {
+      "button": "Save Playlist"
     },
     "manageAccount": {
       "title": "Manage Spotify Account"
