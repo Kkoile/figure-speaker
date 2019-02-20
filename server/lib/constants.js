@@ -27,12 +27,15 @@ module.exports = {
         Resume: 'RESUME',
         Reset: 'RESET'
     },
-    VolumeChange: {
+    Buttons: {
         Increase: "INCREASE",
         Decrease: "DECREASE",
+        WindForwards: "WIND_FORWARDS",
+        ReWind: "REWIND",
         Push: 1,
         Release: 0,
-        Interval: 5
+        WatchInterval: 5,
+        WindInterval: 500
     },
     Player: {
         DefaultPlayMode: 'RESUME',

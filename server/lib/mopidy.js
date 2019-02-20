@@ -16,7 +16,7 @@ try {
     winston.error("Could not listen for RFID Scans.", oError);
 }
 
-var volumeController = require('./volumeController');
+var buttonController = require('./buttonController');
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
@@ -70,7 +70,7 @@ exports.restart = function () {
 
 exports.scanMp3Files = function () {
     winston.info("scanning mp3 files");
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         var oProcess = child_process.spawn('mopidy', ['local', 'scan']);
         oProcess.on('close', function (iCode) {
             if (iCode !== 0) {
@@ -83,8 +83,8 @@ exports.scanMp3Files = function () {
 
 };
 
-exports._waitForMopidyToPlayThisTrack = function(sUri) {
-    return new Promise(function(resolve) {
+exports._waitForMopidyToPlayThisTrack = function (sUri) {
+    return new Promise(function (resolve) {
         if (sUri.indexOf("spotify") === 0) {
             this.isSpotifyReady.then(resolve);
         } else {
@@ -97,12 +97,12 @@ exports._playItem = function (oData) {
     if (oData) {
         this._sCurrentFigureId = oData.cardId;
         return this._waitForMopidyToPlayThisTrack(oData.uri)
-            .then(function() {
+            .then(function () {
                 return this.mopidy.tracklist.clear();
             }.bind(this))
             .then(this.mopidy.library.lookup.bind(this.mopidy, oData.uri))
             .then(this.mopidy.tracklist.add.bind(this.mopidy))
-            .then(function() {
+            .then(function () {
                 return this.mopidy.tracklist.getTlTracks();
             }.bind(this))
             .then(function (aItems) {
@@ -111,7 +111,7 @@ exports._playItem = function (oData) {
             .then(function (oItem) {
                 return this.mopidy.playback.play(oItem);
             }.bind(this))
-            .then(function() {
+            .then(function () {
                 return this.mopidy.playback.setVolume(oData.volume);
             }.bind(this))
             .then(function () {
@@ -189,15 +189,15 @@ exports.onVolumeChange = function (sVolumeChange) {
         return Promise.resolve();
     }
     return settingsController.getCurrentVolume()
-        .then(function(iCurrentVolume) {
+        .then(function (iCurrentVolume) {
             return settingsController.getMaxVolume()
-                .then(function(iMaxVolume) {
+                .then(function (iMaxVolume) {
                     var iNewVolume = iCurrentVolume;
-                    if (sVolumeChange === constants.VolumeChange.Increase) {
-                        iNewVolume += constants.VolumeChange.Interval;
+                    if (sVolumeChange === constants.Buttons.Increase) {
+                        iNewVolume += constants.Buttons.WatchInterval;
                     }
-                    if (sVolumeChange === constants.VolumeChange.Decrease) {
-                        iNewVolume -= constants.VolumeChange.Interval;
+                    if (sVolumeChange === constants.Buttons.Decrease) {
+                        iNewVolume -= constants.Buttons.WatchInterval;
                     }
                     if (iNewVolume === iCurrentVolume || iNewVolume > iMaxVolume || iNewVolume < constants.General.MinVolume) {
                         return;
@@ -208,4 +208,31 @@ exports.onVolumeChange = function (sVolumeChange) {
         }.bind(this));
 };
 
-volumeController.listen(this);
+exports.onWindAction = function (sWindAction) {
+    if (!this.mopidy) {
+        return Promise.resolve();
+    }
+    if (sWindAction === constants.Buttons.WindForwards) {
+        return this.mopidy.tracklist.index()
+            .then(function (iIndex) {
+                return this.mopidy.tracklist.getLength()
+                    .then(function (iLength) {
+                        if (iIndex < iLength - 1) {
+                            return this.mopidy.playback.next();
+                        }
+                    }.bind(this));
+            }.bind(this));
+    } else if (sWindAction === constants.Buttons.ReWind) {
+        return this.mopidy.tracklist.index()
+            .then(function (iIndex) {
+                if (iIndex === 0) {
+                    return this.mopidy.playback.stop()
+                        .then(this.mopidy.playback.play.bind(this.mopidy));
+                } else {
+                    return this.mopidy.playback.previous();
+                }
+            }.bind(this));
+    }
+};
+
+buttonController.listen(this);

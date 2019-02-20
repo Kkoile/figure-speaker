@@ -70,7 +70,7 @@ describe('Mopidy', function () {
             var oChildProcessStub = sandbox.stub(child_process, 'spawn').withArgs('mopidy').returns(oProcess);
 
             mopidy.start().then(function () {
-                mopidy.isSpotifyReady.then(function() {
+                mopidy.isSpotifyReady.then(function () {
                     done();
                 });
             });
@@ -158,8 +158,8 @@ describe('Mopidy', function () {
         });
         it('should wait for spotify to be logged on if uri starts with `spotify`', function (done) {
             var bSpotifyResolve = false;
-            mopidy.isSpotifyReady = new Promise(function(resolve) {
-                setTimeout(function() {
+            mopidy.isSpotifyReady = new Promise(function (resolve) {
+                setTimeout(function () {
                     bSpotifyResolve = true;
                     resolve();
                 }, 10);
@@ -174,81 +174,81 @@ describe('Mopidy', function () {
     describe('_playItem', function () {
         it('should not do anything if no figure data is given', function (done) {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack');
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         assert(false);
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         assert(false);
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         assert(false);
                         return Promise.resolve([]);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         assert(false);
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         assert(false);
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         assert(false);
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         assert(false);
                         return Promise.resolve();
                     }
                 }
             };
 
-            mopidy._playItem(null).then(function() {
+            mopidy._playItem(null).then(function () {
                 assert(oMopidyWaitForTrackStub.notCalled);
                 done();
             });
         });
         it('should pass uri to _waitForMopidyToPlayThisTrack', function (done) {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').withArgs("DUMMY_URI").resolves();
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve([]);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         return Promise.resolve();
                     }
                 }
             };
 
-            mopidy._playItem({uri: "DUMMY_URI", progress: {}}).then(function() {
+            mopidy._playItem({uri: "DUMMY_URI", progress: {}}).then(function () {
                 assert(oMopidyWaitForTrackStub.calledOnce);
                 done();
             });
@@ -257,31 +257,31 @@ describe('Mopidy', function () {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var iSeekPosition = null,
                 bSeekCalled = false;
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve([]);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
                         return Promise.resolve();
@@ -289,7 +289,7 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy._playItem({progress: {position: 10}}).then(function() {
+            mopidy._playItem({progress: {position: 10}}).then(function () {
                 assert(bSeekCalled);
                 assert(iSeekPosition == 10);
                 done();
@@ -299,31 +299,31 @@ describe('Mopidy', function () {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var iSeekPosition = null,
                 bSeekCalled = false;
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve([]);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
                         return Promise.resolve();
@@ -331,7 +331,7 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy._playItem({progress: {position: 0}}).then(function() {
+            mopidy._playItem({progress: {position: 0}}).then(function () {
                 assert(!bSeekCalled);
                 done();
             });
@@ -340,31 +340,31 @@ describe('Mopidy', function () {
             var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').resolves();
             var iSeekPosition = null,
                 bSeekCalled = false;
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve([]);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
                         return Promise.resolve();
@@ -372,7 +372,7 @@ describe('Mopidy', function () {
                 }
             };
 
-            mopidy._playItem({progress: {position: null}}).then(function() {
+            mopidy._playItem({progress: {position: null}}).then(function () {
                 assert(!bSeekCalled);
                 done();
             });
@@ -382,38 +382,38 @@ describe('Mopidy', function () {
             var aItems = [{item: 0}, {item: 1}, {item: 2}],
                 oItemToPlay = null;
 
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve(aItems);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         oItemToPlay = oItem;
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         return Promise.resolve();
                     }
                 }
             };
 
-            mopidy._playItem({progress: {track: 0}}).then(function() {
+            mopidy._playItem({progress: {track: 0}}).then(function () {
                 assert(oItemToPlay === aItems[0]);
                 done();
             });
@@ -423,38 +423,38 @@ describe('Mopidy', function () {
             var aItems = [{item: 0}, {item: 1}, {item: 2}],
                 oItemToPlay = null;
 
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve(aItems);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         oItemToPlay = oItem;
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         return Promise.resolve();
                     }
                 }
             };
 
-            mopidy._playItem({progress: {track: 1}}).then(function() {
+            mopidy._playItem({progress: {track: 1}}).then(function () {
                 assert(oItemToPlay === aItems[1]);
                 done();
             });
@@ -464,39 +464,39 @@ describe('Mopidy', function () {
             var aItems = [{item: 0}, {item: 1}, {item: 2}],
                 oItemToPlay = null;
 
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 tracklist: {
-                    clear: function() {
+                    clear: function () {
                         return Promise.resolve();
                     },
-                    add: function(oItem) {
+                    add: function (oItem) {
                         return Promise.resolve();
                     },
-                    getTlTracks: function() {
+                    getTlTracks: function () {
                         return Promise.resolve(aItems);
                     }
                 },
                 library: {
-                    lookup: function(sUri) {
+                    lookup: function (sUri) {
                         return Promise.resolve({item: true});
                     }
                 },
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         return Promise.resolve();
                     },
-                    play: function(oItem) {
+                    play: function (oItem) {
                         oItemToPlay = oItem;
                         return Promise.resolve();
                     },
-                    seek: function(iPosition) {
+                    seek: function (iPosition) {
                         return Promise.resolve();
                     }
                 }
             };
 
             //should return the first item, if index is greater than length of items
-            mopidy._playItem({progress: {track: 5}}).then(function() {
+            mopidy._playItem({progress: {track: 5}}).then(function () {
                 assert(oItemToPlay === aItems[0]);
                 done();
             });
@@ -508,22 +508,22 @@ describe('Mopidy', function () {
             var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
             var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
             var iNewCurrentVolume;
-            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume').callsFake(function(iCurrentVolumeToSet) {
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume').callsFake(function (iCurrentVolumeToSet) {
                 iNewCurrentVolume = iCurrentVolumeToSet;
             });
             var iCurrentVolumeToSet;
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         iCurrentVolumeToSet = iVolume;
                         return Promise.resolve();
                     }
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
-                assert(iNewCurrentVolume === 70 + constants.VolumeChange.Interval);
-                assert(iCurrentVolumeToSet === 70 + constants.VolumeChange.Interval);
+            mopidy.onVolumeChange(constants.Buttons.Increase).then(function () {
+                assert(iNewCurrentVolume === 70 + constants.Buttons.WatchInterval);
+                assert(iCurrentVolumeToSet === 70 + constants.Buttons.WatchInterval);
 
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
@@ -535,22 +535,22 @@ describe('Mopidy', function () {
             var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
             var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
             var iNewCurrentVolume;
-            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume').callsFake(function(iCurrentVolumeToSet) {
+            var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume').callsFake(function (iCurrentVolumeToSet) {
                 iNewCurrentVolume = iCurrentVolumeToSet;
             });
             var iCurrentVolumeToSet;
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 playback: {
-                    setVolume: function(iVolume) {
+                    setVolume: function (iVolume) {
                         iCurrentVolumeToSet = iVolume;
                         return Promise.resolve();
                     }
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Decrease).then(function () {
-                assert(iNewCurrentVolume === 70 - constants.VolumeChange.Interval);
-                assert(iCurrentVolumeToSet === 70 - constants.VolumeChange.Interval);
+            mopidy.onVolumeChange(constants.Buttons.Decrease).then(function () {
+                assert(iNewCurrentVolume === 70 - constants.Buttons.WatchInterval);
+                assert(iCurrentVolumeToSet === 70 - constants.Buttons.WatchInterval);
 
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
@@ -562,15 +562,15 @@ describe('Mopidy', function () {
             var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
             var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(70);
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 playback: {
-                    setVolume: function() {
+                    setVolume: function () {
                         assert(false);
                     }
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+            mopidy.onVolumeChange(constants.Buttons.Increase).then(function () {
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
                 assert(oSetCurrentVolumeStub.notCalled);
@@ -581,15 +581,15 @@ describe('Mopidy', function () {
             var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(5);
             var oMaxVolumeStub = sandbox.stub(settingsController, 'getMaxVolume').resolves(100);
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
-            mopidy.mopidy =  {
+            mopidy.mopidy = {
                 playback: {
-                    setVolume: function() {
+                    setVolume: function () {
                         assert(false);
                     }
                 }
             };
 
-            mopidy.onVolumeChange(constants.VolumeChange.Decrease).then(function () {
+            mopidy.onVolumeChange(constants.Buttons.Decrease).then(function () {
                 assert(oGetCurrentVolumeStub.calledOnce);
                 assert(oMaxVolumeStub.calledOnce);
                 assert(oSetCurrentVolumeStub.notCalled);
@@ -602,10 +602,164 @@ describe('Mopidy', function () {
             var oSetCurrentVolumeStub = sandbox.stub(settingsController, 'setCurrentVolume');
             mopidy.mopidy = undefined;
 
-            mopidy.onVolumeChange(constants.VolumeChange.Increase).then(function () {
+            mopidy.onVolumeChange(constants.Buttons.Increase).then(function () {
                 assert(oGetCurrentVolumeStub.notCalled);
                 assert(oMaxVolumeStub.notCalled);
                 assert(oSetCurrentVolumeStub.notCalled);
+                done();
+            });
+        });
+    });
+
+    describe('onWindAction', function () {
+        it('should seek to next track', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            var bIndexCalled = false;
+            var bLengthCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    }
+                },
+                tracklist: {
+                    index: function () {
+                        bIndexCalled = true;
+                        return Promise.resolve(0);
+                    },
+                    getLength: function () {
+                        bLengthCalled = true;
+                        return Promise.resolve(2);
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.WindForwards).then(function () {
+                assert(bIndexCalled);
+                assert(bLengthCalled);
+                assert(bNextCalled);
+                assert(!bPreviousCalled);
+                done();
+            });
+        });
+        it('should do nothing if track is the last one', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            var bIndexCalled = false;
+            var bLengthCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    }
+                },
+                tracklist: {
+                    index: function () {
+                        bIndexCalled = true;
+                        return Promise.resolve(0);
+                    },
+                    getLength: function () {
+                        bLengthCalled = true;
+                        return Promise.resolve(1);
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.WindForwards).then(function () {
+                assert(bIndexCalled);
+                assert(bLengthCalled);
+                assert(!bNextCalled);
+                assert(!bPreviousCalled);
+                done();
+            });
+        });
+        it('should play previous track if track index is greater than 0', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            var bIndexCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    }
+                },
+                tracklist: {
+                    index: function () {
+                        bIndexCalled = true;
+                        return Promise.resolve(1);
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.ReWind).then(function () {
+                assert(!bNextCalled);
+                assert(bIndexCalled);
+                assert(bPreviousCalled);
+                done();
+            });
+        });
+        it('should play play the track from beginning if track index is 0', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            var bStopCalled = false;
+            var bPlayCalled = false;
+            var bIndexCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    },
+                    stop: function () {
+                        bStopCalled = true;
+                        return Promise.resolve();
+                    },
+                    play: function () {
+                        bPlayCalled = true;
+                        return Promise.resolve();
+                    }
+                },
+                tracklist: {
+                    index: function () {
+                        bIndexCalled = true;
+                        return Promise.resolve(0);
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.ReWind).then(function () {
+                assert(!bNextCalled);
+                assert(bIndexCalled);
+                assert(!bPreviousCalled);
+                assert(bStopCalled);
+                assert(bPlayCalled);
+                done();
+            });
+        });
+        it('should not do anything if mopidy is not initialized', function (done) {
+            mopidy.mopidy = null;
+
+            mopidy.onWindAction(constants.Buttons.ReWind).then(function () {
                 done();
             });
         });
