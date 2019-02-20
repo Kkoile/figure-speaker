@@ -615,6 +615,8 @@ describe('Mopidy', function () {
         it('should seek to next track', function (done) {
             var bNextCalled = false;
             var bPreviousCalled = false;
+            var bIndexCalled = false;
+            var bLengthCalled = false;
             mopidy.mopidy = {
                 playback: {
                     next: function () {
@@ -625,11 +627,59 @@ describe('Mopidy', function () {
                         bPreviousCalled = true;
                         return Promise.resolve();
                     }
+                },
+                tracklist: {
+                    index: function () {
+                        bIndexCalled = true;
+                        return Promise.resolve(0);
+                    },
+                    getLength: function () {
+                        bLengthCalled = true;
+                        return Promise.resolve(2);
+                    }
                 }
             };
 
             mopidy.onWindAction(constants.Buttons.WindForwards).then(function () {
+                assert(bIndexCalled);
+                assert(bLengthCalled);
                 assert(bNextCalled);
+                assert(!bPreviousCalled);
+                done();
+            });
+        });
+        it('should do nothing if track is the last one', function (done) {
+            var bNextCalled = false;
+            var bPreviousCalled = false;
+            var bIndexCalled = false;
+            var bLengthCalled = false;
+            mopidy.mopidy = {
+                playback: {
+                    next: function () {
+                        bNextCalled = true;
+                        return Promise.resolve();
+                    },
+                    previous: function () {
+                        bPreviousCalled = true;
+                        return Promise.resolve();
+                    }
+                },
+                tracklist: {
+                    index: function () {
+                        bIndexCalled = true;
+                        return Promise.resolve(0);
+                    },
+                    getLength: function () {
+                        bLengthCalled = true;
+                        return Promise.resolve(1);
+                    }
+                }
+            };
+
+            mopidy.onWindAction(constants.Buttons.WindForwards).then(function () {
+                assert(bIndexCalled);
+                assert(bLengthCalled);
+                assert(!bNextCalled);
                 assert(!bPreviousCalled);
                 done();
             });

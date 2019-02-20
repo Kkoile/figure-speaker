@@ -213,7 +213,15 @@ exports.onWindAction = function (sWindAction) {
         return Promise.resolve();
     }
     if (sWindAction === constants.Buttons.WindForwards) {
-        return this.mopidy.playback.next();
+        return this.mopidy.tracklist.index()
+            .then(function (iIndex) {
+                return this.mopidy.tracklist.getLength()
+                    .then(function (iLength) {
+                        if (iIndex < iLength - 1) {
+                            return this.mopidy.playback.next();
+                        }
+                    }.bind(this));
+            }.bind(this));
     } else if (sWindAction === constants.Buttons.ReWind) {
         return this.mopidy.tracklist.index()
             .then(function (iIndex) {
