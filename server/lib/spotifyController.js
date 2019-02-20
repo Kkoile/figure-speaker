@@ -24,7 +24,7 @@ exports.getAccountInfo = function () {
     if (oConfig.spotify.enabled !== null && oConfig.spotify.enabled !== undefined) {
         bEnabled = !!oConfig.spotify.enabled;
     }
-    var oGeneralConfig = settingsController.getConfigFile().general;
+    var oGeneralConfig = settingsController.getConfigFile().general || {};
     return {
         name: 'Spotify',
         enabled: bEnabled,
@@ -58,7 +58,7 @@ exports.saveAccount = function (oAccount) {
         }
         resolve();
     })
-        .then(function() {
+        .then(function () {
             var oConfig = settingsController.getConfigFile();
             if (oAccount.country) {
                 oConfig.general.spotify_country = oAccount.country;

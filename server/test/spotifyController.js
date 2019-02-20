@@ -32,6 +32,15 @@ describe('Spotify Controller', function () {
             assert(oConfigFileStub.calledOnce);
             done();
         });
+        it('should return an empty config if config file does not exist', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
+            sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
+            sandbox.stub(settingsController, 'getConfigFile').returns({});
+
+            var oAccount = spotifyController.getAccountInfo();
+            assert(oAccount.name === 'Spotify');
+            done();
+        });
         it('should transform account info correctly', function (done) {
             var sConfigFile = fs.readFileSync('./test/resources/CONFIG_FILE_WITH_SPOTIFY_SECTION.conf', 'utf8');
             sandbox.stub(fs, 'readFileSync').withArgs(sHomePath + '/.config/mopidy/mopidy.conf').returns(sConfigFile);
