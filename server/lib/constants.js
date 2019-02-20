@@ -35,7 +35,7 @@ module.exports = {
         Push: 1,
         Release: 0,
         WatchInterval: 5,
-        WindInterval: 100
+        WindInterval: 500
     },
     Player: {
         DefaultPlayMode: 'RESUME',
