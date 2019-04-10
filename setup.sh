@@ -126,7 +126,6 @@ echo "rsn_pairwise=CCMP" | sudo tee -a /etc/hostapd/hostapd.conf >/dev/null
 echo "#80211n - Change GB to your WiFi country code" | sudo tee -a /etc/hostapd/hostapd.conf >/dev/null
 echo "country_code=GB" | sudo tee -a /etc/hostapd/hostapd.conf >/dev/null
 echo "ieee80211n=1" | sudo tee -a /etc/hostapd/hostapd.conf >/dev/null
-echo "ieee80211d=1" | sudo tee -a /etc/hostapd/hostapd.conf >/dev/null
 
 
 echo "DAEMON_CONF=\"/etc/hostapd/hostapd.conf\"" | sudo tee -a /etc/dnsmasq.conf >/dev/null

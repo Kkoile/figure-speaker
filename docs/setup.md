@@ -36,7 +36,12 @@ ssh pi@raspberrypi.local
 Use the default password `raspberry` for authentication.
 You should directly change the default password by entering the command `passwd`
 
-From now on, all commands in the setup chapter are executed on the raspberry via ssh.
+From now on, you have two options: Either download and execute a setup script, which will execute every step necessary automatically, or do each step manually.
+If you decide for the automatic script, all you have to do is to execute the following command and then restart the raspberry pi:
+```
+curl https://raw.githubusercontent.com/Kkoile/figure-speaker/master/setup.sh -o ~/setup.sh | ~/setup.sh
+```
+If you want to execute each step manually, follow the following commands on this page.
 
 ## Set Audio Volume to Maximum
 The volume will be handled later by our application. In order to be able to get the maximum volume you should set it on the raspberry pi:
@@ -55,6 +60,13 @@ Depending on the mopidy extensions you want to include you should install them. 
 ```
 sudo apt-get install mopidy-spotify
 ``` 
+
+Modify the file `~/.config/mopidy/mopidy.conf` and add the following lines to it:
+```
+[local]
+media_dir = ~/.config/figure-speaker/files
+```
+Run `mopidy local scan` in order for mopidy to scan the files in there.
 
 ### Install MPC (Optional)
 In order to test if mopidy is working, you can install a mopidy client like `mpc`:
@@ -85,7 +97,7 @@ sudo npm install -g figure-speaker
 ```
 Don't mind the vast amount of error logs...
 
-You can test the installation by typing `figure-speaker` in the command line. This should start the server. The frontend should now be available at `http://raspberrypi.local:3000`.
+You can test the installation by typing `figure-speaker` in the command line. This should start the server. The frontend should now be available at `http://figure-speaker:3000` or `http://figure-speaker.local:3000` (MacOsX).
 
 We want our application to always start when booting raspberry pi. To achieve this, we create a service file which we can then manage with `systemctl`.
 Create a file `figure-speaker.service`:
@@ -171,8 +183,8 @@ Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=figure-speaker-wifi-connector
-User=pi
-Group=pi
+User=root
+Group=root
 Environment=NODE_ENV=production 
 
 [Install]
