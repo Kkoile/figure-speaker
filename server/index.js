@@ -25,7 +25,13 @@ app.use('/data/', require('./api/dataApi'));
 
 app.use(require('./api/errorHandler'));
 
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/dist'), {
+    setHeaders: (res, path) => {
+        if (path.endsWith('index.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+        }
+    }
+}));
 
 app.get('/', function (req, res) {
     res.redirect('/index.html');
