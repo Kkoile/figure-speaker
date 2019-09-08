@@ -127,13 +127,16 @@ exports.getFigurePlayInformation = function () {
     if (oFigure) {
         return this._getProgressOfSong(oFigure).then(function (oProgress) {
             return this.getCurrentVolume().then(function(iCurrentVolume) {
-                var oData = oFigure;
-                oData.cardId = sCardId;
-                oData.progress = oProgress;
-                oData.volume = iCurrentVolume;
-                winston.info('Found the following figure:', JSON.stringify(oData));
-                return oData;
-            });
+                return this.getRepeatMode().then(function(bRepeatMode) {
+                    var oData = oFigure;
+                    oData.cardId = sCardId;
+                    oData.progress = oProgress;
+                    oData.volume = iCurrentVolume;
+                    oData.repeat = bRepeatMode;
+                    winston.info('Found the following figure:', JSON.stringify(oData));
+                    return oData;
+                });
+            }.bind(this));
         }.bind(this));
     }
     return Promise.resolve(null);
@@ -250,6 +253,31 @@ exports.setCurrentVolume = function (iCurrentVolume) {
         oConfig.general.current_volume = iCurrentVolume;
         this.saveConfigFile(oConfig);
         resolve(oConfig.general.current_volume);
+    }.bind(this));
+};
+
+exports.getRepeatMode = function () {
+    winston.debug("get repeat mode");
+    return new Promise(function (resolve) {
+        var oConfig = this.getConfigFile();
+        var bRepeatMode = constants.PlayMode.Repeat;
+        if (oConfig.general && oConfig.general.repeat_mode) {
+            bRepeatMode = oConfig.general.repeat_mode === true;
+        }
+        resolve(bRepeatMode);
+    }.bind(this));
+};
+
+exports.setRepeatMode = function (bRepeatMode) {
+    winston.debug("set repeat mode:", bRepeatMode);
+    return new Promise(function (resolve) {
+        var oConfig = this.getConfigFile();
+        if (!oConfig.general) {
+            oConfig.general = {};
+        }
+        oConfig.general.repeat_mode = bRepeatMode;
+        this.saveConfigFile(oConfig);
+        resolve(oConfig.general.repeat_mode);
     }.bind(this));
 };
 

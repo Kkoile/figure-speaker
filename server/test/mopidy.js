@@ -207,6 +207,9 @@ describe('Mopidy', function () {
                     seek: function (iPosition) {
                         assert(false);
                         return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 }
             };
@@ -243,6 +246,9 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
+                        return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -284,6 +290,9 @@ describe('Mopidy', function () {
                     seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
+                        return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -327,6 +336,9 @@ describe('Mopidy', function () {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
                         return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 }
             };
@@ -367,6 +379,9 @@ describe('Mopidy', function () {
                     seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
+                        return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -409,6 +424,9 @@ describe('Mopidy', function () {
                     },
                     seek: function (iPosition) {
                         return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 }
             };
@@ -449,6 +467,9 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
+                        return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -491,6 +512,9 @@ describe('Mopidy', function () {
                     },
                     seek: function (iPosition) {
                         return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 }
             };
@@ -498,6 +522,49 @@ describe('Mopidy', function () {
             //should return the first item, if index is greater than length of items
             mopidy._playItem({progress: {track: 5}}).then(function () {
                 assert(oItemToPlay === aItems[0]);
+                done();
+            });
+        });
+        it('should set repeat mode to the configured value', function (done) {
+            var oMopidyWaitForTrackStub = sandbox.stub(mopidy, '_waitForMopidyToPlayThisTrack').withArgs("DUMMY_URI").resolves();
+            var bCalledRepeatMode;
+            mopidy.mopidy = {
+                tracklist: {
+                    clear: function () {
+                        return Promise.resolve();
+                    },
+                    add: function (oItem) {
+                        return Promise.resolve();
+                    },
+                    getTlTracks: function () {
+                        return Promise.resolve([]);
+                    }
+                },
+                library: {
+                    lookup: function (sUri) {
+                        return Promise.resolve({item: true});
+                    }
+                },
+                playback: {
+                    setVolume: function (iVolume) {
+                        return Promise.resolve();
+                    },
+                    play: function (oItem) {
+                        return Promise.resolve();
+                    },
+                    seek: function (iPosition) {
+                        return Promise.resolve();
+                    },
+                    repeat: function (bRepeatMode) {
+                        bCalledRepeatMode = bRepeatMode;
+                        return Promise.resolve();
+                    }
+                }
+            };
+
+            mopidy._playItem({uri: "DUMMY_URI", progress: {}, repeat: true}).then(function () {
+                assert(oMopidyWaitForTrackStub.calledOnce);
+                assert(bCalledRepeatMode === true);
                 done();
             });
         });

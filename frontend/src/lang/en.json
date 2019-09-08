@@ -61,6 +61,10 @@
     "reset": {
       "text": "Reset"
     },
+    "repeatMode": {
+      "title": "Repeat Mode",
+      "label": "Repeat on?"
+    },
     "maxVolume": {
       "title": "Max Volume"
     },

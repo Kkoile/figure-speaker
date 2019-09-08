@@ -58,6 +58,23 @@
         </md-card-actions>
       </md-card>
 
+      <md-card>
+        <md-card-header>
+          <div class="md-title">{{ $t("settings.repeatMode.title") }}</div>
+        </md-card-header>
+
+        <md-card-content>
+          <md-field>
+            <label for="repeatMode">{{ $t("settings.repeatMode.label") }}</label>
+            <md-checkbox name="repeatMode" id="repeatMode" v-model="$store.state.settings.repeatMode"></md-checkbox>
+          </md-field>
+        </md-card-content>
+
+        <md-card-actions>
+          <md-button @click="saveRepeatMode" class="md-primary">{{ $t("common.save.button") }}</md-button>
+        </md-card-actions>
+      </md-card>
+
       <md-card v-for="account in $store.state.settings.accounts"
                v-if="account.configurable"
                v-bind:key="account.id">
@@ -107,6 +124,9 @@ export default {
         resetAfterDays: this.$store.state.settings.resetAfterDays
       });
     },
+    saveRepeatMode: function () {
+      this.$store.dispatch('saveRepeatMode', this.$store.state.settings.repeatMode);
+    },
     saveLanguage: function () {
       this.$store.dispatch('saveLanguage', this.$store.state.settings.language);
     },
@@ -120,6 +140,7 @@ export default {
   beforeMount: function () {
     this.$store.dispatch('loadAccounts');
     this.$store.dispatch('loadPlayMode');
+    this.$store.dispatch('loadRepeatMode');
     this.$store.dispatch('loadMaxVolume');
   }
 };

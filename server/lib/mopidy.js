@@ -115,6 +115,9 @@ exports._playItem = function (oData) {
                 return this.mopidy.playback.setVolume(oData.volume);
             }.bind(this))
             .then(function () {
+                return this.mopidy.playback.repeat(!!oData.repeat);
+            }.bind(this))
+            .then(function () {
                 return new Promise(function (resolve) {
                     if (oData.progress.position > 0) {
                         setTimeout(function () {
