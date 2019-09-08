@@ -430,9 +430,10 @@ describe('ButtonController', function () {
         it('should notify no one if there are no listeners', function (done) {
             ButtonController.listeners = [];
 
-            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS");
-            assert(true);
-            done();
+            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS").then(function() {
+                assert(true);
+                done();
+            });
         });
         it('should notify all listeners', function (done) {
             var bCalled = false;
@@ -441,19 +442,21 @@ describe('ButtonController', function () {
                 onWindAction: function(sWindActionToSet) {
                     bCalled = true;
                     sWindAction = sWindActionToSet;
+                    return Promise.resolve();
                 }
             };
             ButtonController.listeners = [oListener];
 
-            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS");
-            assert(bCalled);
-            assert(sWindAction === "WIND_FORWARDS");
-            done();
+            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS").then(function () {
+                assert(bCalled);
+                assert(sWindAction === "WIND_FORWARDS");
+                done();
+            });
         });
         it('should notify the second listener, even if the first one failed', function (done) {
             var oListener1 = {
                 onWindAction: function() {
-                    throw Error();
+                    return Promise.reject();
                 }
             };
             var bCalled2 = false;
@@ -462,14 +465,16 @@ describe('ButtonController', function () {
                 onWindAction: function(sWindActionToSet) {
                     bCalled2 = true;
                     sWindAction2 = sWindActionToSet;
+                    return Promise.resolve();
                 }
             };
             ButtonController.listeners = [oListener1, oListener2];
 
-            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS");
-            assert(bCalled2);
-            assert(sWindAction2 === "WIND_FORWARDS");
-            done();
+            ButtonController._notifyListenersOnWindAction("WIND_FORWARDS").then(function () {
+                assert(bCalled2);
+                assert(sWindAction2 === "WIND_FORWARDS");
+                done();
+            });
         });
     });
 

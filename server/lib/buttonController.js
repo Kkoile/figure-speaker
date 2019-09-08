@@ -31,13 +31,12 @@ exports._notifyListenersOnVolumeChange = function(sVolumeChange) {
 };
 
 exports._notifyListenersOnWindAction = function(sWindAction) {
-    this.listeners.forEach(function(oListener) {
-        try {
-            oListener.onWindAction && oListener.onWindAction(sWindAction);
-        } catch (oError) {
+    return Promise.all(this.listeners.map(function(oListener) {
+        const promise = oListener.onWindAction ? oListener.onWindAction(sWindAction) : Promise.resolve();
+        return promise.catch(function (oError) {
             winston.error("Could not notify listener for wind action", oError);
-        }
-    });
+        });
+    }));
 };
 
 exports.init = function () {
