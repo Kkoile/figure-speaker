@@ -187,6 +187,9 @@ describe('Mopidy', function () {
                     getTlTracks: function () {
                         assert(false);
                         return Promise.resolve([]);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -206,9 +209,6 @@ describe('Mopidy', function () {
                     },
                     seek: function (iPosition) {
                         assert(false);
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -231,6 +231,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve([]);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -246,9 +249,6 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -273,6 +273,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve([]);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -290,9 +293,6 @@ describe('Mopidy', function () {
                     seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -318,6 +318,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve([]);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -335,9 +338,6 @@ describe('Mopidy', function () {
                     seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -362,6 +362,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve([]);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -379,9 +382,6 @@ describe('Mopidy', function () {
                     seek: function (iPosition) {
                         bSeekCalled = true;
                         iSeekPosition = iPosition;
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -407,6 +407,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve(aItems);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -423,9 +426,6 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -451,6 +451,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve(aItems);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -467,9 +470,6 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -495,6 +495,9 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve(aItems);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -511,9 +514,6 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
                         return Promise.resolve();
                     }
                 }
@@ -538,6 +538,10 @@ describe('Mopidy', function () {
                     },
                     getTlTracks: function () {
                         return Promise.resolve([]);
+                    },
+                    setRepeat: function (bRepeatMode) {
+                        bCalledRepeatMode = bRepeatMode;
+                        return Promise.resolve();
                     }
                 },
                 library: {
@@ -553,10 +557,6 @@ describe('Mopidy', function () {
                         return Promise.resolve();
                     },
                     seek: function (iPosition) {
-                        return Promise.resolve();
-                    },
-                    repeat: function (bRepeatMode) {
-                        bCalledRepeatMode = bRepeatMode;
                         return Promise.resolve();
                     }
                 }

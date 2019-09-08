@@ -115,7 +115,11 @@ exports._playItem = function (oData) {
                 return this.mopidy.playback.setVolume(oData.volume);
             }.bind(this))
             .then(function () {
-                return this.mopidy.playback.repeat(!!oData.repeat);
+                return new Promise(function (resolve) {
+                    setTimeout(function () {
+                        this.mopidy.tracklist.setRepeat(!!oData.repeat).then(resolve);
+                    }.bind(this), 20);
+                }.bind(this));
             }.bind(this))
             .then(function () {
                 return new Promise(function (resolve) {
