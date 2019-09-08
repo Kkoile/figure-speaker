@@ -63,7 +63,7 @@ buttonController.init();
 
 //NOTE: Can be removed after it is ensured that all clients have at least version 1.0.3 installed
 require('./lib/migrationController').moveSpotifyCountryConfigFromMopidyToGeneralConfig();
-/*
+
 var mopidy = require('./lib/mopidy');
 mopidy.start();
 
@@ -77,4 +77,3 @@ signals.forEach(function (sSignal) {
         });
     });
 });
-*/
