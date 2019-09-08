@@ -116,6 +116,13 @@ exports._playItem = function (oData) {
             }.bind(this))
             .then(function () {
                 return new Promise(function (resolve) {
+                    setTimeout(function () {
+                        this.mopidy.tracklist.setRepeat(!!oData.repeat).then(resolve);
+                    }.bind(this), 20);
+                }.bind(this));
+            }.bind(this))
+            .then(function () {
+                return new Promise(function (resolve) {
                     if (oData.progress.position > 0) {
                         setTimeout(function () {
                             this.mopidy.playback.seek(oData.progress.position).then(resolve);

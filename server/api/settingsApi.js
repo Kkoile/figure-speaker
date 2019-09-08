@@ -61,6 +61,26 @@ settingsApi.route('/playMode').post(function (req, res, next) {
         .catch(next);
 });
 
+settingsApi.route('/repeatMode').get(function (req, res, next) {
+    settingsController.getRepeatMode()
+        .then(function (bRepeatMode) {
+            res.send(bRepeatMode);
+        })
+        .catch(next);
+});
+
+settingsApi.route('/repeatMode').post(function (req, res, next) {
+    if (req.body.repeatMode === undefined || req.body.repeatMode === null) {
+        res.status(400).send("RepeatMode is missing in body!");
+        return;
+    }
+    settingsController.setRepeatMode(req.body.repeatMode)
+        .then(function (oData) {
+            res.send(oData);
+        })
+        .catch(next);
+});
+
 settingsApi.route('/saveFigure').post(function (req, res, next) {
     if (!req.body.streamUri) {
         res.status(400).send("StreamUri is missing in body!");

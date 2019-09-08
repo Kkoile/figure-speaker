@@ -12,6 +12,7 @@ Vue.use(Vuex);
 
 const state = {
   playMode: null,
+  repeatMode: false,
   resetAfterDays: 0,
   accounts: [],
   language: 'en',
@@ -35,6 +36,9 @@ const mutations = {
   setPlayMode (state, playMode) {
     state.playMode = playMode.playMode;
     state.resetAfterDays = playMode.resetAfterDays;
+  },
+  setRepeatMode (state, repeatMode) {
+    state.repeatMode = repeatMode;
   },
   setAccounts (state, accounts) {
     state.accounts = accounts;
@@ -65,8 +69,26 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
+  loadRepeatMode ({commit}) {
+    return axios.get('/settings/repeatMode')
+      .then(function (oData) {
+        commit('setRepeatMode', oData.data);
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
   savePlayMode ({commit}, oPlayMode) {
     return axios.post('/settings/playMode', oPlayMode)
+      .then(function (oData) {
+        alert('success');
+      })
+      .catch(function (err) {
+        alert(JSON.stringify(err.response.data));
+      });
+  },
+  saveRepeatMode ({commit}, bRepeatMode) {
+    return axios.post('/settings/repeatMode', {repeatMode: bRepeatMode})
       .then(function (oData) {
         alert('success');
       })

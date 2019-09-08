@@ -321,6 +321,7 @@ describe('Settings Controller', function () {
 
             var oGetProgressStub = sandbox.stub(settingsController, '_getProgressOfSong').resolves(0);
             var oGetCurrentVolumeStub = sandbox.stub(settingsController, 'getCurrentVolume').resolves(70);
+            var oGetRepeatModeStub = sandbox.stub(settingsController, 'getRepeatMode').resolves(true);
 
             settingsController.getFigurePlayInformation().then(function (oData) {
                 assert(oData.cardId === 'EXISTING_ID');
@@ -328,12 +329,14 @@ describe('Settings Controller', function () {
                 assert(oData.progress === 0);
                 assert(oData.lastPlayed === undefined);
                 assert(oData.volume === 70);
+                assert(oData.repeat === true);
 
                 assert(oRfidConnectionIsConnectedStub.calledOnce);
                 assert(oRfidConnectionGetIdStub.calledOnce);
                 assert(oFSReadFileStub.calledOnce);
                 assert(oGetProgressStub.calledOnce);
                 assert(oGetCurrentVolumeStub.calledOnce);
+                assert(oGetRepeatModeStub.calledOnce);
 
                 done();
             });
@@ -822,6 +825,72 @@ describe('Settings Controller', function () {
                 assert(!!oSavedConfig.general);
                 assert(oSavedConfig.general.current_volume === 40);
                 assert(iCurrentVolume === 40);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('getRepeatMode', function () {
+        it('should return the default repeat mode', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns('');
+
+            settingsController.getRepeatMode().then(function (bRepeatMode) {
+                assert(bRepeatMode === constants.PlayMode.Repeat);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should return the configured repeat mode', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
+
+            settingsController.getRepeatMode().then(function (bRepeatMode) {
+                assert(bRepeatMode === true);
+
+                assert(oFSReadFileStub.calledOnce);
+                done();
+            });
+
+        });
+    });
+
+    describe('setRepeatMode', function () {
+        it('should set the repeat mode', function (done) {
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns('');
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setRepeatMode(true).then(function (bRepeatMode) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.repeat_mode === true);
+                assert(bRepeatMode === true);
+
+                assert(oFSReadFileStub.calledOnce);
+                assert(oSaveFiguresStub.calledOnce);
+                done();
+            });
+
+        });
+        it('should overwrite the old repeat mode', function (done) {
+            var sConfigFile = fs.readFileSync('./test/resources/FIGURE_FILE.conf', 'utf8');
+            var oFSReadFileStub = sandbox.stub(fs, 'readFileSync').withArgs(require("os").homedir() + '/.config/figure-speaker/figures.conf').returns(sConfigFile);
+            var oSavedConfig;
+            var oSaveFiguresStub = sandbox.stub(settingsController, 'saveConfigFile').callsFake(function (oConfig) {
+                oSavedConfig = oConfig;
+            });
+
+            settingsController.setRepeatMode(false).then(function (bRepeatMode) {
+                assert(!!oSavedConfig.general);
+                assert(oSavedConfig.general.repeat_mode === false);
+                assert(bRepeatMode === false);
 
                 assert(oFSReadFileStub.calledOnce);
                 assert(oSaveFiguresStub.calledOnce);

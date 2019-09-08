@@ -25,7 +25,8 @@ module.exports = {
     },
     PlayMode: {
         Resume: 'RESUME',
-        Reset: 'RESET'
+        Reset: 'RESET',
+        Repeat: false
     },
     Buttons: {
         Increase: "INCREASE",

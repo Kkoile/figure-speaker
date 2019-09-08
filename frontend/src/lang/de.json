@@ -61,6 +61,10 @@
     "reset": {
       "text": "Zurücksetzen"
     },
+    "repeatMode": {
+      "title": "Repeat Modus",
+      "label": "Repeat an?"
+    },
     "maxVolume": {
       "title": "Maximale Lautstärke"
     },
