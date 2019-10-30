@@ -33,7 +33,7 @@
     "wiringpi-node": "2.4.4"
   },
   "devDependencies": {
-    "eslint": "4.18.1",
+    "eslint": "6.6.0",
     "mocha": "5.0.1",
     "nock": "9.2.1",
     "nyc": "^12.0.2",
