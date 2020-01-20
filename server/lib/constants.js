@@ -1,9 +1,7 @@
-'use strict';
-
-var sPathToGeneralConfig = require("os").homedir() + '/.config';
-var sPathToAppConfig = sPathToGeneralConfig + '/figure-speaker';
-var sPathToConfigFile = sPathToAppConfig + '/figures.conf';
-var sPathToMp3Files = sPathToAppConfig + '/files';
+const sPathToGeneralConfig = require('os').homedir() + '/.config';
+const sPathToAppConfig = sPathToGeneralConfig + '/figure-speaker';
+const sPathToConfigFile = sPathToAppConfig + '/figures.conf';
+const sPathToMp3Files = sPathToAppConfig + '/files';
 
 
 module.exports = {
@@ -20,7 +18,7 @@ module.exports = {
         PathToMp3Files: sPathToMp3Files
     },
     Mopidy: {
-        PathToConfig: require("os").homedir() + '/.config/mopidy/mopidy.conf',
+        PathToConfig: require('os').homedir() + '/.config/mopidy/mopidy.conf',
         WebSocketUrl: process.env.MOPIDY_WEB_SOCKET_URL || 'ws://localhost:6680/mopidy/ws/'
     },
     PlayMode: {
@@ -29,10 +27,10 @@ module.exports = {
         Repeat: false
     },
     Buttons: {
-        Increase: "INCREASE",
-        Decrease: "DECREASE",
-        WindForwards: "WIND_FORWARDS",
-        ReWind: "REWIND",
+        Increase: 'INCREASE',
+        Decrease: 'DECREASE',
+        WindForwards: 'WIND_FORWARDS',
+        ReWind: 'REWIND',
         Push: 1,
         Release: 0,
         WatchInterval: 5,

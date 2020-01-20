@@ -1,10 +1,8 @@
-'use strict';
-
-var winston = require('winston');
-var constants = require('./constants.js');
-var mopidy = require('./mopidy.js');
-var ApplicationError = require('./ApplicationError.js');
-var fs = require('fs');
+const winston = require('winston');
+const constants = require('./constants.js');
+const mopidy = require('./mopidy.js');
+const ApplicationError = require('./ApplicationError.js');
+const fs = require('fs');
 
 exports.getAccountInfo = function () {
     return {
@@ -14,12 +12,12 @@ exports.getAccountInfo = function () {
     };
 };
 
-exports.saveAccount = function (oAccount) {
-    return Promise.reject("Cannot save credentials for mp3");
+exports.saveAccount = function () {
+    return Promise.reject('Cannot save credentials for mp3');
 };
 
 exports.deleteAccount = function () {
-    winston.info("Cannot delete account for mp3");
+    winston.info('Cannot delete account for mp3');
 };
 
 exports.getItemForUri = function (sUri) {
@@ -40,7 +38,7 @@ exports.getAvailableFileNames = function () {
 exports.upload = function (oFile) {
     return new Promise(function (resolve, reject) {
         if (!oFile) {
-            return reject(new ApplicationError(400, "No File provided"));
+            return reject(new ApplicationError(400, 'No File provided'));
         }
         if (!fs.existsSync(constants.Data.PathToGeneralConfig)){
             fs.mkdirSync(constants.Data.PathToGeneralConfig);
@@ -65,7 +63,7 @@ exports.upload = function (oFile) {
 exports.deleteFile = function (sFilename) {
     return new Promise(function (resolve, reject) {
         if (!sFilename) {
-            return reject(new ApplicationError(400, "No File provided"));
+            return reject(new ApplicationError(400, 'No File provided'));
         }
         fs.unlink(constants.Data.PathToMp3Files + '/' + sFilename, function(oError) {
             if (oError) {

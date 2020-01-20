@@ -1,0 +1,44 @@
+---
+  root: true
+  extends: 'eslint:recommended'
+  env:
+    node: true
+    es6: true
+  parserOptions:
+    ecmaVersion: 6
+  globals:
+    Promise: true
+    sap: true
+  rules:
+    # http://eslint.org/docs/rules/indent
+    indent:
+      - error
+      - 4
+      - SwitchCase: 1
+    # http://eslint.org/docs/rules/linebreak-style
+    linebreak-style:
+      - error
+      - unix
+    # http://eslint.org/docs/rules/quotes
+    quotes:
+      - error
+      - single
+    # http://eslint.org/docs/rules/semi
+    semi:
+      - error
+      - always
+    # http://eslint.org/docs/rules/eol-last
+    # eol-last:
+    #   - error
+    #   - always
+    # https://eslint.org/docs/rules/keyword-spacing
+    keyword-spacing:
+      - error
+    curly:
+      - error
+      - all
+    brace-style:
+      - error
+      - 1tbs
+    no-var:
+      - error

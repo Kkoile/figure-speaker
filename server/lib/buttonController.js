@@ -1,10 +1,10 @@
-var winston = require('winston');
-var constants = require('./constants');
-var onoff;
+const winston = require('winston');
+const constants = require('./constants');
+let onoff;
 try {
     onoff = require('onoff');
 } catch (oError) {
-    winston.error("Dependency onoff could not be required. Perhaps you do not run on raspberry?");
+    winston.error('Dependency onoff could not be required. Perhaps you do not run on raspberry?');
 }
 exports.Gpio = undefined;
 if (onoff) {
@@ -25,7 +25,7 @@ exports._notifyListenersOnVolumeChange = function(sVolumeChange) {
         try {
             oListener.onVolumeChange && oListener.onVolumeChange(sVolumeChange);
         } catch (oError) {
-            winston.error("Could not notify listener for volume change", oError);
+            winston.error('Could not notify listener for volume change', oError);
         }
     });
 };
@@ -34,23 +34,23 @@ exports._notifyListenersOnWindAction = function(sWindAction) {
     return Promise.all(this.listeners.map(function(oListener) {
         const promise = oListener.onWindAction ? oListener.onWindAction(sWindAction) : Promise.resolve();
         return promise.catch(function (oError) {
-            winston.error("Could not notify listener for wind action", oError);
+            winston.error('Could not notify listener for wind action', oError);
         });
     }));
 };
 
 exports.init = function () {
     if (!this.Gpio) {
-        winston.warn("Did not find dependency for connecting to GPIO. Perhaps you do not run on raspberry?");
+        winston.warn('Did not find dependency for connecting to GPIO. Perhaps you do not run on raspberry?');
         return;
     }
 
-    var increaseVolumeButtonGPIO = process.env.GPIO_INCREASE_VOLUME_BUTTON;
-    var decreaseVolumeButtonGPIO = process.env.GPIO_DECREASE_VOLUME_BUTTON;
+    const increaseVolumeButtonGPIO = process.env.GPIO_INCREASE_VOLUME_BUTTON;
+    const decreaseVolumeButtonGPIO = process.env.GPIO_DECREASE_VOLUME_BUTTON;
 
     if (!increaseVolumeButtonGPIO || !decreaseVolumeButtonGPIO) {
-        winston.error("Could not initialize Volume Controller, because environment variables for GPIOs for buttons are not set.");
-        winston.error("Set GPIO_INCREASE_VOLUME_BUTTON and GPIO_DECREASE_VOLUME_BUTTON to their GPIO pin number.");
+        winston.error('Could not initialize Volume Controller, because environment variables for GPIOs for buttons are not set.');
+        winston.error('Set GPIO_INCREASE_VOLUME_BUTTON and GPIO_DECREASE_VOLUME_BUTTON to their GPIO pin number.');
         return;
     }
 
@@ -105,7 +105,7 @@ exports.stop = function() {
 
 exports.listen = function (oListener) {
     if (!oListener.onVolumeChange && !oListener.onWindAction) {
-        winston.error("Could not add volume listener, because it does not implement `onVolumeChange` or `onWindAction` method");
+        winston.error('Could not add volume listener, because it does not implement `onVolumeChange` or `onWindAction` method');
         return;
     }
     this.listeners.push(oListener);

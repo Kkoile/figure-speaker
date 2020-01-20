@@ -1,7 +1,4 @@
-'use strict';
-
-var winston = require('winston');
-var ApplicationError = require('./ApplicationError.js');
+const ApplicationError = require('./ApplicationError.js');
 
 const hosts = {
     spotify: require('./spotifyController'),
@@ -18,13 +15,11 @@ exports.getControllerOfHost = function (sHostId) {
 
 exports.getAccounts = function () {
     return new Promise(function (resolve) {
-        var aAccounts = [];
-        for (var sHostId in hosts) {
-            if (!hosts[sHostId].hasOwnProperty()) {
-                var oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
-                oAccount.id = sHostId;
-                aAccounts.push(oAccount);
-            }
+        const aAccounts = [];
+        for (const sHostId in Object.keys(hosts)) {
+            const oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
+            oAccount.id = sHostId;
+            aAccounts.push(oAccount);
         }
         resolve(aAccounts);
     }.bind(this));
@@ -32,7 +27,7 @@ exports.getAccounts = function () {
 
 exports.getAccountInfo = function (sHostId) {
     return new Promise(function (resolve) {
-        var oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
+        const oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
         oAccount.id = sHostId;
         resolve(oAccount);
     }.bind(this));
@@ -58,7 +53,7 @@ exports.getArtist = function (sHostId, sId) {
 };
 
 exports.getItemForUri = function (sUri) {
-    var aParts = sUri.split(':');
+    const aParts = sUri.split(':');
     return this.getControllerOfHost(aParts[0]).getItemForUri(sUri);
 };
 

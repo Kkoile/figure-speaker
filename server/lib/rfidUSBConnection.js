@@ -1,10 +1,10 @@
-var pcsc = require('nfc-pcsc');
-var NFC = pcsc.NFC;
-var nfc;
+const pcsc = require('nfc-pcsc');
+const NFC = pcsc.NFC;
+let nfc;
 
-var aListeners = [];
-var oReader = null;
-var oCard = null;
+const aListeners = [];
+let oReader = null;
+let oCard = null;
 
 exports.init = function () {
     nfc = new NFC();

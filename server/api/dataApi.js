@@ -1,16 +1,11 @@
-/*eslint no-console: 0*/
-"use strict";
+const express = require('express');
+const FileUpload = require('express-fileupload');
 
-var winston = require('winston');
-var express = require('express');
-var ApplicationError = require('../lib/ApplicationError');
-var FileUpload = require('express-fileupload');
+const hostController = require('../lib/hostController');
+const mp3Controller = require('../lib/mp3Controller');
+const settingsController = require('../lib/settingsController');
 
-var hostController = require('../lib/hostController');
-var mp3Controller = require('../lib/mp3Controller');
-var settingsController = require('../lib/settingsController');
-
-var dataApi = express.Router();
+const dataApi = express.Router();
 
 dataApi.route('/:host/authToken').get(function (req, res, next) {
     hostController.getAuthToken(req.params.host)
@@ -43,7 +38,7 @@ dataApi.route('/mp3/deleteFile').delete(function (req, res, next) {
     if (!req.query.filename) {
         return res.status(400).send('No filename to be removed passed as url parameter');
     }
-    var sFilename = decodeURI(req.query.filename);
+    const sFilename = decodeURI(req.query.filename);
     mp3Controller.deleteFile(sFilename)
         .then(function() {
             res.send(200);

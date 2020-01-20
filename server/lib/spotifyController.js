@@ -1,14 +1,12 @@
-'use strict';
+const winston = require('winston');
+const fs = require('fs');
+const ini = require('ini');
+const ApplicationError = require('./ApplicationError.js');
+const constants = require('./constants.js');
+const SpotifyWebApi = require('spotify-web-api-node');
+const settingsController = require('./settingsController');
 
-var winston = require('winston');
-var fs = require('fs');
-var ini = require('ini');
-var ApplicationError = require('./ApplicationError.js');
-var constants = require('./constants.js');
-var SpotifyWebApi = require('spotify-web-api-node');
-var settingsController = require('./settingsController');
-
-var spotifyApi = new SpotifyWebApi({
+const spotifyApi = new SpotifyWebApi({
     clientId: constants.Spotify.ClientId,
     clientSecret: constants.Spotify.ClientSecret
 });
@@ -16,15 +14,15 @@ var spotifyApi = new SpotifyWebApi({
 exports.spotifyApi = spotifyApi;
 
 exports.getAccountInfo = function () {
-    var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+    const oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
     if (!oConfig.spotify) {
         oConfig.spotify = {};
     }
-    var bEnabled = true;
+    let bEnabled = true;
     if (oConfig.spotify.enabled !== null && oConfig.spotify.enabled !== undefined) {
         bEnabled = !!oConfig.spotify.enabled;
     }
-    var oGeneralConfig = settingsController.getConfigFile().general || {};
+    const oGeneralConfig = settingsController.getConfigFile().general || {};
     return {
         name: 'Spotify',
         enabled: bEnabled,
@@ -40,9 +38,9 @@ exports.saveAccount = function (oAccount) {
         if (!oAccount.username || !oAccount.password || !oAccount.client_id || !oAccount.client_secret) {
             throw new ApplicationError('Not enough input given', 400);
         }
-        winston.info("saving credentials");
+        winston.info('saving credentials');
         try {
-            var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+            const oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
             if (!oConfig.spotify) {
                 oConfig.spotify = {};
             }
@@ -59,7 +57,7 @@ exports.saveAccount = function (oAccount) {
         resolve();
     })
         .then(function () {
-            var oConfig = settingsController.getConfigFile();
+            const oConfig = settingsController.getConfigFile();
             if (oAccount.country) {
                 oConfig.general.spotify_country = oAccount.country;
             } else {
@@ -70,9 +68,9 @@ exports.saveAccount = function (oAccount) {
 };
 
 exports.deleteAccount = function () {
-    winston.info("deleting credentials");
+    winston.info('deleting credentials');
     try {
-        var oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
+        const oConfig = ini.parse(fs.readFileSync(constants.Mopidy.PathToConfig, 'utf-8'));
         oConfig.spotify = {enabled: false};
 
         fs.writeFileSync(constants.Mopidy.PathToConfig, ini.stringify(oConfig, {whitespace: true}));
@@ -164,7 +162,7 @@ exports.search = function (sQuery) {
 };
 
 exports.getItemForUri = function (sUri) {
-    var aParts = sUri.split(':');
+    const aParts = sUri.split(':');
 
     switch (aParts[1]) {
         case 'album': {

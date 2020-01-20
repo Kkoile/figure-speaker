@@ -1,58 +1,56 @@
-'use strict';
-
-var packageJson = require('../package.json');
-var winston = require('winston');
-var fs = require('fs');
-var ini = require('ini');
-var ApplicationError = require('./ApplicationError.js');
-var constants = require('./constants.js');
-var mopidy = require('./mopidy.js');
-var rfidConnection = require('./rfidConnection');
-var hostController = require('./hostController');
+const packageJson = require('../package.json');
+const winston = require('winston');
+const fs = require('fs');
+const ini = require('ini');
+const ApplicationError = require('./ApplicationError.js');
+const constants = require('./constants.js');
+const mopidy = require('./mopidy.js');
+const rfidConnection = require('./rfidConnection');
+const hostController = require('./hostController');
 
 exports.getAccounts = function () {
-    winston.debug("load all accounts");
+    winston.debug('load all accounts');
     return hostController.getAccounts();
 };
 
 exports.getAccountInfo = function (sHostId) {
-    winston.debug("load account info for ", sHostId);
+    winston.debug('load account info for ', sHostId);
     return hostController.getAccountInfo(sHostId);
 };
 
 exports.saveAccount = function (sHostId, oAccount) {
-    winston.debug("save account for ", sHostId);
+    winston.debug('save account for ', sHostId);
     return hostController.saveAccount(sHostId, oAccount)
         .then(mopidy.restart.bind(mopidy));
 };
 
 exports.deleteAccount = function (sHostId) {
-    winston.debug("delete account for ", sHostId);
+    winston.debug('delete account for ', sHostId);
     return hostController.deleteAccount(sHostId)
         .then(mopidy.restart.bind(mopidy));
 };
 
 exports.getConfigFile = function () {
-    winston.debug("get config file");
-    var oConfig;
+    winston.debug('get config file');
+    let oConfig;
     try {
         oConfig = ini.parse(fs.readFileSync(constants.Data.PathToFigures, 'utf-8'));
     } catch (err) {
-        winston.debug("Could not read config file.", err);
+        winston.debug('Could not read config file.', err);
         oConfig = {};
     }
     return oConfig;
 };
 
 exports.saveFigure = function (sStreamUri) {
-    winston.info("saving figure");
+    winston.info('saving figure');
     return new Promise(function (resolve) {
         if (!rfidConnection.isCardDetected()) {
             throw new ApplicationError('No Card detected', 400);
         }
 
         mopidy.onCardRemoved().then(function() {
-            var oConfig = this.getConfigFile();
+            const oConfig = this.getConfigFile();
             oConfig[rfidConnection.getCardId()] = {
                 uri: sStreamUri
             };
@@ -65,7 +63,7 @@ exports.saveFigure = function (sStreamUri) {
 
 exports.setPlayMode = function (sPlayMode, iResetAfterDays) {
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
+        const oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -82,8 +80,8 @@ exports.setPlayMode = function (sPlayMode, iResetAfterDays) {
 
 exports.getPlayMode = function () {
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
-        var oPlayMode = {
+        const oConfig = this.getConfigFile();
+        const oPlayMode = {
             playMode: constants.Player.DefaultPlayMode,
             resetAfterDays: constants.Player.DefaultResetAfterDays
         };
@@ -99,12 +97,12 @@ exports.getPlayMode = function () {
 
 exports._getProgressOfSong = function (oTrackInfo) {
     return this.getPlayMode().then(function (oPlayMode) {
-        var oProgress = {track: 0, position: 0},
+        const oProgress = {track: 0, position: 0},
             iProgress = parseInt(oTrackInfo.progress),
             iTrackIndex = parseInt(oTrackInfo.track_index),
             oLastPlayed = new Date(oTrackInfo.last_played);
         if (oPlayMode.playMode === constants.PlayMode.Resume) {
-            var oReferenceDate = new Date();
+            const oReferenceDate = new Date();
             oReferenceDate.setDate(oReferenceDate.getDate() - oPlayMode.resetAfterDays);
             if (oReferenceDate < oLastPlayed) {
                 oProgress.track = iTrackIndex;
@@ -116,19 +114,19 @@ exports._getProgressOfSong = function (oTrackInfo) {
 };
 
 exports.getFigurePlayInformation = function () {
-    winston.debug("get figure play information");
+    winston.debug('get figure play information');
     if (!rfidConnection.isCardDetected()) {
         return Promise.reject(new ApplicationError('No Card detected', 400));
     }
-    var oConfig = this.getConfigFile();
+    const oConfig = this.getConfigFile();
 
-    var sCardId = rfidConnection.getCardId();
-    var oFigure = oConfig[sCardId];
+    const sCardId = rfidConnection.getCardId();
+    const oFigure = oConfig[sCardId];
     if (oFigure) {
         return this._getProgressOfSong(oFigure).then(function (oProgress) {
             return this.getCurrentVolume().then(function(iCurrentVolume) {
                 return this.getRepeatMode().then(function(bRepeatMode) {
-                    var oData = oFigure;
+                    const oData = oFigure;
                     oData.cardId = sCardId;
                     oData.progress = oProgress;
                     oData.volume = iCurrentVolume;
@@ -143,9 +141,9 @@ exports.getFigurePlayInformation = function () {
 };
 
 exports.saveFigurePlayInformation = function (sCardId, oTrackInfo) {
-    winston.info("save figure play information");
+    winston.info('save figure play information');
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
+        const oConfig = this.getConfigFile();
         oConfig[sCardId].progress = oTrackInfo.timePosition;
         oConfig[sCardId].track_index = oTrackInfo.trackIndex;
         oConfig[sCardId].track_length = oTrackInfo.trackLength;
@@ -172,7 +170,7 @@ exports.saveConfigFile = function (oConfig) {
 };
 
 exports.getFigureWithInformation = function () {
-    winston.info("get figure");
+    winston.info('get figure');
     return this.getFigurePlayInformation()
         .then(function (oData) {
             if (oData) {
@@ -182,10 +180,10 @@ exports.getFigureWithInformation = function () {
 };
 
 exports.getLanguage = function () {
-    winston.debug("get language");
+    winston.debug('get language');
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
-        var sLanguage = constants.General.Language;
+        const oConfig = this.getConfigFile();
+        let sLanguage = constants.General.Language;
         if (oConfig.general && oConfig.general.language) {
             sLanguage = oConfig.general.language;
         }
@@ -194,9 +192,9 @@ exports.getLanguage = function () {
 };
 
 exports.setLanguage = function (sLanguage) {
-    winston.info("set language:", sLanguage);
+    winston.info('set language:', sLanguage);
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
+        const oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -207,10 +205,10 @@ exports.setLanguage = function (sLanguage) {
 };
 
 exports.getMaxVolume = function () {
-    winston.debug("get max volume");
+    winston.debug('get max volume');
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
-        var iMaxVolume = constants.General.MaxVolume;
+        const oConfig = this.getConfigFile();
+        let iMaxVolume = constants.General.MaxVolume;
         if (oConfig.general && oConfig.general.max_volume) {
             iMaxVolume = parseInt(oConfig.general.max_volume);
         }
@@ -219,9 +217,9 @@ exports.getMaxVolume = function () {
 };
 
 exports.setMaxVolume = function (iMaxVolume) {
-    winston.info("set max volume:", iMaxVolume);
+    winston.info('set max volume:', iMaxVolume);
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
+        const oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -232,10 +230,10 @@ exports.setMaxVolume = function (iMaxVolume) {
 };
 
 exports.getCurrentVolume = function () {
-    winston.debug("get current volume");
+    winston.debug('get current volume');
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
-        var iCurrentVolume = constants.General.CurrentVolume;
+        const oConfig = this.getConfigFile();
+        let iCurrentVolume = constants.General.CurrentVolume;
         if (oConfig.general && oConfig.general.current_volume) {
             iCurrentVolume = parseInt(oConfig.general.current_volume);
         }
@@ -244,9 +242,9 @@ exports.getCurrentVolume = function () {
 };
 
 exports.setCurrentVolume = function (iCurrentVolume) {
-    winston.debug("set current volume:", iCurrentVolume);
+    winston.debug('set current volume:', iCurrentVolume);
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
+        const oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -257,10 +255,10 @@ exports.setCurrentVolume = function (iCurrentVolume) {
 };
 
 exports.getRepeatMode = function () {
-    winston.debug("get repeat mode");
+    winston.debug('get repeat mode');
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
-        var bRepeatMode = constants.PlayMode.Repeat;
+        const oConfig = this.getConfigFile();
+        let bRepeatMode = constants.PlayMode.Repeat;
         if (oConfig.general && oConfig.general.repeat_mode) {
             bRepeatMode = oConfig.general.repeat_mode === true;
         }
@@ -269,9 +267,9 @@ exports.getRepeatMode = function () {
 };
 
 exports.setRepeatMode = function (bRepeatMode) {
-    winston.debug("set repeat mode:", bRepeatMode);
+    winston.debug('set repeat mode:', bRepeatMode);
     return new Promise(function (resolve) {
-        var oConfig = this.getConfigFile();
+        const oConfig = this.getConfigFile();
         if (!oConfig.general) {
             oConfig.general = {};
         }
@@ -282,7 +280,7 @@ exports.setRepeatMode = function (bRepeatMode) {
 };
 
 exports.getCurrentVersion = function () {
-    winston.debug("get current version");
+    winston.debug('get current version');
     return new Promise(function (resolve) {
         resolve(packageJson.version);
     }.bind(this));
@@ -290,8 +288,8 @@ exports.getCurrentVersion = function () {
 
 exports.checkIfUriIsInUse = function(sUri) {
     return new Promise(function(resolve) {
-        var oConfig = this.getConfigFile();
-        var bUriIsInUse = Object.keys(oConfig).some(function(sKey) {
+        const oConfig = this.getConfigFile();
+        const bUriIsInUse = Object.keys(oConfig).some(function(sKey) {
             return oConfig[sKey] && oConfig[sKey].uri === sUri;
         });
         resolve(bUriIsInUse);

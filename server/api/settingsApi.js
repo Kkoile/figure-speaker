@@ -1,13 +1,8 @@
 /*eslint no-console: 0*/
-"use strict";
+const express = require('express');
+const settingsController = require('../lib/settingsController.js');
 
-var winston = require('winston');
-var express = require('express');
-var ApplicationError = require('../lib/ApplicationError');
-var settingsController = require('../lib/settingsController.js');
-var constants = require('../lib/constants.js');
-
-var settingsApi = express.Router();
+const settingsApi = express.Router();
 
 settingsApi.route('/accounts').get(function (req, res, next) {
     settingsController.getAccounts()
@@ -51,7 +46,7 @@ settingsApi.route('/playMode').get(function (req, res, next) {
 
 settingsApi.route('/playMode').post(function (req, res, next) {
     if (!req.body.playMode) {
-        res.status(400).send("PlayMode is missing in body!");
+        res.status(400).send('PlayMode is missing in body!');
         return;
     }
     settingsController.setPlayMode(req.body.playMode, req.body.resetAfterDays)
@@ -71,7 +66,7 @@ settingsApi.route('/repeatMode').get(function (req, res, next) {
 
 settingsApi.route('/repeatMode').post(function (req, res, next) {
     if (req.body.repeatMode === undefined || req.body.repeatMode === null) {
-        res.status(400).send("RepeatMode is missing in body!");
+        res.status(400).send('RepeatMode is missing in body!');
         return;
     }
     settingsController.setRepeatMode(req.body.repeatMode)
@@ -83,7 +78,7 @@ settingsApi.route('/repeatMode').post(function (req, res, next) {
 
 settingsApi.route('/saveFigure').post(function (req, res, next) {
     if (!req.body.streamUri) {
-        res.status(400).send("StreamUri is missing in body!");
+        res.status(400).send('StreamUri is missing in body!');
         return;
     }
     settingsController.saveFigure(req.body.streamUri)
@@ -111,7 +106,7 @@ settingsApi.route('/language').get(function (req, res, next) {
 
 settingsApi.route('/language').post(function (req, res, next) {
     if (!req.body.language) {
-        res.status(400).send("Language is missing in body!");
+        res.status(400).send('Language is missing in body!');
         return;
     }
     settingsController.setLanguage(req.body.language)
@@ -131,7 +126,7 @@ settingsApi.route('/maxVolume').get(function (req, res, next) {
 
 settingsApi.route('/maxVolume').post(function (req, res, next) {
     if (!req.body.maxVolume) {
-        res.status(400).send("Max Volume is missing in body!");
+        res.status(400).send('Max Volume is missing in body!');
         return;
     }
     settingsController.setMaxVolume(req.body.maxVolume)

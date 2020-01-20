@@ -1,8 +1,8 @@
-var ApplicationError = require('./ApplicationError.js');
-var winston = require('winston');
-var aSupportedAdapters = ['./rfidRC522Connection', './rfidUSBConnection'];
+const ApplicationError = require('./ApplicationError.js');
+const winston = require('winston');
+const aSupportedAdapters = ['./rfidRC522Connection', './rfidUSBConnection'];
 
-var oConnection = {
+let oConnection = {
     DUMMY_CONNECTION: true,
     init: function () {},
     stop: function(){},

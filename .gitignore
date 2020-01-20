@@ -1,8 +1,5 @@
 *npm-debug.log
-.eslintrc.yml
 .idea/
-.jshintignore
-.jshintrc
 node_modules/
 *figures.conf
 package-lock.json

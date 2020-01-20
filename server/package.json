@@ -10,6 +10,8 @@
     "node": "^6.0.0"
   },
   "scripts": {
+    "lint": "eslint lib/**/*.js api/**/*.js",
+    "lint:fix": "eslint lib/**/*.js api/**/*.js --fix",
     "start": "node index.js",
     "test": "mocha"
   },

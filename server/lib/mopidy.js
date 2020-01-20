@@ -1,29 +1,27 @@
-'use strict';
+const winston = require('winston');
+const ApplicationError = require('./ApplicationError.js');
+const constants = require('./constants.js');
+const child_process = require('child_process');
+const settingsController = require('./settingsController');
 
-var winston = require('winston');
-var ApplicationError = require('./ApplicationError.js');
-var constants = require('./constants.js');
-var child_process = require('child_process');
-var settingsController = require('./settingsController');
-
-var Mopidy = require("mopidy");
+const Mopidy = require('mopidy');
 exports.mopidy = undefined;
 
 try {
-    var rfidConnection = require('./rfidConnection');
+    const rfidConnection = require('./rfidConnection');
     rfidConnection.listenForScan(this);
 } catch (oError) {
-    winston.error("Could not listen for RFID Scans.", oError);
+    winston.error('Could not listen for RFID Scans.', oError);
 }
 
-var buttonController = require('./buttonController');
+const buttonController = require('./buttonController');
 
 exports.mopidyProcess = undefined;
 exports.mopidyStarted = undefined;
 exports.isSpotifyReady = undefined;
 
 exports.start = function () {
-    winston.info("starting mopidy");
+    winston.info('starting mopidy');
     this.mopidyStarted = new Promise(function (resolveMopidyStarted) {
         if (this.mopidyProcess) {
             throw new ApplicationError('Mopidy is already running', 500);
@@ -33,11 +31,11 @@ exports.start = function () {
             this.mopidyProcess.stderr.on('data', function (data) {
                 winston.debug(data.toString());
                 if (data.toString().includes('HTTP server running')) {
-                    winston.info("Mopidy started");
+                    winston.info('Mopidy started');
                     resolveMopidyStarted();
                 }
                 if (data.toString().includes('Logged in to Spotify in online mode')) {
-                    winston.info("Logged in to Spotify");
+                    winston.info('Logged in to Spotify');
                     resolveSpotifyLoggedIn();
                 }
             }.bind(this));
@@ -47,7 +45,7 @@ exports.start = function () {
 };
 
 exports.stop = function () {
-    winston.info("stopping mopidy");
+    winston.info('stopping mopidy');
     return new Promise(function (resolve) {
         if (!this.mopidyProcess) {
             return resolve();
@@ -63,19 +61,19 @@ exports.stop = function () {
 };
 
 exports.restart = function () {
-    winston.info("restarting mopidy");
+    winston.info('restarting mopidy');
     return this.stop()
         .then(this.start.bind(this));
 };
 
 exports.scanMp3Files = function () {
-    winston.info("scanning mp3 files");
+    winston.info('scanning mp3 files');
     return new Promise(function (resolve, reject) {
-        var oProcess = child_process.spawn('mopidy', ['local', 'scan']);
+        const oProcess = child_process.spawn('mopidy', ['local', 'scan']);
         oProcess.on('close', function (iCode) {
             if (iCode !== 0) {
-                winston.error("Scanning mp3 files return error code: " + iCode);
-                reject(new Error("Scanning mp3 files return error code: " + iCode));
+                winston.error('Scanning mp3 files return error code: ' + iCode);
+                reject(new Error('Scanning mp3 files return error code: ' + iCode));
             }
             resolve();
         });
@@ -85,7 +83,7 @@ exports.scanMp3Files = function () {
 
 exports._waitForMopidyToPlayThisTrack = function (sUri) {
     return new Promise(function (resolve) {
-        if (sUri.indexOf("spotify") === 0) {
+        if (sUri.indexOf('spotify') === 0) {
             this.isSpotifyReady.then(resolve);
         } else {
             resolve();
@@ -148,7 +146,7 @@ exports.onNewCardDetected = function () {
             webSocketUrl: constants.Mopidy.WebSocketUrl,
             callingConvention: 'by-position-only'
         });
-        this.mopidy.on("state:online", this._getAndPlayFigure.bind(this));
+        this.mopidy.on('state:online', this._getAndPlayFigure.bind(this));
     }.bind(this));
 };
 
@@ -199,7 +197,7 @@ exports.onVolumeChange = function (sVolumeChange) {
         .then(function (iCurrentVolume) {
             return settingsController.getMaxVolume()
                 .then(function (iMaxVolume) {
-                    var iNewVolume = iCurrentVolume;
+                    let iNewVolume = iCurrentVolume;
                     if (sVolumeChange === constants.Buttons.Increase) {
                         iNewVolume += constants.Buttons.WatchInterval;
                     }
