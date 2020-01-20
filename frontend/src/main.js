@@ -15,6 +15,6 @@ export const app = new Vue({
   router,
   store,
   i18n,
-  components: {App},
+  components: { App },
   template: '<App/>'
 });

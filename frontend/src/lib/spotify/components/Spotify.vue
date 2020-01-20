@@ -59,7 +59,7 @@
 
 <script>
 import SearchItem from './SearchItem';
-import {mapActions} from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'Spotify',

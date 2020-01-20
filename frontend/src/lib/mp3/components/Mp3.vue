@@ -64,7 +64,7 @@ export default {
     },
 
     openFileChoser () {
-      this.$refs['file'].click();
+      this.$refs.file.click();
     },
 
     handleFileUpload () {

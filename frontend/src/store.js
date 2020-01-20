@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import {app} from './main';
+import { app } from './main';
 import spotify from './lib/spotify/store';
 import mp3 from './lib/mp3/store';
 import youtube from './lib/youtube/store';
@@ -60,7 +60,7 @@ const mutations = {
 };
 
 const settingsActions = {
-  loadPlayMode ({commit}) {
+  loadPlayMode ({ commit }) {
     return axios.get('/settings/playMode')
       .then(function (oData) {
         commit('setPlayMode', oData.data);
@@ -69,7 +69,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadRepeatMode ({commit}) {
+  loadRepeatMode ({ commit }) {
     return axios.get('/settings/repeatMode')
       .then(function (oData) {
         commit('setRepeatMode', oData.data);
@@ -78,7 +78,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  savePlayMode ({commit}, oPlayMode) {
+  savePlayMode ({ commit }, oPlayMode) {
     return axios.post('/settings/playMode', oPlayMode)
       .then(function (oData) {
         alert('success');
@@ -87,8 +87,8 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  saveRepeatMode ({commit}, bRepeatMode) {
-    return axios.post('/settings/repeatMode', {repeatMode: bRepeatMode})
+  saveRepeatMode ({ commit }, bRepeatMode) {
+    return axios.post('/settings/repeatMode', { repeatMode: bRepeatMode })
       .then(function (oData) {
         alert('success');
       })
@@ -96,7 +96,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadAccounts ({commit}) {
+  loadAccounts ({ commit }) {
     return axios.get('/settings/accounts')
       .then(function (oData) {
         commit('setAccounts', oData.data);
@@ -105,7 +105,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadLanguage ({commit}) {
+  loadLanguage ({ commit }) {
     return axios.get('/settings/language')
       .then(function (oData) {
         commit('setLanguage', oData.data);
@@ -114,8 +114,8 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  saveLanguage ({commit}, sLanguage) {
-    return axios.post('/settings/language', {language: sLanguage})
+  saveLanguage ({ commit }, sLanguage) {
+    return axios.post('/settings/language', { language: sLanguage })
       .then(function (oData) {
         commit('setLanguage', oData.data);
       })
@@ -123,7 +123,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadMaxVolume ({commit}) {
+  loadMaxVolume ({ commit }) {
     return axios.get('/settings/maxVolume')
       .then(function (oData) {
         commit('setMaxVolume', oData.data);
@@ -132,8 +132,8 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  saveMaxVolume ({commit}, iMaxVolume) {
-    return axios.post('/settings/maxVolume', {maxVolume: iMaxVolume})
+  saveMaxVolume ({ commit }, iMaxVolume) {
+    return axios.post('/settings/maxVolume', { maxVolume: iMaxVolume })
       .then(function (oData) {
         commit('setMaxVolume', oData.data);
       })
@@ -141,7 +141,7 @@ const settingsActions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  checkForUpdate ({commit}) {
+  checkForUpdate ({ commit }) {
     return axios.get('/settings/currentVersion')
       .then(function (oData) {
         commit('setCurrentVersion', oData.data);
@@ -161,8 +161,8 @@ const settingsActions = {
 };
 
 const actions = {
-  saveItem ({commit}, sUri) {
-    return axios.post('/settings/saveFigure', {streamUri: sUri})
+  saveItem ({ commit }, sUri) {
+    return axios.post('/settings/saveFigure', { streamUri: sUri })
       .then(function () {
         alert('success');
       })

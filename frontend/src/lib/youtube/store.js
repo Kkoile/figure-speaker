@@ -11,7 +11,7 @@ const mutations = {
 // actions are functions that cause side effects and can involve
 // asynchronous operations.
 const actions = {
-  saveItem ({dispatch}, sUri) {
+  saveItem ({ dispatch }, sUri) {
     dispatch('saveItem', 'yt:' + sUri, { root: true });
   }
 };

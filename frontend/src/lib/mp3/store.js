@@ -37,11 +37,11 @@ var getEncodedUri = function (sUri) {
 };
 
 const actions = {
-  saveItem ({dispatch}, sUri) {
+  saveItem ({ dispatch }, sUri) {
     dispatch('saveItem', getEncodedUri(sUri), { root: true });
   },
-  checkIfFileIsInUse ({commit, dispatch}, sFilename) {
-    axios.get('/data/checkIfUriIsInUse', {params: {uri: getEncodedUri('local:track:' + sFilename)}})
+  checkIfFileIsInUse ({ commit, dispatch }, sFilename) {
+    axios.get('/data/checkIfUriIsInUse', { params: { uri: getEncodedUri('local:track:' + sFilename) } })
       .then(function (oData) {
         if (oData.data) {
           commit('showFileIsInUseDialog', sFilename);
@@ -53,8 +53,8 @@ const actions = {
         alert(oError);
       });
   },
-  deleteFile ({commit, dispatch}, sFilename) {
-    axios.delete('/data/mp3/deleteFile', {params: {filename: getEncodedUri(sFilename)}})
+  deleteFile ({ commit, dispatch }, sFilename) {
+    axios.delete('/data/mp3/deleteFile', { params: { filename: getEncodedUri(sFilename) } })
       .then(function () {
         dispatch('loadAvailable');
       })
@@ -65,16 +65,16 @@ const actions = {
         commit('hideFileIsInUseDialog');
       });
   },
-  cancelDeleteFile ({commit}) {
+  cancelDeleteFile ({ commit }) {
     commit('hideFileIsInUseDialog');
   },
-  loadAvailable ({commit}) {
+  loadAvailable ({ commit }) {
     axios.get('/data/mp3')
       .then(function (oData) {
         commit('setAvailableMp3Files', oData.data);
       });
   },
-  upload ({commit, dispatch}, oFile) {
+  upload ({ commit, dispatch }, oFile) {
     commit('updateUploadStatus', 'PENDING');
     var oFormData = new FormData();
     oFormData.append('file', oFile);

@@ -75,6 +75,7 @@
         </md-card-actions>
       </md-card>
 
+      <!-- eslint-disable vue/no-use-v-if-with-v-for -->
       <md-card v-for="account in $store.state.settings.accounts"
                v-if="account.configurable"
                v-bind:key="account.id">
