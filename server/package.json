@@ -18,16 +18,16 @@
   "main": "index.js",
   "dependencies": {
     "ajv": "^6",
-    "body-parser": "^1",
-    "express": "^4",
-    "express-fileupload": "^1",
-    "ini": "^1",
-    "mopidy": "^0",
-    "onoff": "^3",
-    "request": "^2",
-    "request-promise": "^4",
-    "spotify-web-api-node": "^3",
-    "winston": "^2"
+    "body-parser": "1",
+    "express": "4",
+    "express-fileupload": "1",
+    "ini": "1",
+    "mopidy": "1",
+    "onoff": "5",
+    "request": "2",
+    "request-promise": "4",
+    "spotify-web-api-node": "4",
+    "winston": "3"
   },
   "optionalDependencies": {
     "mfrc522-rpi": "1",
@@ -36,10 +36,10 @@
   },
   "devDependencies": {
     "eslint": "6",
-    "mocha": "5",
-    "nock": "9",
-    "nyc": "12",
-    "sinon": "4",
-    "supertest": "3"
+    "mocha": "7",
+    "nock": "11",
+    "nyc": "15",
+    "sinon": "8",
+    "supertest": "4"
   }
 }
