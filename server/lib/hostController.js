@@ -16,7 +16,7 @@ exports.getControllerOfHost = function (sHostId) {
 exports.getAccounts = function () {
     return new Promise(function (resolve) {
         const aAccounts = [];
-        for (const sHostId in Object.keys(hosts)) {
+        for (const sHostId of Object.keys(hosts)) {
             const oAccount = this.getControllerOfHost(sHostId).getAccountInfo();
             oAccount.id = sHostId;
             aAccounts.push(oAccount);
