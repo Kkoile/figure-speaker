@@ -10,7 +10,8 @@
     "install": "node install.js",
     "start": "cd server && npm start",
     "build": "cd frontend && npm run build",
-    "test": "cd server && npm test"
+    "test": "cd server && npm test",
+    "lint": "cd server && npm run lint"
   },
   "bin": {
     "figure-speaker": "./server/bin/start-server.js"
