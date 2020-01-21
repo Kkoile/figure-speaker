@@ -9,8 +9,8 @@
   "scripts": {
     "install": "node install.js",
     "start": "cd server && npm start",
-    "build": "cd frontend && npm run build && cd ..",
-    "test": "cd server && npm test && cd .."
+    "build": "cd frontend && npm run build",
+    "test": "cd server && npm test"
   },
   "bin": {
     "figure-speaker": "./server/bin/start-server.js"
