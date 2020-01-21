@@ -21,8 +21,8 @@ export default {
       }
       return axios.get('https://api.spotify.com/v1/search?&type=' + sTypes + '&q=' + sQuery + '&offset=' + iOffset + sMarketQuery, {
         headers: {
-          'Authorization': 'Bearer ' + sAuthToken,
-          'Accept': 'application/json'
+          Authorization: 'Bearer ' + sAuthToken,
+          Accept: 'application/json'
         }
       });
     });
@@ -31,8 +31,8 @@ export default {
     return this._getAuthToken().then(function (sAuthToken) {
       return axios.get('https://api.spotify.com/v1/artists/' + sArtistId, {
         headers: {
-          'Authorization': 'Bearer ' + sAuthToken,
-          'Accept': 'application/json'
+          Authorization: 'Bearer ' + sAuthToken,
+          Accept: 'application/json'
         }
       });
     });
@@ -41,8 +41,8 @@ export default {
     return this._getAuthToken().then(function (sAuthToken) {
       return axios.get('https://api.spotify.com/v1/artists/' + sArtistId + '/albums?offset=' + iOffset, {
         headers: {
-          'Authorization': 'Bearer ' + sAuthToken,
-          'Accept': 'application/json'
+          Authorization: 'Bearer ' + sAuthToken,
+          Accept: 'application/json'
         }
       });
     });
@@ -51,8 +51,8 @@ export default {
     return this._getAuthToken().then(function (sAuthToken) {
       return axios.get('https://api.spotify.com/v1/artists/' + sArtistId + '/top-tracks?country=DE', {
         headers: {
-          'Authorization': 'Bearer ' + sAuthToken,
-          'Accept': 'application/json'
+          Authorization: 'Bearer ' + sAuthToken,
+          Accept: 'application/json'
         }
       });
     });
@@ -61,8 +61,8 @@ export default {
     return this._getAuthToken().then(function (sAuthToken) {
       return axios.get('https://api.spotify.com/v1/albums/' + sAlbumId, {
         headers: {
-          'Authorization': 'Bearer ' + sAuthToken,
-          'Accept': 'application/json'
+          Authorization: 'Bearer ' + sAuthToken,
+          Accept: 'application/json'
         }
       });
     });
@@ -71,8 +71,8 @@ export default {
     return this._getAuthToken().then(function (sAuthToken) {
       return axios.get('https://api.spotify.com/v1/albums/' + sAlbumId + '/tracks?offset=' + iOffset, {
         headers: {
-          'Authorization': 'Bearer ' + sAuthToken,
-          'Accept': 'application/json'
+          Authorization: 'Bearer ' + sAuthToken,
+          Accept: 'application/json'
         }
       });
     });

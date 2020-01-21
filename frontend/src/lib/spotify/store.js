@@ -107,7 +107,7 @@ const mutations = {
 // actions are functions that cause side effects and can involve
 // asynchronous operations.
 const actions = {
-  search ({commit}) {
+  search ({ commit }) {
     commit('resetData');
     if (state.query) {
       return Spotify.search(state.query, state.account.country, 'artist,album,track', state.artistsOffset)
@@ -121,7 +121,7 @@ const actions = {
         });
     }
   },
-  loadMoreArtists ({commit}) {
+  loadMoreArtists ({ commit }) {
     return Spotify.search(state.query, state.account.country, 'artist', state.artistsOffset)
       .then(function (oData) {
         commit('appendArtists', oData.data.artists);
@@ -130,7 +130,7 @@ const actions = {
         alert(err);
       });
   },
-  loadMoreAlbums ({commit}) {
+  loadMoreAlbums ({ commit }) {
     return Spotify.search(state.query, state.account.country, 'album', state.albumsOffset)
       .then(function (oData) {
         commit('appendAlbums', oData.data.albums);
@@ -139,7 +139,7 @@ const actions = {
         alert(err);
       });
   },
-  loadMoreTracks ({commit}) {
+  loadMoreTracks ({ commit }) {
     return Spotify.search(state.query, state.account.country, 'track', state.tracksOffset)
       .then(function (oData) {
         commit('appendTracks', oData.data.tracks);
@@ -148,7 +148,7 @@ const actions = {
         alert(err);
       });
   },
-  loadArtist ({commit}, id) {
+  loadArtist ({ commit }, id) {
     state.selectedArtistId = id;
     commit('resetArtistData');
     var aPromises = [
@@ -176,7 +176,7 @@ const actions = {
     ];
     return aPromises;
   },
-  loadMoreArtistAlbums ({commit}) {
+  loadMoreArtistAlbums ({ commit }) {
     return Spotify.loadArtistAlbums(state.selectedArtistId, state.artistAlbumsOffset)
       .then(function (oData) {
         commit('appendArtistAlbums', oData.data);
@@ -185,7 +185,7 @@ const actions = {
         alert(err);
       });
   },
-  loadAlbum ({commit}, id) {
+  loadAlbum ({ commit }, id) {
     state.selectedAlbumId = id;
     commit('resetAlbumData');
     var aPromises = [
@@ -206,7 +206,7 @@ const actions = {
     ];
     return aPromises;
   },
-  loadMoreAlbumTracks ({commit}) {
+  loadMoreAlbumTracks ({ commit }) {
     return Spotify.loadAlbumTracks(state.selectedAlbumId, state.albumTracksOffset)
       .then(function (oData) {
         commit('appendAlbumTracks', oData.data);
@@ -215,10 +215,10 @@ const actions = {
         alert(err);
       });
   },
-  saveItem ({dispatch}, sUri) {
+  saveItem ({ dispatch }, sUri) {
     dispatch('saveItem', sUri, { root: true });
   },
-  loadAccountInfo ({commit}) {
+  loadAccountInfo ({ commit }) {
     return axios.get('/settings/accounts/spotify')
       .then(function (oData) {
         commit('setAccountInfo', oData.data);
@@ -227,12 +227,12 @@ const actions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  saveAccount ({dispatch}) {
+  saveAccount ({ dispatch }) {
     return axios.post('/settings/accounts/spotify', {
       username: state.account.username,
       password: state.account.password,
-      'client_id': state.account.client_id,
-      'client_secret': state.account.client_secret,
+      client_id: state.account.client_id,
+      client_secret: state.account.client_secret,
       country: state.account.country
     })
       .then(function () {
@@ -242,7 +242,7 @@ const actions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  deleteAccount ({dispatch}) {
+  deleteAccount ({ dispatch }) {
     return axios.delete('/settings/accounts/spotify')
       .then(function () {
         dispatch('loadAccountInfo');
@@ -251,7 +251,7 @@ const actions = {
         alert(JSON.stringify(err.response.data));
       });
   },
-  loadCountryCodes ({commit}) {
+  loadCountryCodes ({ commit }) {
     return axios.get('https://restcountries.eu/rest/v2/all')
       .then(function (oData) {
         commit('setCountryCodes', oData.data);

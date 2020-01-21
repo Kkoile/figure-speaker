@@ -27,7 +27,7 @@
 
 <script>
 import SearchItem from './SearchItem';
-import {mapActions} from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   id: 'Artist',

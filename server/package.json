@@ -17,29 +17,29 @@
   },
   "main": "index.js",
   "dependencies": {
-    "ajv": "^6.0.0",
-    "body-parser": "1.18.2",
-    "express": "4.16.2",
-    "express-fileupload": "1.0.0",
-    "ini": "1.3.5",
-    "mopidy": "0.5.0",
-    "onoff": "3.1.0",
-    "request": "2.83.0",
-    "request-promise": "4.2.2",
-    "spotify-web-api-node": "3.0.0",
-    "winston": "2.4.0"
+    "ajv": "^6",
+    "body-parser": "1",
+    "express": "4",
+    "express-fileupload": "1",
+    "ini": "1",
+    "mopidy": "1",
+    "onoff": "5",
+    "request": "2",
+    "request-promise": "4",
+    "spotify-web-api-node": "4",
+    "winston": "3"
   },
   "optionalDependencies": {
-    "mfrc522-rpi": "1.1.0",
-    "nfc-pcsc": "0.6.1",
-    "wiringpi-node": "2.4.4"
+    "mfrc522-rpi": "1",
+    "nfc-pcsc": "0",
+    "wiringpi-node": "2"
   },
   "devDependencies": {
-    "eslint": "6.6.0",
-    "mocha": "5.0.1",
-    "nock": "9.2.1",
-    "nyc": "^12.0.2",
-    "sinon": "4.4.2",
-    "supertest": "3.0.0"
+    "eslint": "6",
+    "mocha": "7",
+    "nock": "11",
+    "nyc": "15",
+    "sinon": "8",
+    "supertest": "4"
   }
 }
