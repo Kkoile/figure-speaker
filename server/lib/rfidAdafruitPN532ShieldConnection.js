@@ -5,7 +5,7 @@ const SerialPort = require('serialport')
 const Readline = SerialPort.parsers.Readline
 
 const listeners = []
-const card = null
+let card = null
 let inactivityTimeoutId = null // timeout to tell listeners the card has been removed
 let readyIntervalId = null     // interval to tell the card we are ready to read
 
