@@ -1,54 +1,5 @@
-/** hex-reader.ino 
-#include <Wire.h>
-#include <SPI.h>
-#include <Adafruit_PN532.h>
-
-#define PN532_SCK  (2)
-#define PN532_MOSI (3)
-#define PN532_SS   (4)
-#define PN532_MISO (5)
-
-#define PN532_IRQ   (2)
-#define PN532_RESET (3)
-
-//Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS); // SPI
-Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET); // I2C
-
-void setup(void) {
-  #ifndef ESP8266
-    while (!Serial); // for Leonardo/Micro/Zero
-  #endif
-  Serial.begin(115200);
-
-  nfc.begin();
-
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (! versiondata) { while (1); }
-
-  nfc.SAMConfig();
-}
-
-void loop(void) {
-  uint8_t success;
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
-  uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-
-  success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
-
-  if (success) {
-    Serial.print("uid is ");
-    nfc.PrintHex(uid, uidLength);
-    Serial.println("");
-    Serial.flush();
-    while (!Serial.available());
-    // wait for '\n' before sending next read
-    while  (Serial.available()) {
-      Serial.read();
-    }
-    Serial.flush();
-  }
-}
-*/
+// This backend assumes you are running the RFIDShield Arduino sketch located in the support folder
+// You can find install instructions there
 
 const SerialPort = require('serialport')
 const Readline = SerialPort.parsers.Readline
