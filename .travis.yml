@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - node
+script:
+  - npm test
+  - npm run lint
 before_install:
   - npm i -g npm@6.5.0
 before_deploy:
