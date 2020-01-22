@@ -32,6 +32,7 @@
   "optionalDependencies": {
     "mfrc522-rpi": "1.1.0",
     "nfc-pcsc": "0.6.1",
+    "serialport": "^8.0.6",
     "wiringpi-node": "2.4.4"
   },
   "devDependencies": {

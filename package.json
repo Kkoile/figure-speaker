@@ -15,8 +15,5 @@
   },
   "bin": {
     "figure-speaker": "./server/bin/start-server.js"
-  },
-  "optionalDependencies": {
-    "serialport": "^8.0.6"
   }
 }
